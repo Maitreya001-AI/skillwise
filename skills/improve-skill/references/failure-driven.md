@@ -30,4 +30,4 @@ Do not feed the loop an all-failure pool; the neighboring successes are the anch
 
 ## Wiring
 
-Failure-driven mode feeds candidate edits into the *same* ratchet (`ratchet-protocol.md`) and the *same* default-deny gate. The only addition is the diagnosis front-end above. Output, per accepted edit: the contrastive pair that motivated it, the signature, and the held-out delta.
+Failure-driven mode feeds candidate edits into the *same* ratchet (`ratchet-protocol.md`) and the *same* shared measurement gate (`../../../shared/effect-gate.md`). The only addition is the diagnosis front-end above. Output, per accepted edit: the contrastive pair that motivated it, the signature, and the held-out delta.

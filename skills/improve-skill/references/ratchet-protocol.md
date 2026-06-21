@@ -1,39 +1,39 @@
 # Ratchet protocol (git ops + decision table)
 
-The ratchet's only job: scores can rise, never fall, and a worse-than-nothing or unsafe version can never land. Decisions are mechanical — `git checkout` cannot rationalize a regression.
+The ratchet's job: scores rise, never fall, and a worse-than-nothing or unsafe version never lands. The *judgment* is delegated — each round consumes the `gate` object from the shared measurement gate (`../../../shared/effect-gate.md`); the ratchet just turns `gate_pass` into a mechanical git keep/revert. `git checkout` cannot rationalize a regression.
 
 ## Per-round git flow
 
 ```
 git add . && git commit -m "experiment: <hypothesis>"   # snapshot BEFORE the edit
 # ... mutate (<=30 lines) ...
-# ... independent re-score (2 judges, median) + no-skill baseline ...
-# KEEP   -> git commit -m "evolve: <change> (+N: A->B)"
+# ... run ../../../shared/effect-gate.md -> gate object ...
+# KEEP   -> git commit -m "evolve: <change> (delta +N.NN)"
 # REVERT -> git checkout -- <SKILL.md path>
 ```
 
-## Decision table (priority order — first match wins)
+## Decision table (reads the shared gate; first match wins)
 
-| condition | action |
+| gate output | action |
 |---|---|
-| `negative_transfer == true` | **REVERT** (overrides all). With-skill worse than no-skill; the total is void. |
-| `safety_regression == true` | **REVERT.** Refusal / attack-success / scope-creep regressed; task gain is irrelevant. |
-| new `evaluate-skill` scorecard failure introduced | **REVERT.** |
-| `new_total > old_total` and no dimension dropped | **KEEP** -> commit, update baseline. |
-| `new_total == old_total`, a low dim rose, no dimension dropped | **KEEP** (lateral rebalance). |
-| `new_total < old_total` or any dimension dropped | **REVERT** (unless user-approved sacrifice). |
-| deliberate 1-dim sacrifice for 2-dim gain | **KEEP only with explicit user approval**, logged. |
-| score crash / judge failure | **SKIP**, log, next round. |
+| `gate_pass == "fail"` (any fatal: `regression_count > 0` or `safety_regression`) | **REVERT** — overrides everything; the average is void. |
+| `gate_pass == "static_only"` (effect layer required but unrun) | **HOLD** — don't keep; fix the held-out set, then re-score. |
+| Tier 1 introduced a new blocking structural finding | **REVERT.** |
+| `gate_pass == "pass"` and `delta > 0` and no dimension regressed | **KEEP** → commit, update baseline. |
+| `gate_pass == "pass"`, `delta == 0`, a low diagnosis dimension rose, nothing dropped | **KEEP** (lateral rebalance). |
+| `delta < 0` or any dimension dropped | **REVERT** (unless a user-approved, logged 1-dim sacrifice for 2-dim gain). |
+
+The fatal outcomes (`regression_count`, `safety_regression`) are the gate's non-waivable ones — the ratchet has no override for them.
 
 ## Memory update (every decision)
 
-- KEEP -> append <=2 lines to `learnings.md`: what changed + why it rose.
-- REVERT -> append <=2 lines to `dead-ends.md`: what was tried + why it regressed. Never re-propose a dead-end direction; persisting rejected edits is a decisive control ([SkillOpt](https://arxiv.org/abs/2605.23904)).
+- KEEP → append ≤2 lines to `learnings.md`: what changed + the delta it produced.
+- REVERT → append ≤2 lines to `dead-ends.md`: what was tried + why it regressed. Never re-propose a dead-end; persisting rejected edits is a decisive control ([SkillOpt](https://arxiv.org/abs/2605.23904)).
 
 ## Logging (every round)
 
-One row to `experiments.tsv`: round, dim scores, total, negative_transfer, safety_regression, change summary, kept/reverted, flags, commit hash. Failures fill the dead-end buffer and are worth recording.
+One row to `experiments.tsv`: round, weakest-dimension targeted, `delta`, `regression_count`, `safety_regression`, change summary, kept/reverted, commit hash.
 
-## Anti-cheat (judge prompts)
+## Anti-cheat
 
-Never include in a judge prompt: "improved version", "new", "better", "updated", the prior score, or a diff. Context isolation is the de-bias; a verifier blind to the generator's reasoning sidesteps confirmation bias ([CoEvoSkills](https://arxiv.org/abs/2604.01687)).
+The blind-judge requirement lives in the shared gate (judges never told which run is with-skill, no prior score, no diff). The ratchet only enforces it operationally: never pass that context into a scoring run. Context isolation is the de-bias ([CoEvoSkills](https://arxiv.org/abs/2604.01687)).

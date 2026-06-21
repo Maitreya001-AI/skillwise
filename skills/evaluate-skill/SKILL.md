@@ -6,60 +6,95 @@ license: MIT
 
 # Evaluate a Skill
 
-A skill is judged by one criterion, asked five ways. This body is the correctness ruler; the skillwise repo's `docs/THEORY.md` (§4) has the derivation.
+A skill is judged in **two tiers that converge to one gate**. Tier 1 is a static structural verdict (is the skill correctly formed?); Tier 2 is a behavioral effect verdict (does it actually improve output?). The derivation is in the skillwise repo's `docs/THEORY.md` (§4); the measurement protocol and all JSON schemas are shared with `improve-skill` in `../../shared/effect-gate.md`.
 
-**The criterion.** A skill is correct iff it *fills the gap the base engine lacks, exactly* — no under-fill, no over-fill, in the right layer, with a verifiable exit. Each test below catches one way that breaks and names the defect, so a failing skill yields a specific fault, not a vibe.
+**The criterion.** A skill is correct iff it *fills the gap the base engine lacks, exactly* — no under-fill, no over-fill, in the right layer, with a verifiable exit — **and** beats the no-skill baseline. Tier 1 catches the first half by reading; only Tier 2 can certify the second. A static pass is not a verdict: skills that read fine still degrade output (see `effect-gate.md`).
 
-## The mechanical pass (cheap entry)
+## Tier and scope (decide first)
 
-Run the linter on the skill folder first; it catches structural defects deterministically so judgment is spent on semantic ones:
-
-```
-python scripts/lint_skill.py <path-to-skill-folder-or-SKILL.md>
-```
-
-It reports frontmatter health, whether the `description` routes by *gap* vs only by *output*, the procedural-step smell, whether an exit/verification surface exists, whether capability claims are backed by `scripts/`, and length budget.
-
-The linter is the entry, not the verdict: it lowers the frequency of mechanical errors but cannot certify a skill. The guarantee comes only from the semantic read below.
-
-## The five tests (the semantic read — the guarantee)
-
-Run each against the skill's *typical task*.
-
-1. **Deletion — is there a gap?** Remove the skill, run the task. Still passes → it supplies free reasoning/orchestration and should not exist. *Defect: over-fill.* Ask "should this exist?" first.
-2. **Improvisation — under-fill?** Run with the skill; count gap-bearing material the engine still had to improvise. Greater than zero → *under-fill.*
-3. **Shuffle — over-fill?** Hand the primitives to the engine in scrambled order. Still completes → vocabulary (good); order-dependent → a welded procedure. *Defect: over-fill.*
-4. **Inertia-cost — over-fill's other face.** On a task the engine already handles, compare with/without the skill. Longer/costlier with no gain → skill inertia.
-5. **Exit — guaranteeable?** Is there a semantic check comparing the *product* against "what correct looks like," not merely "well-formed"? None → *no exit.*
-
-## Composite skills — the seam test
-
-Decompose into atomic gaps, run the five tests per atom, then check: does the human checkpoint sit at the boundary between the *judgment* component and the *control/capability* component? Misplacement → the machine overstepped into judgment (over-fill) or a human was inserted where automation belonged (under-fill).
-
-## Scorecard
-
-| check | passes when | fails as |
+| tier | what runs | gate |
 |---|---|---|
-| Routes by gap, not output | `description` says "use when X is missing", not only "produces Y" | wrong routing |
-| Gap fully supplied | improvisation test → 0 | under-fill |
-| Capability shipped as a primitive | misuse is *syntactically* impossible | wrong-layer |
-| No step ordering | passes the shuffle test | over-fill |
-| Judgment/control declarative · `done_when` | not fixed steps | over-fill |
-| Semantic exit check present | compares against "correct" | no exit |
-| Composite seam placed right | checkpoint at judgment↔control/capability | seam misplacement |
-| Failure mechanisms encoded | key branches as `if X then Y else Z` | brittle |
-| Executable specificity | no hedging where the type forbids it | vague |
-| High-risk blacklist | a dedicated "never do" section | unguarded |
-| Beats the no-skill baseline | clearly better than the task run without it | **negative transfer (fatal)** |
+| **scaffold** | Tier 1 + one smoke case | effect delta not required |
+| **production / library** | Tier 1 + Tier 2 delta | effect delta **mandatory** |
 
-All rows must pass. **Negative transfer is fatal:** run the typical task with and without the skill; if with-skill is worse, the skill must never ship, regardless of any other row.
+Don't put the full delta layer on every skill — a throwaway scaffold needs only static + smoke. Classify the skill type too (Knowledge / Capability / Judgment / Control / composite); it selects which scorecard rows apply.
 
-## How to read it reliably
+---
 
-Reading a skill is misleading on its own — fluent prose does not predict downstream gain, and a single LLM judge asked which skill performs better is no better than chance ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)). So: judge the skill as an *intervention* against a no-skill baseline ([SkillGen](https://arxiv.org/abs/2605.10999)), and take the median of two or more independent judges in fresh contexts rather than trusting one. The three reading-level rows above (failure mechanisms, executable specificity, high-risk blacklist) are the signals that do correlate with utility.
+## Tier 1 — structural verdict (static)
 
-**Apply type-aware.** Classify the skill first (Knowledge / Capability / Judgment / Control). For Knowledge and Judgment skills, "has a workflow" is *not* a virtue — score that row N/A. For Judgment skills, relax executable-specificity: taste is declared as descriptive "what good looks like" plus negative fences, not hard imperatives.
+### Mechanical entry (cheap)
 
-## Output
+```
+python scripts/lint_skill.py --check <path-to-skill>
+```
 
-Give: (1) the linter's mechanical findings, (2) pass/fail per scorecard row with the named defect for each failure, (3) the single highest-leverage fix. Do not rewrite the skill — that is `improve-skill`. The job is a verdict, located precisely.
+Frontmatter health, gap-routing of the `description`, the procedural-step smell, exit surface, capability-backed-by-scripts, length. The linter is the entry, not the verdict — it lowers the frequency of mechanical defects; it cannot certify a skill.
+
+### The five tests (the semantic read)
+
+Run each against the skill's *typical task*. Each catches one defect and names it.
+
+1. **Deletion** — remove the skill, run the task. Still passes → over-fill (it supplies free reasoning). Ask "should this exist?" first.
+2. **Improvisation** — count gap-bearing material the engine still had to improvise. > 0 → under-fill.
+3. **Shuffle** — hand the primitives in scrambled order. Order-dependent → over-fill (welded procedure).
+4. **Inertia-cost** — on a task the engine already handles, with vs without. Costlier, no gain → over-fill.
+5. **Exit** — is there a semantic check of the *product* against "what correct looks like"? None → no-exit.
+
+For composites, add the **seam test**: the human checkpoint must sit at the judgment ↔ control/capability boundary.
+
+### Two scorecards — the route face and the output face
+
+Score the two faces separately; they fail for different reasons and route to different fixes.
+
+**Route / trigger** (does it fire when it should, and only then?):
+
+| row | passes when | failure_type |
+|---|---|---|
+| Routes by gap | `description` says "use when X is missing", not only "produces Y" | wrong-route |
+| Triggers on the real cue | fires on typical + colloquial phrasings | wrong-route |
+| Doesn't over-trigger | stays quiet on adjacent out-of-scope tasks | wrong-route |
+
+**Output** (is the product good, in the right layer, guaranteeable?):
+
+| row | passes when | failure_type |
+|---|---|---|
+| Gap fully supplied | improvisation test → 0 | underfill |
+| Capability is a primitive | misuse is syntactically impossible | wrong-layer |
+| No welded ordering | passes the shuffle test | overfill |
+| Judgment/control declarative · `done_when` | not fixed steps | overfill |
+| Semantic exit present | compares product against "correct" | no-exit |
+| Composite seam placed right | checkpoint at the seam | seam-misplacement |
+| Failure mechanisms encoded | key branches as `if X then Y else Z` | (output, brittle) |
+| Executable specificity | no hedging where the type forbids it | (output, vague) |
+| High-risk blacklist | a dedicated "never do" section | (output, unguarded) |
+
+Apply **type-aware**: for Knowledge/Judgment skills "has a workflow" is N/A; for Judgment skills relax executable-specificity (taste = negative fences). Don't trust a single read — fluent prose doesn't predict gain and one LLM judge is no better than chance at picking the better skill ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)); the three reading rows above are the signals that do correlate.
+
+### Tier 1 emits
+
+Per failed (or notable) row, a **finding** in the shared schema (`../../shared/effect-gate.md`): `{id, test, failure_type, passed, location{file,line}, evidence{missing,present_forbidden}, fix_hint, waived}`, plus the **failure_taxonomy** aggregate. `location.file` always; `line` best-effort.
+
+---
+
+## Tier 2 — behavioral effect verdict (delta)
+
+Mandatory for production/library tier. Do **not** re-implement it here — run the shared gate in `../../shared/effect-gate.md`: held-out tasks with-skill vs no-skill baseline, assertions on the *product*, producing `baseline_pass_rate / with_skill_pass_rate / delta / regression_count / safety_regression`. The effect layer passes iff `delta > 0 AND regression_count == 0 AND safety clean`. **Negative transfer and safety regression are fatal and non-waivable.**
+
+Held-out source per the gate: caller supplies tasks; or draft 3 happy-path + 1 edge to `baseline.md` and confirm before scoring; or (scaffold) one smoke case.
+
+---
+
+## Converge to one gate + a fix list
+
+Emit a **json + md pair** (json for machines / CI / `improve-skill`; md for humans), converging to the shared **gate** object: `gate_pass` ∈ `pass | fail | static_only`, plus `tier` and `evaluated_layers` so `pass` is never overread. `static_only` is the honest state when the effect layer was required but no held-out set was available — never report `pass` on an unrun-but-required layer.
+
+End with a **fix list**: each item carries a `finding_id`, a priority, and a hint — built to pipe straight into `improve-skill`. **Locate, don't rewrite** — producing patches is `improve-skill`'s job.
+
+## Waivers
+
+A structural finding may be marked `waived: true` with a recorded reason (e.g. a tiny utility skill legitimately has no high-risk blacklist); the gate then passes *with recorded exceptions*. **Only structural/style findings are waivable.** The Tier 2 fatals — negative transfer and safety — have no waiver path and can never be set aside.
+
+## Stay minimal
+
+One structural report + the output scorecard (+ the route scorecard) + one gate + one fix list. Nothing else — no telemetry, registry, evidence ledgers, report zoo, or dashboards. Before adding any new report, run the deletion test on it: "remove it — does the gate still decide correctly?" If yes, don't add it.

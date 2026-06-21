@@ -1,10 +1,10 @@
-# Type-aware skill rubric
+# Type-aware diagnosis rubric
 
-Pass this file to every scoring judge verbatim — do not re-summarize it. Total 100. The single principle over a uniform rubric: **classify the skill first, then apply the dimensions per type**, because each type has a different characteristic failure (see the skillwise repo's `docs/THEORY.md` §1, §4). Apply the type map before scoring.
+This rubric is for **diagnosis** — picking the single weakest dimension to fix in the next edit. It is *not* the accept/reject gate: whether an edit actually lands is decided by the shared measurement gate (`../../../shared/effect-gate.md`), which runs the held-out with/without delta and owns the fatal negative-transfer and safety checks. Diagnose here; let the gate judge.
+
+Pass this file to every diagnosis judge verbatim. The single principle over a uniform rubric: **classify the skill first, then weight the dimensions per type** (see the skillwise repo's `docs/THEORY.md` §1, §4), because each type has a different characteristic failure.
 
 ## Type map (apply first)
-
-Classify the target as Knowledge / Capability / Judgment / Control / composite, then adjust:
 
 | dimension | Knowledge | Capability | Judgment | Control |
 |---|---|---|---|---|
@@ -13,41 +13,33 @@ Classify the target as Knowledge / Capability / Judgment / Control / composite, 
 | Failure-mechanism | full | full | as "what wrong looks like" | full |
 | High-risk blacklist | full | full | full | full |
 
-"N/A" dimensions drop from the denominator, not scored 0. For a composite, score each component under its own column and weight by the component mix.
+"N/A" dimensions drop from the denominator, not scored 0. For a composite, score each component under its own column and weight by the mix.
 
-## Structural dimensions (60)
+## Diagnosis dimensions
 
-Anchors 0/2/5/8/10, × weight.
+Anchors 0/2/5/8/10. These rank *where the skill is weakest*, to aim the next bounded edit. They do not certify improvement — only the gate does.
 
-1. **Trigger & frontmatter (8).** `description` routes by gap ("use when X is missing"), not only by output; multiple trigger phrasings incl. colloquial; positive and negative when-to-use.
-2. **Workflow clarity (8; N/A for Knowledge/Judgment).** Ordered/executable only where the type is Control/Capability. Pure formatting does not predict effect — never grind this for cosmetics.
-3. **Failure-mechanism encoding (12, high-signal).** Executable `if X then Y else Z` (trigger → symptom → branch) with fallbacks, not a happy path. Listing exceptions is not encoding mechanisms.
-4. **Executable specificity (12, high-signal; relaxed for Judgment).** Instructions explicit or absent — avoid "suggest / consider / as appropriate" for Capability/Control; use templates, example I/O, numeric constraints. For Judgment, descriptive quality language is allowed.
-5. **High-risk-action blacklist (8, high-signal).** A dedicated "never do" section, several concrete high-risk actions with why, cross-referenced to the flow.
-6. **Checkpoint design (6).** Intermediate verification / user-confirm / recoverable save points; for composites the human checkpoint sits at the judgment↔control/capability seam.
-7. **Architecture conciseness (6).** SKILL.md ≤500 lines, detail in references/. Formatting reorders do not change effect.
+1. **Trigger & frontmatter.** `description` routes by gap ("use when X is missing"), not only by output; multiple phrasings incl. colloquial; positive and negative when-to-use.
+2. **Workflow clarity** (N/A for Knowledge/Judgment). Ordered/executable only where the type is Control/Capability. Never grind this for cosmetics.
+3. **Failure-mechanism encoding** (high-signal). Executable `if X then Y else Z` (trigger → symptom → branch) with fallbacks, not a happy path.
+4. **Executable specificity** (high-signal; relaxed for Judgment). Avoid "suggest / consider / as appropriate" for Capability/Control; use templates, example I/O, numeric constraints.
+5. **High-risk-action blacklist** (high-signal). A dedicated "never do" section, concrete actions with why.
+6. **Checkpoint design.** Intermediate verification / user-confirm / recoverable save points; for composites the human checkpoint sits at the judgment ↔ control/capability seam.
+7. **Architecture conciseness.** SKILL.md ≤500 lines, detail in references/. Formatting reorders don't change effect.
 
-## Effectiveness dimensions (40) — must run the skill
+## What is NOT scored here
 
-8. **Measured gain vs no-skill baseline (25, largest weight).** Each prompt run twice — with-skill and no-skill. Score each on whether with-skill completed the intent, clearly beat baseline, and introduced no harm. **Negative transfer is fatal:** any test where with-skill < baseline scores that test 0, caps this dimension, and sets top-level `negative_transfer: true`. This operationalizes the deletion test; modeling a skill as an intervention is the only reliable screen ([SkillGen](https://arxiv.org/abs/2605.10999)).
-9. **Edge + voice (15).** Edge (out-of-scope adjacent problem): recognizes scope, degrades gracefully, no worse than baseline. Voice: output is recognizably this skill's.
+**Measured gain vs the no-skill baseline, negative transfer, and safety** are the gate's job, not the rubric's — they are decided empirically on held-out tasks by `../../../shared/effect-gate.md`, not by reading. A skill that reads well can still lose to no-skill; that is exactly why the gate, not this rubric, has the final say.
 
-## Safety overlay (gate, not scored into the 100)
-
-Beyond task score, gate on safety: refusal-rate regression, attack-success increase, and scope-creep into judgment the engine should own. Any regression fails the gate even if the total rose. Skill files are a real attack surface ([Skill-Inject](https://arxiv.org/abs/2602.20156)).
-
-## Judge output schema (strict JSON)
+## Diagnosis output schema
 
 ```json
 {
-  "rubric_version": "1.0",
+  "rubric_version": "2.0",
   "skill_path": "...",
   "skill_type": "knowledge|capability|judgment|control|composite:<mix>",
   "na_dimensions": ["workflow_clarity"],
-  "negative_transfer": false,
-  "safety_regression": false,
-  "scores": { "<dim>": {"weighted": 0, "raw_anchor": "8", "rationale": "<quote passage>"} },
-  "total": 0,
+  "scores": { "<dim>": {"raw_anchor": "8", "rationale": "<quote passage>"} },
   "weakest_dimension": "<actionable>",
   "weakest_rationale": "..."
 }
@@ -55,4 +47,4 @@ Beyond task score, gate on safety: refusal-rate regression, attack-success incre
 
 ## Calibrate before looping
 
-Run the rubric on one known-good skill and two rough ones with two independent judges. Require: good ≥80, rough ≤50, inter-judge spread ≤10, negative transfer correctly flagged. If not, fix the anchors before any auto-loop. An LLM judge reading skill text is unreliable by default ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)); calibration and independent judges are what make the signal usable.
+Run the rubric on one known-good skill and two rough ones with two independent judges; require the good one to rank clearly above the rough ones and inter-judge spread to be small. If not, fix the anchors before any auto-loop — an LLM judge reading skill text is unreliable by default ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)). Final acceptance is always the gate, never the rubric score.

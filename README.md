@@ -86,6 +86,8 @@ skillwise/
 │   ├── write-skill/        # SKILL.md
 │   ├── seek-skill/         # SKILL.md
 │   └── improve-skill/      # SKILL.md + references/{rubric,ratchet-protocol,failure-driven}.md
+├── shared/
+│   └── effect-gate.md      # the one measurement gate, referenced by evaluate + improve
 ├── docs/
 │   ├── THEORY.md           # self-contained derivation + references
 │   └── theory.html         # illustrated step-by-step walkthrough
@@ -103,7 +105,7 @@ If you fork to publish under your own account, update your identity in three pla
 
 ## Design notes
 
-Each meta-skill obeys the theory it encodes: all are declarative rather than step-marches; `evaluate-skill` ships a mechanical entry check but defers the guarantee to a semantic read; `improve-skill` and `seek-skill` specify only a stopping condition, role separation, and gates, leaving iteration to the engine. Empirical claims throughout are cited to published work, listed in the References section of [`docs/THEORY.md`](./docs/THEORY.md).
+Each meta-skill obeys the theory it encodes: all are declarative rather than step-marches; `evaluate-skill` ships a mechanical entry check but defers the guarantee to a semantic read; `improve-skill` and `seek-skill` specify only a stopping condition, role separation, and gates, leaving iteration to the engine. `evaluate-skill` judges in two tiers — a static structural verdict and a behavioral effect-delta verdict — converging to one `gate_pass`; the effect tier and its JSON schemas live once in [`shared/effect-gate.md`](./shared/effect-gate.md), which `improve-skill` reuses as its per-round keep/revert decision, so a kept edit means exactly what an evaluate pass means. Empirical claims throughout are cited to published work, listed in the References section of [`docs/THEORY.md`](./docs/THEORY.md).
 
 ## License
 

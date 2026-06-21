@@ -1,0 +1,16 @@
+{
+  "name": "skillwise",
+  "version": "0.1.0",
+  "description": "Meta-skills for working on skills — discover, write, evaluate, and improve agent skills, from one principle: a skill exists only to fill a gap the base engine lacks.",
+  "author": { "name": "Maitreya001-AI" },
+  "homepage": "https://github.com/Maitreya001-AI/skillwise",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "skill",
+    "meta-skill",
+    "skill-authoring",
+    "skill-evaluation",
+    "skill-evolution"
+  ]
+}

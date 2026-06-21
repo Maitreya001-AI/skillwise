@@ -1,0 +1,30 @@
+name: lint-skills
+
+# Dogfooding: skillwise's own job is judging skills, so it runs its own linter
+# (the mechanical entry of evaluate-skill) on every skill in this repo on each PR.
+# The linter is a non-verdict entry check — it catches structural defects only;
+# the semantic five-test read is what actually guarantees a skill. See evaluate-skill.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Lint every skill (blocking findings fail the build)
+        run: |
+          LINT=skills/evaluate-skill/scripts/lint_skill.py
+          fail=0
+          for d in skills/*/; do
+            echo "::group::$d"
+            python "$LINT" --check "$d" || fail=1
+            echo "::endgroup::"
+          done
+          exit $fail

@@ -1,0 +1,22 @@
+{
+  "name": "skillwise",
+  "owner": { "name": "Maitreya001-AI" },
+  "metadata": {
+    "version": "0.1.0",
+    "description": "Meta-skills for discovering, writing, evaluating, and improving agent skills."
+  },
+  "plugins": [
+    {
+      "name": "skillwise",
+      "source": "./",
+      "description": "Four meta-skills (evaluate / write / seek / improve) for working on agent skills, plus a dependency-free linter.",
+      "strict": false,
+      "skills": [
+        "./skills/evaluate-skill",
+        "./skills/write-skill",
+        "./skills/seek-skill",
+        "./skills/improve-skill"
+      ]
+    }
+  ]
+}

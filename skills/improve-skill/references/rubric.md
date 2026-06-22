@@ -1,6 +1,6 @@
 # Type-aware diagnosis rubric
 
-This rubric is for **diagnosis** — picking the single weakest dimension to fix in the next edit. It is *not* the accept/reject gate: whether an edit actually lands is decided by the shared measurement gate (`../../../shared/effect-gate.md`), which runs the held-out with/without delta and owns the fatal negative-transfer and safety checks. Diagnose here; let the gate judge.
+This rubric is for **diagnosis** — picking the single weakest dimension to fix in the next edit. It is *not* the accept/reject gate: whether an edit actually lands is decided by the shared measurement gate (`../../../shared/effect-gate.md`), which runs the held-out scoring — the **improvement gate** (`delta_step` vs the skill's previous accepted version) for an improve-skill round — and owns the fatal negative-transfer, floor, and safety checks. Diagnose here; let the gate judge.
 
 Pass this file to every diagnosis judge verbatim. The single principle over a uniform rubric: **classify the skill first, then weight the dimensions per type** (see the skillwise repo's `docs/THEORY.md` §1, §4), because each type has a different characteristic failure.
 

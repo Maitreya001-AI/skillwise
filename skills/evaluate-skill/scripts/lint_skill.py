@@ -196,7 +196,7 @@ def main():
         sys.exit(2)
     md_path, skill_dir = resolve(args[0])
     if not md_path:
-        print(bad(f"Could not find a SKILL.md at: {sys.argv[1]}"))
+        print(bad(f"Could not find a SKILL.md at: {args[0]}"))
         sys.exit(2)
 
     findings, summary = check(md_path, skill_dir)

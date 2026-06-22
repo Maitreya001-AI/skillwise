@@ -17,13 +17,13 @@ git add . && git commit -m "experiment: <hypothesis>"   # snapshot BEFORE the ed
 | gate output | action |
 |---|---|
 | `safety_regression`, OR a per-task regression vs the previous accepted version, OR a floor breach (`with_edited < no_skill` on any task) | **REVERT** — fatal, overrides everything; the average is void. |
-| `gate_pass == "unfit_test_set"` (set ceilinged / no headroom / no variance) | **HALT** — harden the held-out set (Phase B), then resume. Never keep or revert on an unmeasurable set. |
+| `gate_pass == "unfit_test_set"` — for the improvement loop, the current skill is already maxed on every task with no negative transfer (no headroom); a no-skill baseline at ceiling does **not** trigger this (no-skill is only the floor) | **HALT** — report `already_optimal`, or harden the held-out set (Phase B), then resume. Never keep or revert on a set with no headroom. |
 | Tier 1 introduced a new blocking structural finding | **REVERT.** |
 | `delta_step > noise_band`, no per-task regression vs previous, floor intact | **KEEP** → commit; the edited scores become the new previous-accepted. |
-| `delta_step` within the noise band, nothing dropped, AND the edit removes a Tier-1 blocking finding | **KEEP** (lateral; structural repair). |
+| `delta_step` within the noise band — no per-task regression vs previous, floor intact, safety-clean — AND the edit removes a Tier-1 blocking finding | **KEEP** (lateral; structural repair). |
 | `delta_step <= noise_band` with no structural repair, or any task dropped vs previous | **REVERT.** |
 
-The fatal outcomes (per-task regression, floor breach, `safety_regression`) are the gate's non-waivable ones — the ratchet has no override for them.
+The table is **first-match**: the KEEP rows are reached only when the REVERT/HALT rows above did not match, so safety regression, per-task regression, floor breach, and new blocking findings are already excluded by the time a KEEP row applies. The fatal outcomes (per-task regression, floor breach, `safety_regression`) are the gate's non-waivable ones — the ratchet has no override for them.
 
 ## Memory update (every decision)
 

@@ -2,6 +2,8 @@
 
 **Status:** adopted · **Scope:** `evaluate-skill`, `improve-skill`, new `shared/effect-gate.md`
 
+> **Update (later refactor — `../shared/effect-gate.md` is the source of truth).** After this note was written, the shared gate split its single `delta` into **`delta_exist`** (existence — with-skill vs no-skill, `evaluate-skill`'s Tier 2 and `seek-skill`'s gate) and **`delta_step`** (improvement — edited vs the skill's previous version, `improve-skill`'s per-round keep), added a per-task no-skill **floor**, a reproducible **noise band**, a pre-loop **headroom check**, and a fourth `gate_pass` state **`unfit_test_set`**. Where this note says bare `delta` / `baseline_pass_rate` / "three-state `gate_pass`", read the effect-gate file. The two-tier *structure* below is unchanged; only the effect tier's internals grew.
+
 ## TL;DR
 
 `evaluate-skill` was a single static verdict: read the skill, run five structural tests, "all rows pass = correct." That answers *is the skill well-formed?* but not *does it actually improve output?* This change splits evaluation into **two tiers that converge on one gate** — a static structural verdict and a behavioral effect-delta verdict — and moves the measurement protocol into a single top-level file, `shared/effect-gate.md`, that both `evaluate-skill` and `improve-skill` reference. Nothing about the existing five-test read changed; it was wrapped, made machine-readable, and given the second tier it was missing.
@@ -16,7 +18,7 @@ The toolkit's own principle (see `docs/THEORY.md` §3–4) is that a mechanical/
 
 **Tier 1 — structural verdict (static).** The existing linter entry + five semantic tests, now emitting a machine-readable **finding** per defect using a fixed schema (`id, test, failure_type, passed, location, evidence, fix_hint, waived`) plus a `failure_taxonomy` aggregate. The defect vocabulary is the toolkit's own — under-fill, over-fill, wrong-layer, wrong-route, no-exit, seam-misplacement — so "paragraph N is over-fill" becomes structured data, not a sentence a human has to parse. The single scorecard was also split into **two faces**: a *route/trigger* scorecard (does it fire when it should, and only then?) and an *output* scorecard (is the product good, in the right layer, guaranteeable?). They fail for different reasons and route to different fixes, so they are scored separately.
 
-**Tier 2 — behavioral effect verdict (delta).** New, and the most important addition. On held-out real tasks, the skill is run **with and without** itself; assertions are made on the *artifact produced*, never on the skill's wording. It reports `baseline_pass_rate`, `with_skill_pass_rate`, `delta`, and `regression_count`. The gate passes only when `delta > 0` and `regression_count == 0` and safety is clean. This is the part the old evaluator simply did not have.
+**Tier 2 — behavioral effect verdict (delta).** New, and the most important addition. On held-out real tasks, the skill is run **with and without** itself; assertions are made on the *artifact produced*, never on the skill's wording. It reports `no_skill_pass_rate`, `with_skill_pass_rate`, `delta_exist` (and, for an improvement round, `delta_step`), and `regression_count`. The existence gate passes only when `delta_exist > 0` and `regression_count == 0` and safety is clean. This is the part the old evaluator simply did not have.
 
 ### Output and convergence
 
@@ -28,7 +30,7 @@ The change request was sound, but four issues surfaced while applying the toolki
 
 1. **One gate, not two implementations.** If `improve-skill` kept its own baseline-and-negative-transfer logic while `evaluate-skill` grew an identical one, the same gate would exist twice — cross-skill over-fill. The gate is now defined **once** in `shared/effect-gate.md`; both skills reference it. A kept edit in `improve-skill` therefore means exactly what an `evaluate-skill` pass means.
 
-2. **`gate_pass` is three-state, not boolean.** A boolean cannot tell "static passed, delta not applicable" (a scaffold skill) apart from "static passed, delta failed." Forcing a boolean would make scaffolds either falsely pass or falsely fail. `gate_pass` is now `pass | fail | static_only`, carried alongside `tier` and `evaluated_layers` so a `pass` is always read relative to what actually ran. `static_only` is the honest state for "effect layer was required but no held-out set was available."
+2. **`gate_pass` is multi-state, not boolean.** A boolean cannot tell "static passed, delta not applicable" (a scaffold skill) apart from "static passed, delta failed." Forcing a boolean would make scaffolds either falsely pass or falsely fail. `gate_pass` is `pass | fail | static_only` (the later refactor added a fourth, `unfit_test_set`), carried alongside `tier` and `evaluated_layers` so a `pass` is always read relative to what actually ran. `static_only` is the honest state for "effect layer was required but no held-out set was available."
 
 3. **Waivers can never touch the fatal checks.** A waiver layer is useful for non-load-bearing structural defects (a tiny utility skill legitimately lacking a high-risk blacklist). But if a waiver could set aside negative transfer or a safety regression, the one unbreakable gate would have a hole and would stop being a gate. Waivers therefore apply to **structural findings only**; the effect layer has no waiver field at all.
 
@@ -57,10 +59,10 @@ The gate's order — change → measure → keep/revert — is a *measurement pr
 ## Files changed
 
 - **new** `shared/effect-gate.md` — the single measurement gate: protocol, gate rule, held-out sourcing by tier, and the shared JSON schemas (finding, failure_taxonomy, effect report, gate object).
-- **rewritten** `skills/evaluate-skill/SKILL.md` — two tiers, two scorecards, json+md output, three-state `gate_pass`, fix list, waiver layer, tiering; Tier 2 references the shared gate.
+- **rewritten** `skills/evaluate-skill/SKILL.md` — two tiers, two scorecards, json+md output, four-state `gate_pass` (`pass | fail | static_only | unfit_test_set`), fix list, waiver layer, tiering; Tier 2 references the shared gate.
 - **rewritten** `skills/improve-skill/SKILL.md` — keep/revert delegated to the shared gate; only loop-specific machinery (bounded step, ratchet, rolling memory, plateau-break) kept.
 - **rewritten** `skills/improve-skill/references/rubric.md` — now a diagnosis-only rubric; effectiveness measurement explicitly handed to the shared gate.
-- **rewritten** `skills/improve-skill/references/ratchet-protocol.md` — decision table now consumes the shared gate's `gate_pass` / `delta`.
+- **rewritten** `skills/improve-skill/references/ratchet-protocol.md` — decision table now consumes the shared gate's `gate_pass` / `delta_step`.
 - **edited** `skills/improve-skill/references/failure-driven.md` — gate reference repointed to the shared gate.
 - **edited** `README.md` — `shared/` added to the layout; design notes updated.
 

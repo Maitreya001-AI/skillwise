@@ -103,7 +103,7 @@ For composites, add the **seam test**: the human checkpoint must sit at the boun
 To let a skill improve from experience without degrading or drifting, the control gates matter more than any clever induction.
 
 - **Batch, don't react serially.** Induce over a diverse pool of trajectories rather than reacting to one at a time; serial reaction overfits to trajectory-local lessons ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)).
-- **Validation gate (default deny).** Every edit must *strictly* beat the current version on a held-out selection set, or it is rejected. This is the single cut that turns unconditional self-editing into propose-and-test, and the only source of monotone, non-degrading improvement ([SkillOpt](https://arxiv.org/abs/2605.23904)).
+- **Validation gate (default deny).** Every edit must beat the skill's **own previous accepted version beyond measurement noise** on a fixed held-out set (`delta_step > noise_band`), never falling below a permanent no-skill **floor**, or it is rejected. Beating *no-skill* is a separate, one-time *existence* question (`delta_exist`); an iterator keyed on it stalls whenever the base model already ceilings the task, so the per-round criterion is improvement-vs-previous, not existence-vs-baseline. A set with no headroom to show a gain is reported unfit and hardened, not used to reject. This is the single cut that turns unconditional self-editing into propose-and-test, and the only source of monotone, non-degrading improvement ([SkillOpt](https://arxiv.org/abs/2605.23904)).
 - **Bounded step.** A textual learning rate: cap how much one edit may change, to forbid destructive single-step rewrites ([SkillOpt](https://arxiv.org/abs/2605.23904)).
 - **Persist negative knowledge.** Rejected edits go into a buffer with the score drop they caused, so the optimizer stops repeating them ([SkillOpt](https://arxiv.org/abs/2605.23904)).
 - **Tune the experience diet.** Do not learn from an all-failure pool; the optimal success/failure ratio is domain-specific ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)).
@@ -130,7 +130,7 @@ Applying the theory to skills *about skills* yields four, with one kernel:
 | **seek-skill** | write-skill driven by a corpus — discovery from experience (§5, §9) | Control + Judgment + Capability |
 | **improve-skill** | the ruler in a gated loop (§5) | Control + Judgment + Capability |
 
-`evaluate-skill` is the kernel; `write-skill` and `seek-skill` call it as an exit gate, and `improve-skill` calls it as the gate inside its loop. Each of the four obeys the theory it encodes: all are declarative rather than step-marches, `evaluate-skill` ships a mechanical entry primitive and defers the guarantee to a semantic read, and `improve-skill`/`seek-skill` specify only `done_when` + role separation + gates, leaving iteration to the engine.
+`evaluate-skill` is the kernel; `write-skill` and `seek-skill` call it as an exit gate (the gate's **existence** branch, `delta_exist` vs no-skill), and `improve-skill` runs its structural read while applying the gate's **improvement** branch (`delta_step` vs the previous version) inside its loop. Each of the four obeys the theory it encodes: all are declarative rather than step-marches, `evaluate-skill` ships a mechanical entry primitive and defers the guarantee to a semantic read, and `improve-skill`/`seek-skill` specify only `done_when` + role separation + gates, leaving iteration to the engine.
 
 ---
 

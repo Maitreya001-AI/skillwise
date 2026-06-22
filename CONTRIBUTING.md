@@ -13,7 +13,7 @@ A skill is accepted when it **fills a gap the base engine lacks, exactly** — n
    ```
    The CI runs this on every skill; blocking findings fail the build.
 3. **Run the five semantic tests** (this is the actual guarantee, by hand or with `evaluate-skill`): deletion, improvisation, shuffle, inertia-cost, exit. See [`skills/evaluate-skill/SKILL.md`](./skills/evaluate-skill/SKILL.md).
-4. **Show it beats the no-skill baseline.** Run a representative task with and without the skill. If with-skill isn't clearly better, it isn't ready — a skill that's worse than no skill is the one defect we never merge.
+4. **Clear the gate.** For a *new* skill, show it beats the no-skill baseline (`delta_exist > 0`): run a representative task with and without it. For an *edit to an existing* skill, show it beats the skill's *previous version* (`delta_step` beyond the noise band) while never dropping below the no-skill floor — see [`shared/effect-gate.md`](./shared/effect-gate.md). A version worse than its reference is the one defect we never merge.
 
 ## Style
 

@@ -6,7 +6,7 @@ license: MIT
 
 # Evaluate a Skill
 
-A skill is judged in **two tiers that converge to one gate**. Tier 1 is a static structural verdict (is the skill correctly formed?); Tier 2 is a behavioral effect verdict (does it actually improve output?). The derivation is in the skillwise repo's `docs/THEORY.md` (§4); the measurement protocol and all JSON schemas are shared with `improve-skill` in `../../shared/effect-gate.md`.
+A skill is judged in **two tiers that converge to one gate**. Tier 1 is a static structural verdict (is the skill correctly formed?); Tier 2 is a behavioral effect verdict (does it actually improve output?). The five-test ruler is derived in the skillwise repo's `docs/THEORY.md` (§4); the gate, its delta logic, and the measurement-protocol exemption in §5 and §8. The measurement protocol and all JSON schemas are shared with `improve-skill` in `../../shared/effect-gate.md` — including the existence-vs-improvement delta split, the `unfit_test_set` state, and the headroom check. evaluate-skill reads the gate's **existence** branch (`delta_exist` vs no-skill); `improve-skill` reads its improvement branch.
 
 **The criterion.** A skill is correct iff it *fills the gap the base engine lacks, exactly* — no under-fill, no over-fill, in the right layer, with a verifiable exit — **and** beats the no-skill baseline. Tier 1 catches the first half by reading; only Tier 2 can certify the second. A static pass is not a verdict: skills that read fine still degrade output (see `effect-gate.md`).
 
@@ -26,6 +26,9 @@ Don't put the full delta layer on every skill — a throwaway scaffold needs onl
 ### Mechanical entry (cheap)
 
 ```
+# from the repo root:
+python skills/evaluate-skill/scripts/lint_skill.py --check <path-to-skill>
+# or, from this skill's own folder (e.g. a standalone install):
 python scripts/lint_skill.py --check <path-to-skill>
 ```
 
@@ -43,7 +46,7 @@ Run each against the skill's *typical task*. Each catches one defect and names i
 
 For composites, add the **seam test**: the human checkpoint must sit at the judgment ↔ control/capability boundary.
 
-**Two judges, not one (required).** This semantic read is itself an LLM judgment, and one judge picks the better skill no better than chance (§4). So a Tier 1 verdict runs **≥2 independent judges and takes the median** — the same discipline `../../shared/effect-gate.md` mandates for Tier 2. A lone read is not a Tier 1 verdict.
+**Two judges, not one (required).** This semantic read is itself an LLM judgment, and one judge picks the better skill no better than chance (§4). So a Tier 1 verdict runs **≥2 independent judges**. The median applies to *scalar* scores; the verdicts here are *categorical* (pass/fail, `failure_type`), and a median of two categories is undefined — so a **split is not averaged**: two judges disagreeing on a row's verdict is left unresolved, broken with a third judge, else defaulted to `passed:false` (confirm the finding). A lone read is not a Tier 1 verdict.
 
 ### Two scorecards — the route face and the output face
 
@@ -71,17 +74,19 @@ Score the two faces separately; they fail for different reasons and route to dif
 | Executable specificity | no hedging where the type forbids it | (output, vague) |
 | High-risk blacklist | a dedicated "never do" section | (output, unguarded) |
 
-Apply **type-aware**: for Knowledge/Judgment skills "has a workflow" is N/A; for Judgment skills relax executable-specificity (taste = negative fences). The three reading rows above are the signals that *do* correlate with utility — fluent prose doesn't predict gain and one LLM judge is no better than chance at picking the better skill ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)), which is exactly why the ≥2-judge median above is mandatory, not advisory.
+Apply **type-aware**: for Knowledge/Judgment skills "has a workflow" is N/A; for Judgment skills relax executable-specificity (taste = negative fences). The three reading rows above are the signals that *do* correlate with utility — fluent prose doesn't predict gain and one LLM judge is no better than chance at picking the better skill ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)), which is exactly why the ≥2-judge rule above is mandatory, not advisory.
 
 ### Tier 1 emits
 
-Per failed (or notable) row, a **finding** in the shared schema (`../../shared/effect-gate.md`): `{id, test, failure_type, passed, location{file,line}, evidence{missing,present_forbidden}, fix_hint, waived}`, plus the **failure_taxonomy** aggregate. `location.file` always; `line` best-effort.
+Per failed (or notable) row, a **finding** in the shared schema (`../../shared/effect-gate.md`): `{id, test, failure_type, passed, location{file,line}, evidence{missing,present_forbidden}, fix_hint, waived, waiver_reason}`, plus the **failure_taxonomy** aggregate. `location.file` always; `line` best-effort. Emitted `failure_type` uses the unhyphenated enum tokens (`underfill | overfill | wrong-layer | wrong-route | no-exit | seam-misplacement`), whatever the prose hyphenation; the three reading-signal rows (failure-mechanisms / executable-specificity / high-risk-blacklist) emit output-quality notes, not a `failure_type`.
 
 ---
 
 ## Tier 2 — behavioral effect verdict (delta)
 
-Mandatory for production/library tier. Do **not** re-implement it here — run the shared gate in `../../shared/effect-gate.md`: held-out tasks with-skill vs no-skill baseline, assertions on the *product*, producing `baseline_pass_rate / with_skill_pass_rate / delta / regression_count / safety_regression`. The effect layer passes iff `delta > 0 AND regression_count == 0 AND safety clean`. **Negative transfer and safety regression are fatal and non-waivable.**
+Mandatory for production/library tier. Do **not** re-implement it here — run the shared gate in `../../shared/effect-gate.md` on its **existence** branch: held-out tasks with-skill vs no-skill baseline, assertions on the *product*, producing `no_skill_pass_rate / with_skill_pass_rate / delta_exist / regression_count / safety_regression`. The effect layer passes iff `delta_exist > 0 AND regression_count == 0 AND safety_regression == false` (on a non-ceilinged set — a ceilinged `no_skill` resolves to `unfit_test_set` per the precedence below, not `fail`). **Negative transfer and safety regression are fatal and non-waivable.**
+
+First run the gate's **headroom check**: if `no_skill` is at ceiling on every task, the existence value can't be shown — report `unfit_test_set` and harden the set, *not* `fail`.
 
 Held-out source per the gate: caller supplies tasks; or draft 3 happy-path + 1 edge to `baseline.md` and confirm before scoring; or (scaffold) one smoke case.
 
@@ -89,9 +94,9 @@ Held-out source per the gate: caller supplies tasks; or draft 3 happy-path + 1 e
 
 ## Converge to one gate + a fix list
 
-Emit a **json + md pair** (json for machines / CI / `improve-skill`; md for humans), converging to the shared **gate** object: `gate_pass` ∈ `pass | fail | static_only`, plus `tier` and `evaluated_layers` so `pass` is never overread. `static_only` is the honest state when the effect layer was required but no held-out set was available — never report `pass` on an unrun-but-required layer.
+Emit a **json + md pair** (json for machines / CI / `improve-skill`; md for humans), converging to the shared **gate** object: `gate_pass` ∈ `pass | fail | static_only | unfit_test_set`, plus `tier` and `evaluated_layers` so `pass` is never overread. `static_only` is the honest state when the effect layer was required but no held-out set was available; `unfit_test_set` when a held-out set exists but can't show the existence answer (`no_skill` at ceiling). Never report `pass` on an unrun-but-required layer.
 
-**Resolution precedence (apply in order).** (1) Any non-waived **blocking structural finding → `gate_pass = fail`**, *regardless of whether the effect layer ran*. (2) Else if the effect layer ran and hit a fatal (`delta ≤ 0`, `regression_count > 0`, safety) → `fail`. (3) Else if the effect layer was required by tier but could not be run → `static_only`. (4) Else → `pass`. `static_only` is **only** for a *structurally clean* skill whose effect layer simply didn't run — never downgrade a structurally broken skill to `static_only` just because Tier 2 was unrunnable.
+**Resolution precedence (apply in order; first match wins).** (1) Any non-waived **blocking structural finding** (or a scaffold whose smoke case broke) → `fail`, regardless of whether the effect layer ran. (2) Else if the effect layer was required by tier but could not be run → `static_only`. (3) Else (it ran) if **`safety_regression`** → `fail` — non-waivable, never deferred. (4) Else if **`regression_count > 0`** (a task where with-skill scores *below* no-skill — genuine negative transfer) → `fail` — also non-waivable, and **not** excused by a ceilinged set. (5) Else if **`no_skill` is at ceiling** (nothing regressed, but a positive `delta_exist` can't be shown) → `unfit_test_set` (harden the set). (6) Else if `delta_exist ≤ 0` (ties or loses on a non-ceilinged set — no gap) → `fail`. (7) Else → `pass`. The safety and negative-transfer fatals are checked **before** the headroom routing, so a ceilinged set can never mask them; only the *can't-show-positive-value* misread is deferred to the `unfit_test_set` branch. `static_only` is **only** for a structurally clean skill whose effect layer simply didn't run.
 
 End with a **fix list**: each item carries a `finding_id`, a priority, and a hint — built to pipe straight into `improve-skill`. **Locate, don't rewrite** — producing patches is `improve-skill`'s job.
 

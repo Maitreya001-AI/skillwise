@@ -25,15 +25,21 @@ Why this matters: when the base model already does the task well, `no_skill` cei
 
 **Noise band.** An LLM judge is noisy, so a bare `delta_step > 0` can be jitter. Each condition is re-run ≥2× (judges already median ≥2); the **noise band** is the observed spread of identical-input re-runs. A KEEP requires `delta_step` to **exceed the noise band**, not merely be positive.
 
-## Discrimination check — the test set must be able to show a gain
+## Headroom check — the set must be able to show *what you are measuring*
 
-Before `improve-skill` iterates, the held-out set must *prove it can measure improvement*. Compute `no_skill` and the **current** skill's scores once, then require all of:
+Run before iterating. What counts as "fit" depends on the question — and these are not the same test (conflating them is a real bug: it rejects sets that can still measure improvement).
 
-- **Headroom** — at least one task scores **below max** for the current skill (room to improve);
-- **Discrimination** — `no_skill` is not itself at ceiling (mean `no_skill` ≲ 0.9, or some task has `no_skill < max`);
-- **Variance** — not all tasks score identically (a flat set carries no signal).
+**For the improvement loop** (`improve-skill`). The set is fit iff the **current** skill has headroom the set can detect:
 
-If the set fails this — e.g. a strong base model aces every task so `no_skill ≈ max` — emit **`unfit_test_set`** and **halt**. Do not run a loop that is mathematically incapable of showing a gain. This is the symmetric twin of "weak tests inflate everything": **ceilinged tests hide every gain.** The remedy is *harder fixtures* (cases the base model gets wrong unaided), not more rounds.
+- some task where the current skill scores **below max** (an edit could raise it), **or**
+- some task where the current skill scores **below `no_skill`** (negative transfer to repair),
+- **and** variance (not all tasks score identically for the current skill).
+
+The no-skill baseline here is **only the floor** — it may sit at ceiling without making the set unfit, because improvement is measured against the skill's *previous version*, not against no-skill. The set is **`unfit_test_set`** only when the current skill is **already maxed on every task with no negative transfer** — there is nothing left to raise; report `already_optimal`, do not iterate.
+
+**For the existence question** (`evaluate-skill` Tier 2). *Additionally* `no_skill` must not be at ceiling, else existence value cannot be shown — a separate concern that does **not** block the improvement loop.
+
+This is the symmetric twin of "weak tests inflate everything": weak tests inflate the answer; a set with no headroom *for the question being asked* hides it. The remedy is harder fixtures (cases that expose the gap), not more rounds.
 
 ## The gate rule
 
@@ -137,7 +143,7 @@ The converged **gate** object (the single thing a caller / CI reads):
 
 - **`fail`** — any non-waived blocking structural finding, OR (effect layer ran and) the applicable gate's fatal (`delta_exist ≤ 0` / `delta_step ≤ noise_band` / `regression_count > 0` / floor breach / `safety_regression`), OR a scaffold smoke case that broke.
 - **`static_only`** — the effect layer was *required by tier* but could not be run (no held-out set). Not a pass, not a fail.
-- **`unfit_test_set`** — the held-out set failed the discrimination check (ceilinged / no headroom / no variance). Not a pass, not a fail: **halt and harden the set**. An improvement loop never keeps or reverts on an unmeasurable set.
+- **`unfit_test_set`** — the held-out set failed the headroom check for the question being asked (improvement: current skill already maxed on every task with no negative transfer → report `already_optimal`; existence: `no_skill` at ceiling). Not a pass, not a fail: **halt and harden the set**. An improvement loop never keeps or reverts on a set with no headroom to measure.
 - **`pass`** — every layer that applies to the tier cleared: structural clean (modulo recorded waivers), and for production/library the applicable effect gate passed; for scaffold the smoke case ran clean.
 
 ## Self-reference

@@ -74,8 +74,12 @@ STEP_SMELL = [
     r"\bonce (you'?ve|that'?s)\b.*\bmove on\b",
 ]
 # Declarative escape hatches: even these phrases are fine inside criteria/checklists.
+# The last row is anti-procedure vocabulary: a line that *names* the step-smell in
+# order to forbid it is meta-discussion, not a welded march (e.g. the theory's own
+# 'there is no "procedure" type ... writing Step 1/2/3 supplies a gap that doesn't exist').
 STEP_OK_CONTEXT = ["done_when", "criteria", "checklist", "any order", "in any order",
-                   "scorecard", "test", "tests", "the five", "rubric", "gate", "invariant"]
+                   "scorecard", "test", "tests", "the five", "rubric", "gate", "invariant",
+                   "over-fill", "overfill", "inertia", "welded", "shuffle test", 'no "procedure']
 
 EXIT_SURFACE = [
     "verify", "verification", "validate", "validator", "exit", "check that",

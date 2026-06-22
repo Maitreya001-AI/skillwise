@@ -43,6 +43,8 @@ Run each against the skill's *typical task*. Each catches one defect and names i
 
 For composites, add the **seam test**: the human checkpoint must sit at the judgment ↔ control/capability boundary.
 
+**Two judges, not one (required).** This semantic read is itself an LLM judgment, and one judge picks the better skill no better than chance (§4). So a Tier 1 verdict runs **≥2 independent judges and takes the median** — the same discipline `../../shared/effect-gate.md` mandates for Tier 2. A lone read is not a Tier 1 verdict.
+
 ### Two scorecards — the route face and the output face
 
 Score the two faces separately; they fail for different reasons and route to different fixes.
@@ -69,7 +71,7 @@ Score the two faces separately; they fail for different reasons and route to dif
 | Executable specificity | no hedging where the type forbids it | (output, vague) |
 | High-risk blacklist | a dedicated "never do" section | (output, unguarded) |
 
-Apply **type-aware**: for Knowledge/Judgment skills "has a workflow" is N/A; for Judgment skills relax executable-specificity (taste = negative fences). Don't trust a single read — fluent prose doesn't predict gain and one LLM judge is no better than chance at picking the better skill ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)); the three reading rows above are the signals that do correlate.
+Apply **type-aware**: for Knowledge/Judgment skills "has a workflow" is N/A; for Judgment skills relax executable-specificity (taste = negative fences). The three reading rows above are the signals that *do* correlate with utility — fluent prose doesn't predict gain and one LLM judge is no better than chance at picking the better skill ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)), which is exactly why the ≥2-judge median above is mandatory, not advisory.
 
 ### Tier 1 emits
 

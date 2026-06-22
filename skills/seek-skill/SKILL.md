@@ -23,10 +23,12 @@ Grounding matters: a skill distilled without real task context collapses into va
 
 ## The loop (a measurement protocol — iteration left to the engine)
 
+> The 1–6 order below is **dependency-forced, not welded**: you cannot classify a pattern you haven't mined, materialize a gap you haven't classified, or gate an artifact you haven't materialized. That is the legitimate measurement-protocol order (`docs/THEORY.md` §8), not a task-march — it does not fail the shuffle test.
+
 1. **Mine recurring patterns by batch induction over the whole pool, not serially** ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)). A pattern recurs across multiple successful trajectories and, where labels allow, is present in successes and absent or wrong in failures ([SkillGen](https://arxiv.org/abs/2605.10999)'s contrastive induction).
 2. **Classify the gap** — the step that separates a reusable skill from a replayed macro. For each pattern: a missing *fact* → Knowledge; a *mis-improvised operation* → Capability (the tool calls become `build({named fields})`, never positional replay); a recurring *"what good looks like"* → Judgment; a *non-default loop* → Control.
 3. **Materialize type-disciplined** (hand to `write-skill`'s invariants). Emit a structured folder: SKILL.md + `scripts/` (only for capability primitives) + `references/`. Describe the world and what's correct, not the path taken.
-4. **Gate on the held-out set (default deny).** Inject the candidate and re-run held-out tasks with-skill vs no-skill — the deletion test, made measurable ([MUSE-Autoskill](https://arxiv.org/abs/2605.27366)). Keep iff strictly better, no negative transfer, safety clean. Else discard to a rejected buffer.
+4. **Gate on the held-out set (default deny)** — the **shared measurement gate** in `../../shared/effect-gate.md`, the same one `evaluate-skill` and `improve-skill` use, so a kept candidate means exactly what an evaluate pass means. Inject the candidate, run the held-out set with-skill vs no-skill (the deletion test, made measurable — [MUSE-Autoskill](https://arxiv.org/abs/2605.27366)); the gate owns the `delta > 0 / regression_count == 0 / safety` rule and its non-waivable fatals. Keep iff it passes; else discard to a rejected buffer. Do not restate the rule here — reference it.
 5. **Dedup and preserve.** Merge against the library with conflict detection; never overwrite a capability the library already had. Expand coverage beyond the seed corpus only through the same gate ([SkillX](https://arxiv.org/abs/2604.04804)).
 6. **Hand off.** Run `evaluate-skill` for the verdict; register the skill for ongoing `improve-skill` evolution.
 

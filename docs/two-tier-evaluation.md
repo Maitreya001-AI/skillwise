@@ -68,6 +68,8 @@ The gate's order — change → measure → keep/revert — is a *measurement pr
 
 All four skills pass the mechanical linter with zero blocking findings; the shared-gate cross-references resolve from every referencing file; the bundle is clean of out-of-scope vocabulary; the dogfooding CI passes.
 
+**Read this as `static_only`, not `pass`.** The CI runs only Tier 1 (the linter entry, which by its own docstring "cannot certify a skill"). These are production/library-tier skills, so Tier 2 — the with/without effect delta — is *mandatory* and has not been run here for lack of a held-out set. Per the gate rule, an unrun-but-required effect layer resolves to `static_only`: structurally sound, effect unverified. Green CI is not a certified pass; supply held-out tasks to finish.
+
 ---
 
 ### Also in this iteration (for the record)

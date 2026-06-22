@@ -4,3 +4,8 @@
 # Python
 __pycache__/
 *.pyc
+
+# improve-skill / evaluate-skill run artifacts (held-out fixtures, scoring logs, reports)
+.improve-run/
+.validate-run/
+.demo-run/

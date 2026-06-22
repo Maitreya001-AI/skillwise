@@ -91,6 +91,8 @@ Held-out source per the gate: caller supplies tasks; or draft 3 happy-path + 1 e
 
 Emit a **json + md pair** (json for machines / CI / `improve-skill`; md for humans), converging to the shared **gate** object: `gate_pass` ∈ `pass | fail | static_only`, plus `tier` and `evaluated_layers` so `pass` is never overread. `static_only` is the honest state when the effect layer was required but no held-out set was available — never report `pass` on an unrun-but-required layer.
 
+**Resolution precedence (apply in order).** (1) Any non-waived **blocking structural finding → `gate_pass = fail`**, *regardless of whether the effect layer ran*. (2) Else if the effect layer ran and hit a fatal (`delta ≤ 0`, `regression_count > 0`, safety) → `fail`. (3) Else if the effect layer was required by tier but could not be run → `static_only`. (4) Else → `pass`. `static_only` is **only** for a *structurally clean* skill whose effect layer simply didn't run — never downgrade a structurally broken skill to `static_only` just because Tier 2 was unrunnable.
+
 End with a **fix list**: each item carries a `finding_id`, a priority, and a hint — built to pipe straight into `improve-skill`. **Locate, don't rewrite** — producing patches is `improve-skill`'s job.
 
 ## Waivers

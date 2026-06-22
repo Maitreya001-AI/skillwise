@@ -1,0 +1,3 @@
+round	weakest_dimension	delta	regression_count	safety_regression	change_summary	decision	commit
+0	(baseline)	-0.125	2	no	current skill vs no-skill generalist; baseline ceilings at 1.00, with-skill 0.875; T2/T3 regress via static_only-vs-fail gate misresolution	BASELINE	-
+1	gate-resolution-precedence (failure-driven)	0.000	0	no	add resolution-precedence: blocking structural finding -> fail, overrides static_only; T2/T3 flip static_only->fail, T4 pass->static_only-clean; with-skill 0.875->1.00; unanimous judges	KEEP	(this commit)

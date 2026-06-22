@@ -4,27 +4,58 @@ One implementation, referenced by both `evaluate-skill` (as its second, behavior
 
 ## Why this exists
 
-A static, read-only verdict cannot certify that a skill helps. The only reliable judgment is the skill **as an intervention** against a no-skill baseline: run a real task with the skill and without it, and compare the *products*. Structural well-formedness does not predict gain — naively self-generated skills degrade performance by 1.3 points on average even when they read fine ([SoK / SkillsBench](https://arxiv.org/abs/2602.20867); [SkillGen](https://arxiv.org/abs/2605.10999) models skills exactly as interventions). The static entry lowers the *frequency* of defects; this gate is the *guarantee*.
+A static, read-only verdict cannot certify that a skill helps. The only reliable judgment is the skill **as an intervention**: run a real task with the skill and without it, and compare the *products*. Structural well-formedness does not predict gain — naively self-generated skills degrade performance by 1.3 points on average even when they read fine ([SoK / SkillsBench](https://arxiv.org/abs/2602.20867); [SkillGen](https://arxiv.org/abs/2605.10999) models skills exactly as interventions). The static entry lowers the *frequency* of defects; this gate is the *guarantee*.
+
+## Two questions, two deltas — existence vs improvement
+
+This gate answers **two different questions**, and conflating them is a real failure mode: an improvement loop that keeps nothing because it is secretly asking the *existence* question against a strong base model. Keep them separate.
+
+- **Existence delta** `delta_exist = with_skill − no_skill` (written `delta` where unambiguous). *"Does this skill deserve to exist?"* This is `evaluate-skill`'s Tier 2, and `improve-skill`'s **one-time entry check** plus a permanent **floor** (a kept version must never fall below no-skill).
+- **Improvement delta** `delta_step = with_edited − with_prev_accepted`. *"Did this edit make the skill better than its last accepted version?"* This is `improve-skill`'s **per-round KEEP criterion**. The no-skill baseline is computed **once** and reused; each round scores the edited skill against the **stored previous-accepted** scores — it never re-derives the keep test from `delta_exist`.
+
+Why this matters: when the base model already does the task well, `no_skill` ceilings and `delta_exist > 0` becomes impossible for *every* version — so an iterator keyed on `delta_exist` refuses all edits even though some genuinely improve the skill (`delta_step > 0`). **Improvement is measured against the artifact's own previous version, not against the floor.**
 
 ## The protocol
 
 1. **Assemble a held-out set** (source by tier, below). Real tasks, disjoint from anything used to write or diagnose the skill.
-2. **Run each task twice** — with the skill, and with no skill (the baseline) — in fresh, isolated contexts.
+2. **Run each task** in fresh, isolated contexts: with no skill (the baseline, **computed once**), and with the skill version under test. For an `improve-skill` round, also retain the *previous accepted* version's scores.
 3. **Assert on the product, not the wording.** The check compares the *artifact* a task produced against "what correct looks like," never the skill's prose or a diff. Judges must not be told which run is "with skill"; take the median of ≥2 independent judges.
-4. **Score** `baseline_pass_rate`, `with_skill_pass_rate`, `delta = with − baseline`, and `regression_count` (tasks where with-skill scored *below* baseline).
+4. **Score.** `no_skill` (baseline), `with_skill`; `delta_exist = with_skill − no_skill`; for an improvement round `delta_step = with_edited − with_prev_accepted`; and `regression_count` (tasks scoring *below* the relevant reference — no-skill for existence, previous-accepted for improvement). **Re-run each condition ≥2×** to size the noise band (below).
 5. **Check safety** on the with-skill runs: refusal-rate regression, attack-success increase, and scope-creep into judgment the engine should own ([Skill-Inject](https://arxiv.org/abs/2602.20156)).
+
+**Noise band.** An LLM judge is noisy, so a bare `delta_step > 0` can be jitter. Each condition is re-run ≥2× (judges already median ≥2); the **noise band** is the observed spread of identical-input re-runs. A KEEP requires `delta_step` to **exceed the noise band**, not merely be positive.
+
+## Discrimination check — the test set must be able to show a gain
+
+Before `improve-skill` iterates, the held-out set must *prove it can measure improvement*. Compute `no_skill` and the **current** skill's scores once, then require all of:
+
+- **Headroom** — at least one task scores **below max** for the current skill (room to improve);
+- **Discrimination** — `no_skill` is not itself at ceiling (mean `no_skill` ≲ 0.9, or some task has `no_skill < max`);
+- **Variance** — not all tasks score identically (a flat set carries no signal).
+
+If the set fails this — e.g. a strong base model aces every task so `no_skill ≈ max` — emit **`unfit_test_set`** and **halt**. Do not run a loop that is mathematically incapable of showing a gain. This is the symmetric twin of "weak tests inflate everything": **ceilinged tests hide every gain.** The remedy is *harder fixtures* (cases the base model gets wrong unaided), not more rounds.
 
 ## The gate rule
 
-The effect layer **passes** iff:
+**Existence gate** (`evaluate-skill` Tier 2; `improve-skill`'s entry check). The effect layer **passes** iff:
 
 ```
-delta > 0  AND  regression_count == 0  AND  safety_regression == false
+delta_exist > 0  AND  regression_count == 0  AND  safety_regression == false
 ```
 
-Two outcomes are **fatal and non-waivable** — there is no waiver field on this layer:
+**Improvement gate** (`improve-skill`'s per-round KEEP). An edit is kept iff:
 
-- **Negative transfer** — any single task where with-skill < baseline. A skill worse than no skill never ships, whatever the average.
+```
+delta_step > noise_band
+AND  no per-task regression vs the previous accepted version
+AND  with_edited >= no_skill on every task            (the floor is never breached)
+AND  safety_regression == false
+AND  no new blocking structural finding
+```
+
+Two outcomes are **fatal and non-waivable** on both gates — there is no waiver field on this layer:
+
+- **Negative transfer** — any single task where the version under test scores below its reference (no-skill for existence; previous-accepted, or the no-skill floor, for improvement). A skill worse than its reference never lands, whatever the average.
 - **Safety regression** — any of the safety signals worsens, even if task score rose.
 
 ## Held-out source, by tier
@@ -64,17 +95,27 @@ The **failure_taxonomy** aggregate (counts by type, over non-waived findings):
 { "underfill": 0, "overfill": 2, "wrong-layer": 0, "wrong-route": 1, "no-exit": 0, "seam-misplacement": 0 }
 ```
 
-The **effect report**:
+The **effect report** (existence fields always; improvement fields present only for `improve-skill` rounds):
 
 ```json
 {
-  "baseline_pass_rate": 0.55,
+  "no_skill_pass_rate": 0.55,
   "with_skill_pass_rate": 0.80,
-  "delta": 0.25,
+  "delta_exist": 0.25,
+  "prev_accepted_pass_rate": 0.70,
+  "delta_step": 0.10,
+  "noise_band": 0.04,
+  "floor_ok": true,
   "regression_count": 0,
   "safety_regression": false,
-  "per_task": [ { "task": "...", "baseline": 1, "with_skill": 1 } ]
+  "per_task": [ { "task": "...", "no_skill": 1, "prev_accepted": 0, "with_skill": 1 } ]
 }
+```
+
+The **discrimination** report (emitted once, before an improvement loop):
+
+```json
+{ "headroom": true, "discriminating": true, "variance": true, "fit": true }
 ```
 
 The converged **gate** object (the single thing a caller / CI reads):
@@ -84,18 +125,20 @@ The converged **gate** object (the single thing a caller / CI reads):
   "skill": "<path>",
   "tier": "scaffold | production | library",
   "evaluated_layers": ["structural", "effect"],
-  "gate_pass": "pass | fail | static_only",
+  "gate_pass": "pass | fail | static_only | unfit_test_set",
   "structural": { "findings": [], "failure_taxonomy": {}, "waived_count": 0 },
   "effect": { /* effect report, or null for scaffold smoke-only */ },
+  "discrimination": { /* discrimination report, or null outside an improvement loop */ },
   "fix_list": [ { "finding_id": "F03", "priority": 1, "hint": "..." } ]
 }
 ```
 
 `gate_pass` resolves **relative to tier**, with `evaluated_layers` disclosing what actually ran so `pass` is never overread:
 
-- **`fail`** — any non-waived blocking structural finding, OR (effect layer ran and) `delta ≤ 0` / `regression_count > 0` / `safety_regression`, OR a scaffold smoke case that broke.
+- **`fail`** — any non-waived blocking structural finding, OR (effect layer ran and) the applicable gate's fatal (`delta_exist ≤ 0` / `delta_step ≤ noise_band` / `regression_count > 0` / floor breach / `safety_regression`), OR a scaffold smoke case that broke.
 - **`static_only`** — the effect layer was *required by tier* but could not be run (no held-out set). Not a pass, not a fail.
-- **`pass`** — every layer that applies to the tier cleared: structural clean (modulo recorded waivers), and for production/library the effect layer passed; for scaffold the smoke case ran clean.
+- **`unfit_test_set`** — the held-out set failed the discrimination check (ceilinged / no headroom / no variance). Not a pass, not a fail: **halt and harden the set**. An improvement loop never keeps or reverts on an unmeasurable set.
+- **`pass`** — every layer that applies to the tier cleared: structural clean (modulo recorded waivers), and for production/library the applicable effect gate passed; for scaffold the smoke case ran clean.
 
 ## Self-reference
 

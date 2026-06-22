@@ -19,12 +19,12 @@ did it name the planted `failure_type`(s), avoid hallucinating defects, and emit
 | T1 | `01-step-by-step-thinker` | **over-fill** (deletion test passes — engine already does CoT); also welded ordering (shuffle) + no-exit → **fail**, "should this exist?" | reads fluent; must still fail it |
 | T2 | `02-csv-to-json` | **wrong-layer** (capability described as prose to improvise, not a script primitive) + **no-exit** (no check JSON is valid / row count matches) → **fail** | looks like a reasonable how-to |
 | T3 | `03-api-error-handler` | **wrong-route** (routes by output "produces robust…", not by gap) + **under-fill** (gap left to "as appropriate") → **fail** | vague-but-plausible |
-| T4 | `04-choose-cache-eviction-policy` | **none** — well-formed judgment skill (gap-route, colloquial + negative trigger, negative fences, declarative, `done_when`) → **pass** | the false-positive trap: must NOT invent blocking defects |
+| T4 | `04-choose-cache-eviction-policy` | **none** — well-formed judgment skill (gap-route, colloquial + negative trigger, negative fences, declarative, `done_when`). Correct verdict = **no blocking structural findings**, and an honest gate of `static_only` ("clean, effect unverified") or scaffold `pass` — both fine | the false-positive trap: must NOT invent blocking defects, and must not over-claim `pass` on an unrun-but-required effect layer |
 
 ## Scoring (per item, product judged blind)
 
-- **1.0** — correct gate verdict AND named the dominant planted `failure_type` (T4: pass with no blocking finding).
-- **0.5** — right direction but missed a planted type, or over-flagged one minor item on T4.
+- **1.0** — correct gate verdict AND named the dominant planted `failure_type` (T4: no blocking finding, honest `static_only`/scaffold-`pass`).
+- **0.5** — right direction but missed a planted type, or over-flagged one minor item on T4, or over-claimed bare `pass` on T4's unrun effect layer.
 - **0.0** — wrong gate verdict (passed a broken skill / failed the clean one), or hallucinated blocking defects.
 
 `delta = mean(with_skill) − mean(baseline)`. Fatal: any item where with-skill < baseline (negative

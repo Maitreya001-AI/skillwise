@@ -1,1 +1,2 @@
 round	weakest_dimension	delta	regression_count	safety_regression	change_summary	decision	commit
+0	(baseline)	-0.125	2	no	current skill vs no-skill generalist; baseline ceilings at 1.00, with-skill 0.875; T2/T3 regress via static_only-vs-fail gate misresolution	BASELINE	-

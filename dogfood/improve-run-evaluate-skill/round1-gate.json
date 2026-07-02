@@ -1,0 +1,165 @@
+{
+  "a_run_aggregates": [
+    0.8824,
+    1.0,
+    0.9412
+  ],
+  "prev_accepted_pass_rate": 0.9412,
+  "with_edited_pass_rate": 0.9412,
+  "no_skill_pass_rate": 0.8824,
+  "delta_step": 0.0,
+  "delta_exist_edited": 0.0588,
+  "noise_band": 0.1176,
+  "regressions_vs_previous": [
+    "skill-02",
+    "skill-18"
+  ],
+  "floor_breaches": [
+    "skill-02"
+  ],
+  "power": {
+    "n_tasks": 17,
+    "resolution": 0.0588,
+    "adequate": true
+  },
+  "decision": "REVERT",
+  "why": "fatal: regressions vs previous ['skill-02', 'skill-18'], floor breaches ['skill-02']",
+  "per_task": [
+    {
+      "task": "skill-01",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-02",
+      "truth": "broken",
+      "defect": "nogap",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 0.5
+    },
+    {
+      "task": "skill-03",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-04",
+      "truth": "broken",
+      "defect": "underfill",
+      "no_skill": 0.5,
+      "prev": 0,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-05",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-06",
+      "truth": "broken",
+      "defect": "overfill-order",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-07",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-08",
+      "truth": "broken",
+      "defect": "wrong-form",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-09",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-10",
+      "truth": "broken",
+      "defect": "overfill-cost",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-12",
+      "truth": "broken",
+      "defect": "no-exit",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-13",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-14",
+      "truth": "broken",
+      "defect": "nogap",
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-15",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-16",
+      "truth": "broken",
+      "defect": "underfill",
+      "no_skill": 0.5,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-17",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1.0,
+      "prev": 1,
+      "edited": 1.0
+    },
+    {
+      "task": "skill-18",
+      "truth": "broken",
+      "defect": "overfill-order",
+      "no_skill": 0.0,
+      "prev": 1,
+      "edited": 0.5
+    }
+  ]
+}

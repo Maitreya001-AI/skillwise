@@ -17,3 +17,12 @@
   no judge is told which variant is which or that an improvement loop is running.
 - Round cap: 10 (default). Bounded step: <=30 changed lines inside skills/evaluate-skill/.
 - Cost: sub-agent token counts not exposed by the harness -> cost_delta recorded as n/a (advisory).
+
+## Amendment (logged 2026-07-03, after gate run ns-2 arrived, BEFORE any a/b result)
+
+**skill-11 excluded from scoring (working n: 18 -> 17; resolution 0.0588, still adequate).**
+Reason: seed-authoring error — its SKILL.md references `scripts/pii_fields.yaml`, which was
+never created. The dangling reference is an objective, judgment-free defect (file existence),
+so the seed's ground-truth label ("good") is contaminated: careful judges who check the
+reference are penalized by the label, careless ones rewarded. Exclusion applies identically
+to all conditions (ns / a / b). Decision recorded before any variant-arm result was received.

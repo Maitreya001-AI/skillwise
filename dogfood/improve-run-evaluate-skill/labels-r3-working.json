@@ -1,0 +1,87 @@
+{
+ "skill-01": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-cost decoy: priced by irreversibility (state surgery)"
+ },
+ "skill-02": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "generic commit-style knowledge in team costume"
+ },
+ "skill-03": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS: prose fences + honest manual exit, low stakes, no guarantee claim"
+ },
+ "skill-04": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "evaluation semantics/precedence hand-waved ('usual precedence order')"
+ },
+ "skill-05": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: external mandate (audit/compliance) order"
+ },
+ "skill-06": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded doc-writing march; outlining ahead forbidden on fake grounds"
+ },
+ "skill-07": {
+  "truth": "good",
+  "defect": null,
+  "note": "org dashboard facts + artifact exit"
+ },
+ "skill-08": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "silent-drop parser, multi-field rules prose-only, no builder/verifier, vague done"
+ },
+ "skill-09": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS: prose naming law + honest manual diff exit; loud failure mode"
+ },
+ "skill-10": {
+  "truth": "broken",
+  "defect": "overfill-cost",
+  "note": "impact matrix/three summaries/self-review transcript for every PR incl. one-liners"
+ },
+ "skill-12": {
+  "truth": "broken",
+  "defect": "no-exit",
+  "note": "battlecards: format+fences fine, Quality section aspirational, no artifact check"
+ },
+ "skill-13": {
+  "truth": "good",
+  "defect": null,
+  "note": "composite with declared checks + human seam (weight override, scenario call)"
+ },
+ "skill-14": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "generic JSON prettifying any engine does"
+ },
+ "skill-15": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: mandated PRODUCT order (cell 5), drafting order explicitly free"
+ },
+ "skill-16": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "bind/filter/pagination specifics hand-waved ('standard way','usual filters')"
+ },
+ "skill-17": {
+  "truth": "good",
+  "defect": null,
+  "note": "org paging law + auditable exit"
+ },
+ "skill-18": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded 6-step upgrade march; interleaving forbidden without real dependency"
+ }
+}

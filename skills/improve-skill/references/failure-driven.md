@@ -24,10 +24,10 @@ Do not feed the loop an all-failure pool; the neighboring successes are the anch
 
 ## Guard the three failure modes
 
-- **Memory-rot** — an early wrong edit, passed the gate once, gets replayed as ground truth. Defense: the held-out gate uses *fresh* held-out tasks, never the skill's own past outputs.
+- **Memory-rot** — an early wrong edit, passed the gate once, gets replayed as ground truth. Defense: the held-out gate uses *fresh* held-out tasks, never the skill's own past outputs. (This is a distinct defense from the gate's confirmation slice, and both are needed: the slice defends against *fitting the test set*; this rule defends against *poisoned ground truth* — see effect-gate §8-4.)
 - **Sequential overfitting** — reacting one failure at a time overfits trajectory-local lessons. Defense: batch-induce over a cluster (≥3 sharing a signature) before proposing an edit; never edit from n=1.
 - **Misevolution** — accumulating patches can lower safety alignment. Defense: the safety gate runs on every failure-driven edit.
 
 ## Wiring
 
-Failure-driven mode feeds candidate edits into the *same* ratchet (`ratchet-protocol.md`) and the *same* shared measurement gate (`../../../shared/effect-gate.md`) — judged on its improvement gate. The only addition is the diagnosis front-end above. The "with vs without" contrast here is the *diagnosis* unit (failure × neighboring success), not the keep test; acceptance is `delta_step`. Output, per accepted edit: the contrastive pair that motivated it, the signature, and the held-out `delta_step` (vs the previous accepted version).
+Failure-driven mode feeds candidate edits into the *same* ratchet (`ratchet-protocol.md`) and the *same* shared measurement gate (`../references/effect-gate.md`) — judged on its improvement gate. The only addition is the diagnosis front-end above. The "with vs without" contrast here is the *diagnosis* unit (failure × neighboring success), not the keep test; acceptance is `delta_step`. Output, per accepted edit: the contrastive pair that motivated it, the signature, and the held-out `delta_step` (vs the previous accepted version).

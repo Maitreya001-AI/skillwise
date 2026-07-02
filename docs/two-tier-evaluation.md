@@ -2,6 +2,8 @@
 
 **Status:** adopted · **Scope:** `evaluate-skill`, `improve-skill`, new `shared/effect-gate.md`
 
+> **Historical note (2026-07): the section numbers and some vocabulary below predate the current `docs/THEORY.md`.** This note is decision history — the two-tier structure it records still stands — but read it with the mapping: old §3–4 ("entry lowers frequency" / the *five* tests) → new **§6** (now *six* tests — a form check was added) and **§7** (the three judgment layers); old §8 (the "measurement-protocol exemption") → new **§3 cell 4** (epistemic order) + **§4** (Control must be compiled non-skippable) — no longer an exemption, a classified case. The gate has since been rewritten under the statistical charter (new **§8**): both deltas carry noise bands, fatals must reproduce across re-runs (medians), a power check precedes any verdict, improvement loops keep a confirmation slice, and cost is part of certification. The `failure_type` vocabulary also migrated (`overfill` → `overfill-order`/`overfill-cost`, `wrong-layer` → `wrong-form`, plus `nogap`). `shared/effect-gate.md` is the source of truth throughout.
+
 > **Update (later refactor — `../shared/effect-gate.md` is the source of truth).** After this note was written, the shared gate split its single `delta` into **`delta_exist`** (existence — with-skill vs no-skill, `evaluate-skill`'s Tier 2 and `seek-skill`'s gate) and **`delta_step`** (improvement — edited vs the skill's previous version, `improve-skill`'s per-round keep), added a per-task no-skill **floor**, a reproducible **noise band**, a pre-loop **headroom check**, and a fourth `gate_pass` state **`unfit_test_set`**. Where this note says bare `delta` / `baseline_pass_rate` / "three-state `gate_pass`", read the effect-gate file. The two-tier *structure* below is unchanged; only the effect tier's internals grew.
 
 ## TL;DR
@@ -54,7 +56,7 @@ The change intentionally avoids the heavy-toolkit direction: no telemetry, no re
 
 ## Self-consistency
 
-The gate's order — change → measure → keep/revert — is a *measurement protocol*, not task orchestration, and is therefore exempt from the shuffle test (the legitimate epistemic-order exception, `docs/THEORY.md` §8). That exemption is what lets `evaluate-skill` apply this gate to skills, and to itself, without becoming a procedural skill.
+The gate's order — change → measure → keep/revert — is a *measurement protocol*, not task orchestration, and is therefore exempt from the shuffle test (the legitimate epistemic-order exception, old `docs/THEORY.md` §8). That exemption is what lets `evaluate-skill` apply this gate to skills, and to itself, without becoming a procedural skill. *(Update: the "exemption" framing is retired — the current theory classifies this order as §3 cell 4, epistemic order, and derives its non-skippability from §4's compilation requirement on Control. Same conclusion, now a theorem instance rather than a special plea; see the top note.)*
 
 ## Files changed
 

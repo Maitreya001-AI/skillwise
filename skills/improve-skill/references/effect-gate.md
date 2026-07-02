@@ -1,3 +1,7 @@
+<!-- AUTO-GENERATED COPY - DO NOT EDIT.
+     Source of truth: shared/effect-gate.md (edit there, then run scripts/sync-shared.py).
+     Materialized into references/ so a standalone skill install carries its own gate. -->
+
 # effect-gate — the shared measurement gate
 
 One implementation, one editing source. This file's home in the skillwise repo is `shared/effect-gate.md`; `scripts/sync-shared.py` materializes it (plus a do-not-edit banner) into each consuming skill's `references/` folder — `evaluate-skill`, `improve-skill`, `seek-skill` — so every skill folder is self-contained under every install path. Edit only the `shared/` source; CI re-runs the sync and fails on drift.

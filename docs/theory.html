@@ -3,396 +3,529 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Theory of Skills · 一步一步的推导</title>
+<title>从零推导：一个技能理论</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:oklch(97.6% 0.008 75);--paper-raise:oklch(99.2% 0.006 75);
     --ink:oklch(26% 0.018 55);--ink-soft:oklch(43% 0.016 55);--ink-faint:oklch(60% 0.012 58);
     --hair:oklch(89% 0.012 65);--hair-strong:oklch(82% 0.016 62);
     --accent:oklch(53% 0.155 38);--accent-ink:oklch(45% 0.16 36);--accent-wash:oklch(95% 0.028 48);
-    --ok:oklch(48% 0.11 150);--ok-wash:oklch(95% 0.03 150);
+    --ok:oklch(48% 0.11 150);--ok-wash:oklch(94.5% 0.03 150);
+    /* 四位点色：贯穿循环签名 → 原子卡 → 六格 → 双态 */
+    --sigma:oklch(56% 0.1 85);      --sigma-wash:oklch(95% 0.035 88);
+    --pi:oklch(48% 0.11 150);       --pi-wash:oklch(94.5% 0.03 150);
+    --phi:oklch(53% 0.155 38);      --phi-wash:oklch(95% 0.028 48);
+    --gamma:oklch(46% 0.06 255);    --gamma-wash:oklch(94.5% 0.02 255);
+    --mono-bg:oklch(23% 0.014 55);--mono-ink:oklch(90% 0.012 75);--mono-dim:oklch(62% 0.014 65);
     --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:24px;--s-6:32px;--s-7:48px;--s-8:64px;--s-9:96px;--s-10:140px;
     --measure:70ch;
-    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+    --mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
     --serif:"Fraunces","Songti SC","Noto Serif CJK SC",Georgia,serif;
     --sans:"Instrument Sans","PingFang SC","Hiragino Sans GB","Noto Sans CJK SC","Microsoft YaHei",system-ui,sans-serif;
-    --ease:cubic-bezier(.16,1,.3,1);
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.66;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:1.0625rem;line-height:1.68;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}
   ::selection{background:var(--accent-wash);color:var(--accent-ink)}
-  .wrap{max-width:1020px;margin-inline:auto;padding:clamp(var(--s-6),6vw,var(--s-9)) clamp(var(--s-4),5vw,var(--s-8)) var(--s-10)}
+  .wrap{max-width:1040px;margin-inline:auto;padding:clamp(var(--s-6),6vw,var(--s-9)) clamp(var(--s-4),5vw,var(--s-8)) var(--s-10)}
 
-  .mast{margin-bottom:var(--s-9)}
+  /* ---------- masthead ---------- */
+  .mast{margin-bottom:var(--s-8)}
   .eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-ink);font-weight:600;margin:0 0 var(--s-5);display:flex;align-items:center;gap:var(--s-3)}
-  .eyebrow::after{content:"";height:1px;flex:1;max-width:140px;background:linear-gradient(90deg,var(--hair-strong),transparent)}
-  h1.title{font-family:var(--serif);font-weight:500;font-size:clamp(2.3rem,6.2vw,4rem);line-height:1.04;letter-spacing:-.02em;margin:0 0 var(--s-3);max-width:20ch}
+  .eyebrow::after{content:"";height:1px;flex:1;max-width:150px;background:linear-gradient(90deg,var(--hair-strong),transparent)}
+  .eyebrow .ver{font-family:var(--mono);font-size:.72rem;background:var(--accent-wash);color:var(--accent-ink);padding:.15em .5em;border-radius:3px;letter-spacing:.05em}
+  h1.title{font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,6vw,3.9rem);line-height:1.06;letter-spacing:-.02em;margin:0 0 var(--s-4);max-width:22ch}
   h1.title em{font-style:italic;color:var(--accent-ink)}
-  .sub-en{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,2.4vw,1.3rem);color:var(--ink-faint);margin:0 0 var(--s-5)}
-  .thesis{font-size:clamp(1.1rem,2.2vw,1.35rem);color:var(--ink-soft);max-width:60ch;line-height:1.5;margin:0 0 var(--s-6)}
+  .thesis{font-size:clamp(1.08rem,2.2vw,1.32rem);color:var(--ink-soft);max-width:62ch;line-height:1.55;margin:0 0 var(--s-6)}
   .thesis b{color:var(--ink);font-weight:600}
   .mast-meta{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-5);font-size:.85rem;color:var(--ink-faint)}
   .mast-meta span{display:flex;align-items:center;gap:var(--s-2)}
-  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;flex:none}
 
+  /* ---------- layer / rail ---------- */
   .layer{display:grid;grid-template-columns:88px 1fr;gap:0 var(--s-6);padding:var(--s-7) 0;position:relative}
   .layer__rail{position:relative}
-  .layer__rail::before{content:"";position:absolute;left:23px;top:6px;bottom:calc(-1 * var(--s-7) - 6px);width:2px;background:var(--hair)}
+  .layer__rail::before{content:"";position:absolute;left:23px;top:6px;bottom:calc(-1*var(--s-7) - 6px);width:2px;background:var(--hair)}
   .layer:last-of-type .layer__rail::before{display:none}
-  .layer__num{position:sticky;top:var(--s-5);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);color:var(--accent-ink);font-family:var(--serif);font-weight:600;font-size:1.15rem;z-index:2}
-  .layer__tag{display:block;margin-top:var(--s-3);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:center;width:48px}
+  .layer__num{position:sticky;top:var(--s-5);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);color:var(--accent-ink);font-family:var(--serif);font-weight:600;font-size:1.05rem;z-index:2}
+  .layer__tag{display:block;margin-top:var(--s-3);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);text-align:center;width:48px}
   .layer__body{min-width:0;max-width:var(--measure)}
-  .layer__body h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3vw,1.85rem);line-height:1.18;letter-spacing:-.01em;margin:0 0 var(--s-1)}
+  .layer__body h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3vw,1.8rem);line-height:1.2;letter-spacing:-.01em;margin:0 0 var(--s-4)}
   .layer__body h2 em{font-style:italic;color:var(--accent-ink)}
-  .h2-en{font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 var(--s-4);font-weight:500}
+  .layer__body h3{font-family:var(--serif);font-weight:600;font-size:1.12rem;margin:var(--s-6) 0 var(--s-3);color:var(--ink)}
   .layer__body p{margin:0 0 var(--s-4)}
   .lead{font-size:1.12rem;color:var(--ink)}
-  .muted{color:var(--ink-soft);font-size:.97rem}
+  .muted{color:var(--ink-soft);font-size:.96rem}
   .hot{color:var(--accent-ink);font-weight:500}
   strong{font-weight:600}
-  code{font-family:var(--mono);font-size:.85em;background:var(--accent-wash);color:var(--accent-ink);padding:.1em .38em;border-radius:3px}
+  em{font-style:italic}
+  code{font-family:var(--mono);font-size:.84em;background:var(--accent-wash);color:var(--accent-ink);padding:.08em .38em;border-radius:3px}
 
-  figure.diagram{margin:var(--s-5) 0;max-width:var(--measure)}
-  .diagram svg{width:100%;height:auto;display:block}
-  .diagram svg text{font-family:var(--sans)}
-  figcaption{margin-top:var(--s-3);font-size:.82rem;color:var(--ink-faint);line-height:1.5}
+  /* ---------- 签名元素：循环签名面板 ---------- */
+  .loop{margin:var(--s-6) 0;border-radius:10px;overflow:hidden;border:1px solid var(--hair-strong);box-shadow:0 1px 0 oklch(100% 0 0 / .5) inset}
+  .loop__head{display:flex;justify-content:space-between;align-items:baseline;gap:var(--s-3);padding:var(--s-3) var(--s-5);background:var(--paper-raise);border-bottom:1px solid var(--hair);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .loop__head b{color:var(--accent-ink)}
+  .loop__code{background:var(--mono-bg);color:var(--mono-ink);font-family:var(--mono);font-size:.86rem;line-height:1.9;padding:var(--s-5) var(--s-5) var(--s-5) var(--s-4);overflow-x:auto}
+  .loop__line{display:flex;align-items:baseline;gap:var(--s-4);white-space:pre}
+  .loop__line .lc{flex:1 0 auto;min-width:34ch}
+  .loop__line .cm{color:var(--mono-dim)}
+  .site{flex:none;font-size:.68rem;font-family:var(--sans);font-weight:600;letter-spacing:.06em;padding:.14em .55em;border-radius:99px;line-height:1.5}
+  .site--sigma{background:var(--sigma-wash);color:var(--sigma)}
+  .site--pi{background:var(--pi-wash);color:var(--pi)}
+  .site--phi{background:var(--phi-wash);color:var(--phi)}
+  .site--gamma{background:var(--gamma-wash);color:var(--gamma)}
+  .loop__code .site{filter:none}
+  .loop__cap{padding:var(--s-3) var(--s-5);background:var(--paper-raise);border-top:1px solid var(--hair);font-size:.88rem;color:var(--ink-soft)}
+  .loop__cap b{color:var(--accent-ink)}
 
-  .atoms{margin:var(--s-5) 0 0}
-  .atom{display:grid;grid-template-columns:auto 1fr;gap:0 var(--s-4);padding:var(--s-4) 0;border-top:1px solid var(--hair);align-items:baseline}
-  .atom:first-child{border-top:none}
-  .atom__id{font-family:var(--serif);font-size:1.35rem;color:var(--accent);line-height:1;font-weight:500;grid-row:1/span 2}
-  .atom__h{margin:0;font-size:1.04rem;font-weight:600}
-  .atom__h .gap{color:var(--accent-ink)}
-  .atom__d{margin:var(--s-1) 0 0;font-size:.94rem;color:var(--ink-soft);line-height:1.55}
+  /* ---------- 原子卡 ---------- */
+  .atoms{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s-4);margin:var(--s-5) 0}
+  .atom{border:1px solid var(--hair-strong);border-radius:8px;padding:var(--s-4) var(--s-5);background:var(--paper-raise);border-top:3px solid var(--hair-strong)}
+  .atom--sigma{border-top-color:var(--sigma)} .atom--pi{border-top-color:var(--pi)}
+  .atom--phi{border-top-color:var(--phi)}     .atom--gamma{border-top-color:var(--gamma)}
+  .atom__site{font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;margin-bottom:var(--s-1)}
+  .atom--sigma .atom__site{color:var(--sigma)} .atom--pi .atom__site{color:var(--pi)}
+  .atom--phi .atom__site{color:var(--phi)}     .atom--gamma .atom__site{color:var(--gamma)}
+  .atom__name{font-family:var(--serif);font-weight:600;font-size:1.08rem;margin:0 0 var(--s-2)}
+  .atom__d{font-size:.9rem;color:var(--ink-soft);margin:0}
 
-  .tbl{margin:var(--s-5) 0;max-width:var(--measure);border:1px solid var(--hair);border-radius:6px;overflow:hidden;font-size:.93rem}
-  .tbl table{width:100%;border-collapse:collapse}
-  .tbl th{background:var(--paper-raise);text-align:left;font-weight:600;font-size:.8rem;letter-spacing:.03em;color:var(--ink-soft);padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--hair-strong)}
-  .tbl td{padding:var(--s-3) var(--s-4);border-bottom:1px solid var(--hair);vertical-align:top}
-  .tbl tr:last-child td{border-bottom:none}
-  .tbl td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
-  .tbl .na{color:var(--ink-faint);font-style:italic}
+  /* ---------- 表格 ---------- */
+  .tbl{width:100%;border-collapse:collapse;margin:var(--s-5) 0;font-size:.92rem}
+  .tbl th{font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);text-align:left;font-weight:600;padding:0 var(--s-3) var(--s-2) 0;border-bottom:2px solid var(--hair-strong)}
+  .tbl td{padding:var(--s-3) var(--s-3) var(--s-3) 0;border-bottom:1px solid var(--hair);vertical-align:top;color:var(--ink-soft)}
+  .tbl td:first-child{color:var(--ink);font-weight:500;white-space:nowrap}
+  .tbl .cell-tag{display:inline-block;font-family:var(--mono);font-size:.7rem;font-weight:600;padding:.1em .5em;border-radius:99px;margin-right:.4em}
+  .tag-sigma{background:var(--sigma-wash);color:var(--sigma)} .tag-pi{background:var(--pi-wash);color:var(--pi)}
+  .tag-phi{background:var(--phi-wash);color:var(--phi)}       .tag-gamma{background:var(--gamma-wash);color:var(--gamma)}
+  .tbl .fix{color:var(--accent-ink);font-weight:600;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase}
 
-  .stamp{margin:var(--s-5) 0;padding:var(--s-4) var(--s-5);background:var(--accent-wash);border-radius:4px;position:relative;max-width:var(--measure)}
-  .stamp::before{content:"";position:absolute;left:0;top:var(--s-3);bottom:var(--s-3);width:3px;background:var(--accent)}
-  .stamp p{margin:0;font-size:1rem;color:var(--accent-ink);font-weight:500;line-height:1.5}
-  .stamp.green{background:var(--ok-wash)}
-  .stamp.green::before{background:var(--ok)}
-  .stamp.green p{color:var(--ok)}
-  .stamp.counter{background:var(--paper-raise);border:1px solid var(--hair-strong)}
-  .stamp.counter::before{background:var(--ink-faint)}
-  .stamp.counter p{color:var(--ink-soft);font-weight:400}
-  .stamp.counter b{color:var(--ink)}
+  /* ---------- 引块 / 盒 ---------- */
+  .pull{margin:var(--s-6) 0;padding:var(--s-4) var(--s-5);border-left:3px solid var(--accent);background:var(--accent-wash);border-radius:0 8px 8px 0;font-family:var(--serif);font-size:1.08rem;line-height:1.6}
+  .pull .accent{color:var(--accent-ink);font-weight:600}
+  .box{margin:var(--s-5) 0;padding:var(--s-4) var(--s-5);border:1px solid var(--hair-strong);border-radius:8px;background:var(--paper-raise);font-size:.94rem}
+  .box__label{font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;font-weight:600;color:var(--accent-ink);margin-bottom:var(--s-2)}
+  .box--ok .box__label{color:var(--ok)} .box--ok{border-color:oklch(80% 0.05 150)}
+  .box p{margin:0 0 var(--s-3)} .box p:last-child{margin:0}
 
-  ol.tests{margin:var(--s-4) 0;padding-left:0;list-style:none;counter-reset:s;max-width:var(--measure)}
-  ol.tests li{position:relative;padding:var(--s-3) 0 var(--s-3) var(--s-7);border-top:1px solid var(--hair)}
-  ol.tests li:first-child{border-top:none}
-  ol.tests li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:var(--s-3);width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:.82rem;font-weight:600}
-  ol.tests li b{color:var(--ink)}
-  .tag-inline{font-size:.82rem;color:var(--ink-faint);font-style:italic}
+  /* ---------- L 阶梯 ---------- */
+  .ladder{display:grid;gap:var(--s-3);margin:var(--s-5) 0}
+  .rung{display:grid;grid-template-columns:64px 1fr;gap:var(--s-4);align-items:start;border:1px solid var(--hair-strong);border-radius:8px;padding:var(--s-4) var(--s-5);background:var(--paper-raise)}
+  .rung__lv{font-family:var(--mono);font-weight:600;font-size:1rem;color:var(--ink-faint);padding-top:.1em}
+  .rung--l2 .rung__lv{color:var(--accent-ink)} .rung--l2{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-wash)}
+  .rung h4{margin:0 0 var(--s-1);font-family:var(--serif);font-size:1.02rem;font-weight:600}
+  .rung p{margin:0;font-size:.9rem;color:var(--ink-soft)}
 
-  .compose{margin:var(--s-5) 0;display:grid;gap:var(--s-3);max-width:var(--measure)}
-  .eq{padding:var(--s-3) var(--s-4);background:var(--paper-raise);border:1px solid var(--hair);border-radius:5px}
-  .eq__name{font-weight:600;font-size:.98rem}
-  .eq__body{margin-top:var(--s-1);font-size:1.0rem;display:flex;flex-wrap:wrap;gap:var(--s-2);align-items:center}
-  .eq__body .op{color:var(--accent);font-family:var(--mono);font-weight:600}
+  /* ---------- 宪章列表 ---------- */
+  ol.charter{margin:var(--s-5) 0;padding:0;list-style:none;counter-reset:ch;display:grid;gap:var(--s-3)}
+  ol.charter li{counter-increment:ch;display:grid;grid-template-columns:40px 1fr;gap:var(--s-4);padding:var(--s-4) var(--s-5);border:1px solid var(--hair-strong);border-radius:8px;background:var(--paper-raise);font-size:.94rem;color:var(--ink-soft)}
+  ol.charter li::before{content:counter(ch);font-family:var(--serif);font-weight:600;font-size:1.3rem;color:var(--accent-ink);line-height:1.1}
+  ol.charter b{color:var(--ink)}
+  ol.charter code{white-space:nowrap}
 
-  .divs{margin:var(--s-5) 0;display:grid;gap:var(--s-4);max-width:var(--measure)}
-  .dv{border:1px solid var(--hair);border-radius:6px;padding:var(--s-4) var(--s-5);background:var(--paper-raise)}
-  .dv__k{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);font-weight:600;margin:0 0 var(--s-2)}
-  .dv h4{margin:0 0 var(--s-2);font-size:1.05rem;font-weight:600;font-family:var(--serif)}
-  .dv p{margin:0;font-size:.94rem;color:var(--ink-soft);line-height:1.55}
+  ul.plain{margin:var(--s-4) 0;padding-left:1.2em;color:var(--ink-soft)}
+  ul.plain li{margin-bottom:var(--s-2)}
+  ul.plain b{color:var(--ink)}
 
-  .coda{margin:var(--s-10) 0 var(--s-7);padding:var(--s-7) 0;border-top:2px solid var(--accent);max-width:var(--measure)}
-  .coda .eyebrow{margin-bottom:var(--s-4)}
-  .coda p{font-family:var(--serif);font-size:clamp(1.25rem,3vw,1.7rem);line-height:1.4;color:var(--ink);font-weight:500}
-  .coda p b{color:var(--accent-ink)}
+  /* ---------- 参考 ---------- */
+  .refs{margin-top:var(--s-4)}
+  .refs h3{font-family:var(--serif);font-size:1.08rem;margin:var(--s-6) 0 var(--s-3)}
+  .refs .tier-note{font-size:.8rem;color:var(--ink-faint);margin:0 0 var(--s-3)}
+  .refs ul{margin:0;padding-left:1.2em;font-size:.88rem;color:var(--ink-soft)}
+  .refs li{margin-bottom:var(--s-2)}
+  .refs b{color:var(--ink);font-weight:600}
+  .refs .sec{font-size:.72rem;color:var(--accent-ink);font-weight:600;letter-spacing:.04em}
 
-  .refs{margin-top:var(--s-9);padding-top:var(--s-6);border-top:1px solid var(--hair-strong);max-width:var(--measure)}
-  .refs h3{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:0 0 var(--s-2)}
-  .refs p.note{font-size:.85rem;color:var(--ink-faint);margin:0 0 var(--s-4)}
-  .refs ul{list-style:none;padding:0;margin:0;font-size:.88rem}
-  .refs li{padding:var(--s-2) 0;border-top:1px solid var(--hair);line-height:1.5}
-  .refs li:first-child{border-top:none}
-  .refs a{color:var(--accent-ink);text-decoration:none;border-bottom:1px solid var(--accent-wash)}
-  .refs a:hover{border-bottom-color:var(--accent)}
-  .refs b{color:var(--ink)}
+  /* ---------- coda / footer ---------- */
+  .coda{margin:var(--s-9) 0 var(--s-7);padding:var(--s-7) var(--s-6);border:2px solid var(--rule,var(--ink));border-radius:12px;background:var(--paper-raise);text-align:center}
+  .coda .eyebrow{justify-content:center}.coda .eyebrow::after{display:none}
+  .coda p.one{font-family:var(--serif);font-size:clamp(1.2rem,2.8vw,1.6rem);line-height:1.5;max-width:34ch;margin:0 auto var(--s-3);color:var(--ink)}
+  .coda p.one b{color:var(--accent-ink)}
+  .coda p.axis{font-size:.92rem;color:var(--ink-soft);max-width:58ch;margin:0 auto}
+  footer.fin{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-6);padding-top:var(--s-5);border-top:1px solid var(--hair-strong);font-size:.78rem;color:var(--ink-faint)}
 
-  .fin{margin-top:var(--s-8);padding-top:var(--s-5);border-top:1px solid var(--hair);font-size:.8rem;color:var(--ink-faint);line-height:1.6}
-
-  .reveal{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
   .reveal.in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.layer__num{position:static}}
-  @media(max-width:680px){
-    .layer{grid-template-columns:52px 1fr;gap:0 var(--s-4)}
-    .layer__rail::before{left:13px}.layer__num{width:30px;height:30px;font-size:.9rem}.layer__tag{width:30px;font-size:.55rem}
-    .tbl{font-size:.85rem}.tbl td,.tbl th{padding:var(--s-2) var(--s-3)}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  @media(max-width:720px){
+    .layer{grid-template-columns:1fr;gap:var(--s-3)}
+    .layer__rail{display:flex;align-items:center;gap:var(--s-3)}
+    .layer__rail::before{display:none}
+    .layer__num{position:static;width:40px;height:40px;font-size:.9rem}
+    .layer__tag{margin:0;width:auto;text-align:left}
+    .atoms{grid-template-columns:1fr}
+    .loop__line .lc{min-width:0}
+    .loop__line{flex-wrap:wrap;gap:var(--s-1) var(--s-3)}
+    .tbl{display:block;overflow-x:auto}
   }
 </style>
 </head>
 <body>
 <main class="wrap">
 
+  <!-- ================= MASTHEAD ================= -->
   <header class="mast reveal in">
-    <p class="eyebrow">A Theory of Skills · 自包含推导</p>
-    <h1 class="title">技能该如何分类、写什么、<em>怎么写、怎么进化</em></h1>
-    <p class="sub-en">What an agent skill is — derived from one premise, step by step</p>
-    <p class="thesis">从一个前提出发——<b>引擎是免费的</b>——分类、内容、正确性、进化逐段推出,合成<b>一条轴</b>:留给引擎多少。链的末端,自然掉出四个用来处理 skill 的 skill。所有经验性结论都标注了可查的出处。</p>
+    <p class="eyebrow">从零推导 · A Theory of Skills</p>
+    <h1 class="title">四原子不是数出来的，<br>是从<em>循环签名</em>里读出来的</h1>
+    <p class="thesis">
+      不预设任何既有分类。从"技能物理上是什么"开始：介入面 → 引擎公理 → 循环位点 → 四原子 → 双态 → 正确性 → 判定认识论 → 统计宪章 → 演化。
+      <b>每一节只使用前面各节已经建立的东西。</b>
+    </p>
     <div class="mast-meta">
-      <span><i class="dot"></i>四原子 · MECE</span>
-      <span><i class="dot"></i>入口降概率 / 出口才保证</span>
-      <span><i class="dot"></i>评 · 写 · 寻 · 改</span>
-      <span><i class="dot"></i>抽取 + 失败驱动两个前端</span>
+      <span><i class="dot"></i>穷尽性：结构事实，非概念断言</span>
+      <span><i class="dot"></i>顺序合法性：六格推导</span>
+      <span><i class="dot"></i>persona：卸载规则</span>
+      <span><i class="dot"></i>参考分三层，不混排</span>
     </div>
   </header>
 
-  <!-- 0 -->
+  <!-- ================= 00 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">0</span><span class="layer__tag">前提</span></div>
+    <div class="layer__rail"><span class="layer__num">00</span><span class="layer__tag">介入面</span></div>
     <div class="layer__body">
-      <h2>引擎是免费的</h2>
-      <p class="h2-en">The premise — the engine is free</p>
-      <p class="lead">一台现代基座 agent 已经自带通用 symbol 层推理引擎:读 schema、写代码、把意图映射成操作、从残缺输入恢复、编排多步工作——外加截止训练时的通用知识。称这台引擎的存在为<strong>命题 A</strong>。它是免费的。</p>
-      <p>一个 skill 挣得存在的唯一方式,是补上这台免费引擎在某个具体任务上<span class="hot">缺</span>的东西。于是整个设计问题坍缩成一句:</p>
-      <p class="lead" style="font-family:var(--serif);font-style:italic;color:var(--accent-ink)">它,到底能缺什么?</p>
+      <h2>对象与介入面：只有两条通道</h2>
+      <p class="lead">一个<strong>基座 agent</strong> = 语言引擎 + 工具循环；给定任务，产出一个<strong>产物</strong>。理论关心的最终量只有一个：产物的质量。一个<strong>技能</strong>是按需载入的包：一段陈述性文本（SKILL.md）加可选的可执行物。</p>
+      <p>技能影响 agent 的物理通道恰好有两条：<strong>通道 T（文本）</strong>——注入引擎所条件化的上下文 token；<strong>通道 X（可执行）</strong>——向环境提供可调用或可强制运行的程序。没有第三条。</p>
+      <p class="muted">技能的任何主张——"提供知识""保证正确""改进流程"——最终必须兑现为 T 中的一段文本或 X 中的一个程序。后文的穷尽性结论，<span class="hot">相对于这个介入面</span>成立（§11）。</p>
     </div>
   </section>
 
-  <!-- 1 -->
+  <!-- ================= 01 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">1</span><span class="layer__tag">分类</span></div>
+    <div class="layer__rail"><span class="layer__num">01</span><span class="layer__tag">公理</span></div>
     <div class="layer__body">
-      <h2>缺口的种类,<em>就是 skill 的种类</em></h2>
-      <p class="h2-en">Classification — the kinds of gap</p>
-      <p>把引擎已有的列全,缺口只剩四种。MECE,且对齐知识层 / symbol 层。</p>
-      <figure class="diagram">
-        <svg viewBox="0 0 760 300" role="img" aria-label="引擎实心,四缺口虚线,过程被划除">
-          <rect x="40" y="20" width="680" height="54" rx="4" fill="oklch(26% 0.018 55)"/>
-          <text x="60" y="44" fill="oklch(97.6% 0.008 75)" font-size="15" font-weight="600">基座引擎 · 命题 A</text>
-          <text x="60" y="63" fill="oklch(80% 0.02 70)" font-size="12">通用推理 · 读 schema · 写代码 · 映射意图 · 编排　(免费)</text>
-          <text x="392" y="98" fill="oklch(60% 0.012 58)" font-size="12">它缺什么？ ↓</text>
-          <g font-size="13.5" font-weight="600">
-            <rect x="40" y="116" width="150" height="86" rx="4" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.6" stroke-dasharray="5 4"/>
-            <text x="56" y="142" fill="oklch(45% 0.16 36)">① 知识</text><text x="56" y="164" fill="oklch(43% 0.016 55)" font-size="12" font-weight="400">缺事实</text><text x="56" y="190" fill="oklch(60% 0.012 58)" font-size="11" font-weight="400">知识层</text>
-            <rect x="206" y="116" width="150" height="86" rx="4" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.6" stroke-dasharray="5 4"/>
-            <text x="222" y="142" fill="oklch(45% 0.16 36)">② 能力</text><text x="222" y="164" fill="oklch(43% 0.016 55)" font-size="12" font-weight="400">缺 primitive</text><text x="222" y="190" fill="oklch(60% 0.012 58)" font-size="11" font-weight="400">symbol 层</text>
-            <rect x="372" y="116" width="150" height="86" rx="4" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.6" stroke-dasharray="5 4"/>
-            <text x="388" y="142" fill="oklch(45% 0.16 36)">③ 判断</text><text x="388" y="164" fill="oklch(43% 0.016 55)" font-size="12" font-weight="400">缺准绳</text><text x="388" y="190" fill="oklch(60% 0.012 58)" font-size="11" font-weight="400">知识层</text>
-            <rect x="538" y="116" width="150" height="86" rx="4" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.6" stroke-dasharray="5 4"/>
-            <text x="554" y="142" fill="oklch(45% 0.16 36)">④ 控制</text><text x="554" y="164" fill="oklch(43% 0.016 55)" font-size="12" font-weight="400">缺循环</text><text x="554" y="190" fill="oklch(60% 0.012 58)" font-size="11" font-weight="400">循环治理</text>
-          </g>
-          <g>
-            <rect x="206" y="232" width="316" height="44" rx="4" fill="none" stroke="oklch(70% 0.02 58)" stroke-width="1.4" stroke-dasharray="2 4"/>
-            <text x="364" y="252" fill="oklch(60% 0.012 58)" font-size="13" text-anchor="middle">过程 / 工作流</text>
-            <text x="364" y="269" fill="oklch(60% 0.012 58)" font-size="11" text-anchor="middle">编排是命题 A,免费 —— 不是缺口</text>
-            <line x1="206" y1="232" x2="522" y2="276" stroke="oklch(53% 0.155 38)" stroke-width="2"/>
-          </g>
-        </svg>
-        <figcaption>第五个"过程"格被划除:供应一个不存在的缺口,还和引擎默认循环抢方向盘。本文把这个失败称作 <strong>skill inertia</strong>。它的经验证据是直接的——人工策展的 skill 平均提升 16.2 个百分点,而随手自生成的 skill 反而拉低 1.3 个百分点 [SoK / SkillsBench]。</figcaption>
-      </figure>
-      <div class="stamp counter">
-        <p>公平起见,最强的相反观点值得一听。一篇综述主张<b>"操作过程"本身值得外化</b>,因为很多 agent 错误是过程级的(跳步、错序、过早终止)[Externalization 综述]。调和很精确:那篇综述把技能拆成三件——操作过程、<b>决策启发</b>、<b>规范约束</b>;后两者正是本文的判断与控制原子。分歧只在第一件:把字面步骤序列冻死会引发 inertia,而把<b>停止条件与决策启发</b>编码下来,既抓住真实的过程知识、又不焊死顺序。过程不是一种类型;"过程"里真正算缺口的部分,是判断和控制。</p>
+      <h2>引擎公理：强、<em>不稳</em>、且世界比它大</h2>
+      <p><strong>公理 A（能力）。</strong>引擎具备通用推理：读 schema、写代码、分解任务、编排多步工作，携带截止期前的通用知识。这是 Newell 1982 理性原则所要求、迟到四十年才就位的通用符号层引擎。</p>
+      <p><strong>公理 A′（近似理性）。</strong>引擎对自身能力的<strong>执行</strong>不可靠，且失效系统性、可具名：① 跳过自验；② 过早终止 / 惯性续跑；③ 静默即兴——缺操作时当场编造私有的、未审查的实现且不报告；④ 机械误执行在规模下放大成系统性错误。这是 Simon 有限理性在引擎上的形态。</p>
+      <div class="box">
+        <div class="box__label">经验锚 · 与一个巧合</div>
+        <p>人工策划技能平均 <b>+16.2pp</b>、自动生成技能 <b>−1.3pp</b>（SkillsBench）；过程式技能诱发 skill inertia——提前终止、跳过本会做的验证（CTA）。公理对 A / A′ 恰好是 <b>Newell–Simon</b> 这对合作者：理性原则，由有限理性回火。</p>
       </div>
-      <p class="muted">真实 skill 大多是<strong>复合体</strong>:</p>
-      <div class="compose">
-        <div class="eq"><div class="eq__name">领域 / 本体型</div><div class="eq__body"><span>知识</span><span class="op">+</span><span>能力</span><span class="op">+</span><span>判断</span></div></div>
-        <div class="eq"><div class="eq__name">抽取 / 管线型</div><div class="eq__body"><span>控制</span><span class="op">+</span><span>判断</span><span class="op">+</span><span>能力</span></div></div>
-      </div>
-      <p class="muted">复合体一分解,human checkpoint 该插哪就显形——它落在<span class="hot">判断分量与控制 / 能力分量的交界</span>上。</p>
+      <p><strong>公理 B（任务特异性）。</strong>任务来自具体领域；领域的事实、判据、操作不完全在引擎内。</p>
+      <p class="muted">A 说引擎强，A′ 说它强而不稳，B 说世界比它大。三条公理共同决定：技能有存在的空间（B）、有不该占的空间（A）、有一类特殊的必须占的空间（A′）。</p>
     </div>
   </section>
 
-  <!-- 2 -->
+  <!-- ================= 02 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">2</span><span class="layer__tag">写什么</span></div>
+    <div class="layer__rail"><span class="layer__num">02</span><span class="layer__tag">缺口空间</span></div>
     <div class="layer__body">
-      <h2>描述世界,<em>把"怎么做"留给引擎</em></h2>
-      <p class="h2-en">Content — describe the world</p>
-      <p>一份好 skill 只描述三样,然后闭嘴:agent 操作的<strong>世界</strong>(概念/类型/关系)、这个世界里<strong>什么算对</strong>(约束/不变式/语义信号)、用户<strong>大概想要什么</strong>(词汇/场景)。流程不是忘了写——那是引擎的活,它按上下文适配,比任何冻死的脚本都强。把 skill 写成"正确输出的属性"、而非"产出的过程",也是公认的实践 [Agent Skills best practices]。</p>
-      <p class="muted">面向领域复合体的一套默认骨架,从"agent 用一个元素时走的推断链路"反推而来:Vocabulary + Purpose(该用这类元素吗)、Contrast(易混时才要)、Structure(字段取什么)、Relationships(怎么挂)、Rendering(可视时才要)、<strong>Rules</strong>(硬不变式)、Heuristics(软经验)。</p>
-      <div class="stamp"><p><strong>Rules 段有第二条命:</strong>每条硬不变式既是该做成 <strong>primitive</strong> 的候选,也是<strong>出口该检查</strong>的候选。Heuristics 段不生成任何机械物——那里是判断,判断归引擎。</p></div>
-    </div>
-  </section>
+      <h2>从循环签名<em>读出</em>四原子</h2>
+      <p><strong>为什么不从概念出发。</strong>一条诱人的推导路径是从"任何目标导向的生产过程"这个概念里分析缺口空间。但概念是开放的，概念分析原则上封不了口——由它得到的穷尽性只能是断言。奠基对象必须是不开放的东西。</p>
+      <p class="lead"><strong>正确的奠基对象：循环。</strong>基座 agent 的循环不是开放概念，是一段有限的、可检视的具体结构——</p>
 
-  <!-- 3 -->
-  <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">3</span><span class="layer__tag">隐藏缺口</span></div>
-    <div class="layer__body">
-      <h2>承重句拆成两个命题,<em>bug 住在裂缝里</em></h2>
-      <p class="h2-en">The hidden gap — primitives & a semantic exit</p>
-      <p>"你描述知识,引擎补实现"——偷偷打包了两个命题:<strong>A 引擎存在</strong>(有通用推理能力,真)与 <strong>B 原语现成</strong>(要操作的领域原语已摆在那,常假)。</p>
-      <p>B 失效时,引擎有能力、没素材,当场<strong>即兴造一个用完即逝、无人审查的私有原语</strong>——这层就是 bug 的住所。典型:规模一大引擎临时写脚本批量生成,函数按位置填参,标签值掉进备注字段;skill 看不见脚本、位置参数没名字提醒、校验器只问"格式合不合法"——三道关卡同时沉默。轨迹原样编译进 skill 的抽取器正会复制这种坑 [AXIS]。</p>
-      <figure class="diagram">
-        <svg viewBox="0 0 760 200" role="img" aria-label="入口给原语降概率,出口嗅语义才是保证">
-          <rect x="30" y="30" width="330" height="140" rx="6" fill="var(--paper-raise)" stroke="oklch(82% 0.016 62)"/>
-          <text x="50" y="58" font-size="14" font-weight="600" fill="oklch(45% 0.16 36)">入口 · 给 primitive</text>
-          <text x="50" y="80" font-size="12" fill="oklch(43% 0.016 55)">命名字段构造器,让错值</text><text x="50" y="98" font-size="12" fill="oklch(43% 0.016 55)">在语法上没有位置可落</text>
-          <text x="50" y="128" font-size="12.5" font-weight="600" fill="oklch(53% 0.155 38)">概率手段</text><text x="50" y="148" font-size="11.5" fill="oklch(60% 0.012 58)">只降频率,不是保证</text>
-          <rect x="400" y="30" width="330" height="140" rx="6" fill="var(--ok-wash)" stroke="oklch(48% 0.11 150)"/>
-          <text x="420" y="58" font-size="14" font-weight="600" fill="oklch(40% 0.11 150)">出口 · 嗅语义</text>
-          <text x="420" y="80" font-size="12" fill="oklch(43% 0.016 55)">校验"像不像话",对照</text><text x="420" y="98" font-size="12" fill="oklch(43% 0.016 55)">"正确长什么样",非"合不合法"</text>
-          <text x="420" y="128" font-size="12.5" font-weight="600" fill="oklch(40% 0.11 150)">唯一保证</text><text x="420" y="148" font-size="11.5" fill="oklch(60% 0.012 58)">对错误来源免疫</text>
-        </svg>
-        <figcaption><strong>primitive 粒度 = 洗牌测试:</strong>打乱顺序还能完成=词汇(对);只在你的顺序下能用=焊死了流程(溢填)。太粗吞掉语义判断,太细要配说明书。正确区间:恰好封一类机械正确性,一丝不封语义判断。脚本进 <code>scripts/</code> 仍是 symbol 层原语——正文可陈述其存在,不可过程式铺陈调用流程。</figcaption>
+      <!-- 签名元素：循环签名 -->
+      <figure class="loop" role="img" aria-label="基座 agent 循环的四个承重位点">
+        <div class="loop__head"><span>THE LOOP SIGNATURE · 循环签名</span><span>参数位是<b>数出来</b>的</span></div>
+        <div class="loop__code">
+          <div class="loop__line"><span class="lc">context ← 任务 + 技能</span></div>
+          <div class="loop__line"><span class="lc">while not done:</span></div>
+          <div class="loop__line"><span class="lc">    output ← engine(context)   <span class="cm"># 生成：条件于上下文</span></span><span class="site site--sigma">Σ · Knowledge</span></div>
+          <div class="loop__line"><span class="lc">    result ← execute(调用)      <span class="cm"># 行动：使用可用原语</span></span><span class="site site--pi">Π · Capability</span></div>
+          <div class="loop__line"><span class="lc">    检验(output / 产物)          <span class="cm"># 验证</span></span><span class="site site--phi">φ · Judgment</span></div>
+          <div class="loop__line"><span class="lc">    续 / 停 / 分支 决策           <span class="cm"># 调度</span></span><span class="site site--gamma">γ · Control</span></div>
+        </div>
+        <div class="loop__cap">§0 已限定技能只经 T / X 介入；注入物<b>成为承重的位置</b>只能是这个签名的参数位——恰有四个。穷尽性从概念断言变成<b>结构事实</b>。</div>
       </figure>
+
+      <div class="atoms">
+        <div class="atom atom--sigma"><div class="atom__site">Σ · 生成位</div><p class="atom__name">Knowledge</p><p class="atom__d">缺一个事实——时新的、私有的、领域的。作为引擎条件化的世界模型承重。</p></div>
+        <div class="atom atom--pi"><div class="atom__site">Π · 行动位</div><p class="atom__name">Capability</p><p class="atom__d">缺一个可靠原语——否则引擎静默即兴（A′-3）。作为行动时可调用的操作承重。</p></div>
+        <div class="atom atom--phi"><div class="atom__site">φ · 验证位</div><p class="atom__name">Judgment</p><p class="atom__d">缺一条"对 / 好 / 禁止"的判据。作为对产物施加的检验承重。</p></div>
+        <div class="atom atom--gamma"><div class="atom__site">γ · 调度位</div><p class="atom__name">Control</p><p class="atom__d">缺一条非默认的过程规范——门、终止绑定、角色隔离、检查点。作为对续/停/分支的治理承重。</p></div>
+      </div>
+
+      <div class="pull"><span class="accent">定义（原子的个体化）：</span>一个原子由其内容<em>成为承重的循环位点</em>个体化。这是定义，不是有待证明的主张——原子的种类数等于位点数。</div>
+
+      <h3>功能层的执照</h3>
+      <p>机制层上一切注入物都是 token，凭什么四位点划分合法？这正是 Newell 1982 的原始论证：一个描述层级合法，当且仅当系统能在该层自洽描述。且这里不止自洽，而且<strong>必需</strong>——存在只有该划分才能命名的可观察失效：把判据写成事实（<span class="hot">错层</span>），内容在生成位被读过一遍、在验证位从未被执行，产物携带缺陷通过一切格式检查。抹平位点区分，就失去了命名这类失效的语言。</p>
+
+      <h3>归约攻击的定义性消解</h3>
+      <p><em>"Judgment 是关于好坏的 Knowledge。"</em>句子层面可以改写，但原子由位点个体化：同一句话在生成位是背景知识，在验证位是出口判据——说 Judgment 是 Knowledge，如同说函数的返回类型就是它的参数类型，因为两者都是类型。范畴错误。</p>
+      <p><em>"done_when 是判据，所以 Control ⊂ Judgment。"</em>谓词 P 的<strong>内容</strong>属 φ；"循环在 P 成立前不得终止、且此检查不可跳过"是调度位上的约束，属 γ。<strong>Judgment 供谓词，Control 供绑定。</strong>谓词无绑定 = 知而不行（A′-1 原样发作）；绑定无谓词 = 空转。二者正交。</p>
+      <p><strong>Control 的特殊地位：</strong>其余三原子填<strong>认知缺口</strong>（内容缺失，由 B 保证空间）；Control 填<strong>执行缺口</strong>——内容引擎往往推得出，但不会可靠执行（A′）。即使领域引擎全懂，γ 类介入仍必要。</p>
+
+      <div class="box">
+        <div class="box__label">三角验证 · 四个互不相识的传统</div>
+        <p>内容侧：注入的句子必属 <b>is / can / ought</b> 三模态之一（休谟的 is/ought，Searle 的适应方向，Ryle 的 knowing-that / knowing-how，von Wright 的道义逻辑；ought 按作用对象二分即 φ 与 γ）。形式侧：MDP 的 (S, A, R, π)、Russell–Norvig 的任务环境、认知科学的 <b>TOTE 单元</b>（1960——test 即 φ、operate 即 Π、exit 即 γ）、SoK 的四元组 S=(C, π, T, R)，各自独立切出同构划分。三角验证不是证明，但四个传统同落一处，不是巧合的形状。</p>
+      </div>
+      <div class="box box--ok">
+        <div class="box__label">可证伪预测 · 理论主动交出自己的死法</div>
+        <p>对任何高效技能做逐段消融：每个承重片段（删除后行为 delta 下降的）都应可归入四位点之一；出现<b>"承重但不可归位"</b>的残片，即为反例。该实验可直接排入评估工具的日程。</p>
+      </div>
     </div>
   </section>
 
-  <!-- 4 -->
+  <!-- ================= 03 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">4</span><span class="layer__tag">正确性</span></div>
+    <div class="layer__rail"><span class="layer__num">03</span><span class="layer__tag">顺序</span></div>
     <div class="layer__body">
-      <h2>一把能跑的尺 ——<em>对 = 恰好补上缺口</em></h2>
-      <p class="h2-en">Correctness — a ruler you can run</p>
-      <p class="lead">不漏、不溢、补在对的层、出口能验。五个测试各抓一种错并报出错名。</p>
-      <ol class="tests">
-        <li><b>删除测试 —— 有没有缺口。</b>拿掉 skill 还过 → 它在供应命题 A,本就不该存在(纯溢填)。<span class="tag-inline">先问该不该有,再问对不对。</span></li>
-        <li><b>即兴测试 —— 漏没漏。</b>跑典型任务,数引擎为缺口即兴写了多少。&gt;0 = 漏填。</li>
-        <li><b>洗牌测试 —— 溢没溢。</b>primitive 打乱仍可完成=词汇;只在你的次序下成立=过程焊死。</li>
-        <li><b>惯性-成本测试 —— 溢的另一面。</b>已能过的任务 with/without 对比,更长更贵无增益 → inertia。</li>
-        <li><b>出口测试 —— 可不可保证。</b>有没有对照"正确长什么样"的语义检查?没有 → 判不对。</li>
+      <h2>没有 Procedure 原子，顺序有<em>六个合法居所</em></h2>
+      <p><strong>排除的推导。</strong>一个 procedure（固定步骤序列）是一个<strong>具体策略</strong>——γ 所约束空间中的一个点。策略合成正是公理 A 定义为引擎所有的东西；A′ 指出弱点在策略<strong>治理</strong>而非<strong>合成</strong>。所以 γ 位的缺陷是规范性的（过程必须满足什么），不是生成性的（序列长什么样）。供给固定策略是在填一个不存在的缺口，同时替换掉引擎随语境自适应的合成——惯性成本由此而来。这是 Kowalski <em>"Algorithm = Logic + Control"</em> 的技能版。</p>
+      <div class="pull"><span class="accent">顺序合法性定理：</span>一条顺序约束属于技能，<em>当且仅当它可还原为某个原子的内容</em>。由 §2 穷尽性，"顺序能住进哪些格"是有限枚举——闭合性是继承来的推论。</div>
+
+      <table class="tbl">
+        <thead><tr><th>格</th><th>宿主</th><th>顺序的性质</th><th>例</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><span class="cell-tag tag-sigma">Σ</span></td><td><b>依赖顺序</b>：因果 / 数据依赖的世界事实</td><td>无法分类尚未挖掘出的模式；含时限</td></tr>
+          <tr><td>2</td><td><span class="cell-tag tag-sigma">Σ</span></td><td><b>不可逆顺序</b>：风险事实</td><td>迁移前必须备份——逆操作不存在</td></tr>
+          <tr><td>3</td><td><span class="cell-tag tag-gamma">γ</span></td><td><b>外部强制顺序</b>：道义 / 合规规范</td><td>采集数据前必须取得同意</td></tr>
+          <tr><td>4</td><td><span class="cell-tag tag-gamma">γ</span></td><td><b>认识论顺序</b>：测量 / 理解协议</td><td>先改动、后测量、再取舍</td></tr>
+          <tr><td>5</td><td><span class="cell-tag tag-phi">φ</span></td><td><b>产物序</b>：产物本身必须呈现的顺序</td><td>文档章节序、握手先于传数据——出口可检的产物性质，根本不是过程顺序</td></tr>
+          <tr><td>6</td><td><span class="cell-tag tag-pi">Π</span></td><td><b>编译序</b>：焊在原语内部的顺序</td><td>脚本内部步骤对编排空间不可见——该焊的顺序就编译掉，永远合法</td></tr>
+        </tbody>
+      </table>
+
+      <p>闭合性靠推导而非清单，差别是实质的：清单靠枚举，不知道自己漏了什么；格靠推导，把洞自己找出来——第 5、6 格正是仅靠直觉枚举时最容易漏掉的两格。第 5 格还携带一条设计律——大量被写成 Step 1/2/3 的东西，正确形态是一条 φ（"按此顺序做"改写为"产物须呈现此序"，出口可检，引擎爱怎么达成怎么达成）。第 6 格解释了为什么 <code>scripts/</code> 内部的顺序从不触发 shuffle test。血统：偏序规划——排序约束只由因果理由生成，其余保持无序。</p>
+      <div class="box">
+        <div class="box__label">shuffle test · 一般形式</div>
+        <p>打乱技能给出的元素，观察哪里失败；<b>每一处失败必须能追溯到六格之一</b>；追溯不到的顺序即焊死的 procedure。推论：新遇到的顺序类型被<b>分类</b>而非<b>追加</b>——教学序 / 认知负荷序落入第 4 格，或编译为渐进披露的物理结构（第 6 格）。有推导的闭合性带预测力，这是它优于清单的证明。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">04</span><span class="layer__tag">双态</span></div>
+    <div class="layer__body">
+      <h2>陈述<em>告知</em>，编译<em>强制</em></h2>
+      <p>每个原子有两种实现形态，分别落在 §0 的两条通道上（认知科学原型：ACT-R 的知识编译 / 程序化；哲学祖先：Ryle 的 knowing-that / knowing-how）：</p>
+      <table class="tbl">
+        <thead><tr><th>原子</th><th>陈述态（通道 T）</th><th>编译态（通道 X）</th></tr></thead>
+        <tbody>
+          <tr><td><span class="cell-tag tag-sigma">Σ</span> Knowledge</td><td>正文陈述的事实 / 路由指引</td><td>查询脚本、数据接口</td></tr>
+          <tr><td><span class="cell-tag tag-pi">Π</span> Capability</td><td>描述一个操作怎么做</td><td>交付一个具名字段的原语</td></tr>
+          <tr><td><span class="cell-tag tag-phi">φ</span> Judgment</td><td>陈述判据</td><td>语义验证器</td></tr>
+          <tr><td><span class="cell-tag tag-gamma">γ</span> Control</td><td>陈述协议</td><td>不可绕过的钩子 / CI 门</td></tr>
+        </tbody>
+      </table>
+      <p><strong>定理（告知与强制）。</strong>陈述态的兑现依赖引擎的执行，继承 A′ 的全部失效；编译态独立于引擎当次状态。推论：凡是必须<strong>成立</strong>（而不仅是被<strong>知道</strong>）的正确性，须在 A′ 失效发作的位点具备编译态——</p>
+      <ul class="plain">
+        <li><b>行动位（A′-3/4）→ Capability 必须编译：</b>具名字段原语让错值无槽可落（"使非法状态不可表示"；防错设计同理）。描述"参数依次是……"是陈述态，仍会被位置调用绕过。</li>
+        <li><b>验证位（A′-1）→ Judgment 必须在出口编译：</b>验证器检查<b>产物</b>而非过程，对产物如何生成免疫。这是端到端论证（Saltzer / Reed / Clark 1984）的技能形态——任何入口只塑造生产路径，<span class="hot">唯有对产物的编译态检验与生产路径无关</span>。出口是保证，入口只降频率。</li>
+        <li><b>调度位（A′-1/2）→ Control 的门必须编译为不可跳过。</b></li>
+      </ul>
+      <div class="box">
+        <div class="box__label">定理 · 编译的代价</div>
+        <p>编译买到可强制性，付出可移植性与维护成本（脚本绑定运行时；跨 agent 分发时陈述态是唯一通货）。"机械规则写成散文而非原语"不是无条件缺陷，而是这条权衡曲线上的一个点。评估时给权衡定价，不给形态定罪。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 05 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">05</span><span class="layer__tag">正文</span></div>
+    <div class="layer__body">
+      <h2>正文写四件事，然后<em>停笔</em></h2>
+      <ul class="plain">
+        <li><b>Σ</b>：世界——概念、类型、关系、结构；含常被遗漏的子类——<b>关于用户的 Σ</b>（意图词表、场景映射）。</li>
+        <li><b>φ</b>：什么算对——约束、不变量、语义信号。</li>
+        <li><b>Π 的存在性</b>：声明有哪些原语（"用 <code>scripts/build</code>，它强制具名字段"）——声明存在是 Σ；叙述调用顺序不属于六格，被 §3 排除（该焊的序编译进原语，第 6 格）。</li>
+        <li><b>γ</b>：过程约束——done_when 谓词 + 绑定、角色隔离、检查点——以约束形式，不以步骤形式。</li>
+      </ul>
+      <p>引擎的份额（怎么走、先后、如何组合）全部删除——不是遗漏，是 §3 的直接要求。<strong>路由的推导：</strong>载入决策由引擎读元数据做出，所以 description 必须编码<strong>缺口签名</strong>（"当 X 缺失时"），而不仅是产出描述——路由信息本质上是<span class="hot">关于技能自身的 Σ</span>。</p>
+
+      <h3>persona 卸载规则</h3>
+      <p>"你是 X 领域专家"占据不了任何循环位点：命名不了产物性质（无 φ 可检）、供给不了事实或原语、约束不了过程——只能<strong>不可核算地扰动</strong>四位点。它在理论自己的测试下结构性失败，不需要禁令：无从出口检验、无从归类缺口、有界步长的改进循环对它无从下手。<strong>它不是非法，是不可审计。</strong></p>
+      <div class="pull"><span class="accent">规则：</span>persona 是<em>未兑现的原子内容压缩包</em>——作为写作启发合法（先写"像资深审稿人一样"，再逼问自己"审稿人的哪几条判据"），作为出厂内容非法：装运前必须兑现为显式原子内容（"expert"通常在隐式抬高 φ）。</div>
+      <div class="box">
+        <div class="box__label">经验锚 · arXiv 2311.10054（EMNLP 2024 Findings）</div>
+        <p>162 角色 × 4 模型家族 × 2410 道事实题的系统评估：系统提示中加 persona 相比无 persona 对照<b>不提升表现</b>，且效应随角色的性别、类型、领域漂移。同一论文 2023 年初版摘要曾报告一致提升、2024 年扩展后<b>结论翻转</b>——恰是"不可核算扰动"的活体演示。逃生门保持开着：若某条 persona 真在 L2 上稳定产出 delta，理论的回应不是接纳而是<b>翻译</b>——找出它实际扰动的位点，把那内容直接陈述出来。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 06 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">06</span><span class="layer__tag">正确性</span></div>
+    <div class="layer__body">
+      <h2>正确 = <em>恰好填充</em>，失效恰有六种</h2>
+      <p>技能正确 ⇔ 恰好填充其目标缺口：不欠填、不过填、形态正确、有编译态出口。每种失效一个测试：</p>
+      <table class="tbl">
+        <thead><tr><th>失效</th><th>含义</th><th>测试</th></tr></thead>
+        <tbody>
+          <tr><td>无缺口</td><td>填的是公理 A 已供给的</td><td><b>deletion</b>：撤掉技能跑典型任务，仍过 → 不该存在</td></tr>
+          <tr><td>欠填</td><td>缺口有残留，引擎仍在即兴</td><td><b>improvisation</b>：数被迫即兴的缺口承载物，&gt;0 → 欠填</td></tr>
+          <tr><td>过填 · 顺序</td><td>焊入不可归入六格的顺序</td><td><b>shuffle</b>（§3 一般形式）</td></tr>
+          <tr><td>过填 · 成本</td><td>引擎本已胜任处强加成本</td><td><b>inertia-cost</b>：带 / 不带对比，更贵且无增益</td></tr>
+          <tr><td>错形态</td><td>该编译处只有陈述（或反之）</td><td><b>形态检查</b>：对照 §4 三个必须编译位</td></tr>
+          <tr><td>无出口</td><td>缺编译态 φ</td><td><b>exit</b>：有无对产物的语义检验</td></tr>
+        </tbody>
+      </table>
+      <p class="muted">deletion 与带/不带对比的方法论身份是 Pearl 意义上的<b>介入</b>：do(有技能) vs do(无技能)，最小的受控实验。</p>
+      <div class="box">
+        <div class="box__label">seam 定理 · 复合技能</div>
+        <p>已声明的 φ 有覆盖边界；边界之外是<b>剩余裁决</b>（机器不可判的语义质量、taste）。γ 必须在 φ 覆盖用尽处停机等人——人拥有的不是 judgment 整体（那会取消 Judgment 原子的意义），而是<b>已声明判据之外的残差</b>。推论：对机器不可判的维度，正确做法是<b>声明不判</b>并路由到 seam，而不是模拟一个判。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 07 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">07</span><span class="layer__tag">认识论</span></div>
+    <div class="layer__body">
+      <h2>判定分三层，"独立"意味着<em>去相关</em></h2>
+      <p>以上测试由谁执行、可信度如何？需要独立推导，因为执行者本身是一个引擎。</p>
+      <div class="ladder">
+        <div class="rung"><div class="rung__lv">L0</div><div><h4>机械判定</h4><p>语法、schema、frontmatter——可靠但只触及形态。入口：降低机械缺陷频率。</p></div></div>
+        <div class="rung"><div class="rung__lv">L1</div><div><h4>阅读预测</h4><p>LLM 读文本预测效用——无引导 judge 二选一挑更好的技能，准确率 <b>46.4%</b>，不优于掷硬币；仅三个文本信号有效度证据（失效机制编码、可执行具体性、高危黑名单）。须标注为预测。</p></div></div>
+        <div class="rung rung--l2"><div class="rung__lv">L2</div><div><h4>行为实验 —— 唯一的认证层</h4><p>带 / 不带技能在留出任务上对比产物。技能是对循环的介入；介入的效应只能由受控的结果对比认证。</p></div></div>
+      </div>
+      <p><strong>推论（测试的层归属）。</strong>deletion、improvisation、inertia-cost 的定义含"跑任务"——<strong>L2 原生</strong>；静态阅读只是它们的 L1 预测版，结论不得冒充 L2。shuffle 的结构半、exit、形态检查文本可查，属 L0/L1 中相对可靠的部分。</p>
+      <div class="pull"><span class="accent">定理（相关 judge 的聚合）：</span>中位数压掉采样方差，压不掉共享偏差；同模型同提示的 judge 误差高度相关，第二个 judge 的边际信息趋近于零。这是孔多塞陪审团定理的独立性条件。故"独立"必须定义为<em>去相关</em>：不同模型，或信息隔离。角色隔离是同一定理在演化循环里的形态。</div>
+    </div>
+  </section>
+
+  <!-- ================= 08 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">08</span><span class="layer__tag">统计宪章</span></div>
+    <div class="layer__body">
+      <h2>门里的每一次比较都是<em>统计推断</em></h2>
+      <p>L2 的测量者（LLM judge + 随机引擎）是噪声源。每一次比较必须声明噪声模型与错误方向：</p>
+      <ol class="charter">
+        <li><span><b>效应须越过噪声。</b>任何进入取舍的 delta 都要一条噪声带；带的估计量须与重复次数解耦（分位数或标准差倍数，不用随次数增长的极差）。无带的 <code>delta &gt; 0</code> 放行抖动；无带的 <code>delta ≤ 0 → 杀</code> 误杀低功效集合上的真技能。</span></li>
+        <li><span><b>致命项须可复现。</b>逐任务零容忍 × 噪声 judge × 集合规模 = 必然误杀：单任务假回归率 p，n 任务至少一次假致命的概率 <code>1−(1−p)ⁿ</code>（族错误率）。"负迁移致命"限定为<b>在重复运行的中位数上仍成立</b>的回归。</span></li>
+        <li><span><b>裁决前先验功效。</b>n 个 pass/fail 任务的 delta 最小刻度 1/n；小于分辨率的效应<b>不可表示</b>。集合无力回答所问问题时，路由到"集合不适格"，绝不折算为技能的失败或成功。四任务集只能出提示性结论。（Neyman–Pearson）</span></li>
+        <li><span><b>单调性只对被测集合成立。</b>固定集反复迭代 + 循环可见逐任务结果 = 自适应过拟合（可复用留出集问题，Dwork et al. 2015）。认证"已改进"须依赖循环从未接触的确认切片，或集合轮换 / 封顶轮数。与"不用技能自身历史产出当留出集"是两道独立防线。</span></li>
+        <li><span><b>成本属于认证层。</b>§6 的惯性成本以成本为构成要件；若认证层不测 token / 时延，则理论自己定义的一种过填在唯一可靠的判定层上不可测——不融贯。</span></li>
+        <li><span><b>两个 delta，两个问题。</b>存在性（vs 无技能）一次判定 + 永久地板；改进性（vs 上一接受版）每轮判定。混同二者的循环在强基座上必然停摆——地板永远是护栏，不是每轮的横杆。</span></li>
       </ol>
-      <p class="muted">复合体多一条<strong>接缝测试</strong>:human checkpoint 是否落在判断与控制 / 能力的交界?每型还各有特征失败与出口闸门(知识=新鲜度;能力=测试+合理性;判断=plausible;控制=<code>done_when</code>)。</p>
-      <div class="stamp green"><p><strong>别靠读 skill 来筛它。</strong>文本顺滑度已与真实效用脱钩:让一个 LLM 评委判"两个 skill 哪个更好",无引导时只有 46.4% 命中、劣于掷硬币,且常挑那个读起来更顺却更差的 [SkillLens]。所以——把 skill 当成一种<strong>干预</strong>、对照无-skill 基线来判 [SkillGen];取 ≥2 个独立评委的中位。三个读得出、又确实预测效用的信号:是否编码失败机制(<code>如果 X 则 Y 否则 Z</code>)、指令是否可执行而非含糊、是否有专门的高风险黑名单。这些要<strong>类型化</strong>地用——对知识/判断型,"有工作流"不是优点。</p></div>
     </div>
   </section>
 
-  <!-- 5 -->
+  <!-- ================= 09 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">5</span><span class="layer__tag">进化</span></div>
+    <div class="layer__rail"><span class="layer__num">09</span><span class="layer__tag">演化</span></div>
     <div class="layer__body">
-      <h2>门后单调变好</h2>
-      <p class="h2-en">Evolution — monotone improvement behind a gate</p>
-      <p>要让 skill 随经验变好且不退化、不漂移,控制门优先于一切聪明的归纳法。</p>
-      <div class="tbl"><table>
-        <thead><tr><th>门</th><th>做什么</th><th>出处</th></tr></thead>
+      <h2>无门的自编辑不是演化，是<em>受控退化</em></h2>
+      <p>技能须随经验改进；公理 A′ 决定自编辑不可信（经验锚：自生成技能平均劣化）。总纲是 Campbell 的盲变异-选择保留：<strong>变异自由，保留过门。</strong></p>
+      <ul class="plain">
+        <li><b>提议-检验（默认拒绝）</b>：每次编辑过 §8 的改进门才落地。</li>
+        <li><b>有界步长</b>：单次改动量封顶（文本学习率），禁止毁灭性单步重写。</li>
+        <li><b>负知识持久化</b>：被拒编辑连同分数落差入缓冲，不得重提死路（禁忌搜索的 tabu list）。</li>
+        <li><b>批式归纳</b>：对 ≥3 条共享签名的轨迹簇归纳，不对单条失败反应。</li>
+        <li><b>对比对为学习单元</b>：失败 × 邻近成功——孤立失败无锚点，全失败池产出最差技能；无邻近成功的失败簇提示缺<b>新</b>能力，路由到抽取而非编辑。</li>
+        <li><b>角色隔离</b>：抽取者、执行者、评估者不得互继偏差（§7 去相关的循环形态）。</li>
+        <li><b>安全入损失</b>：拒答率、攻击成功率、越界与任务分同门——技能文件是真实攻击面。</li>
+        <li><b>抽取的陷阱</b>：把轨迹编译进技能 = 固化一条具体策略 = §3 排除的 procedure。抽取蒸馏<b>模式</b>（哪个位点的缺口反复出现），不是<b>路径</b>——分类前端即问：反复缺席的是事实（→Σ）、被反复即兴的操作（→Π）、反复出现的"好的样子"（→φ）、还是非默认循环（→γ）。</li>
+      </ul>
+      <p class="muted">三个演化失效对应三道防线：记忆腐化 → 留出任务保持新鲜、永不取自技能自身历史产出；序贯过拟合 → 批式归纳；错向演化 → 安全门逐编辑运行。</p>
+    </div>
+  </section>
+
+  <!-- ================= 10 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">10</span><span class="layer__tag">元技能</span></div>
+    <div class="layer__body">
+      <h2>理论施加于自身，落出<em>四个元技能</em></h2>
+      <table class="tbl">
+        <thead><tr><th>元技能</th><th>是什么</th><th>原子构成</th></tr></thead>
         <tbody>
-          <tr><td>批量归纳</td><td>对多样轨迹池整体归纳,而非逐条反应(后者过拟合轨迹局部教训)</td><td>Trace2Skill</td></tr>
-          <tr><td>验证门</td><td>每次写入须在 held-out 上严格更优,否则丢弃 —— 把无条件自编辑变成 propose-and-test</td><td>SkillOpt</td></tr>
-          <tr><td>有界步长</td><td>文本学习率,禁单步破坏性重写</td><td>SkillOpt</td></tr>
-          <tr><td>负知识缓冲</td><td>被拒编辑连同它造成的掉分一起记下,不再重犯</td><td>SkillOpt</td></tr>
-          <tr><td>经验饮食</td><td>别用全失败池;成功/失败配比分领域调</td><td>SkillLens</td></tr>
-          <tr><td>角色分离</td><td>抽取≠执行≠评估;信息隔离的验证器无真值也能给可靠信号</td><td>CoEvoSkills</td></tr>
-          <tr><td>安全损失</td><td>拒答率/攻击成功率/越权判断进同一个门;skill 文件是真实攻击面</td><td>Skill-Inject</td></tr>
-          <tr><td>破局</td><td>停滞时允许一次越预算的探索性重写,过门才留</td><td>—</td></tr>
+          <tr><td>evaluate</td><td>§6 的尺 + §7/§8 的门（内核：出口验证器）</td><td>Judgment + Capability</td></tr>
+          <tr><td>write</td><td>尺反向运行——按 §2–§6 手工作成，含 persona 卸载检查</td><td>Judgment + Knowledge</td></tr>
+          <tr><td>seek</td><td>write 由语料驱动 + 存在性门（§9 抽取）</td><td>Control + Judgment + Capability</td></tr>
+          <tr><td>improve</td><td>尺置于门后循环（§8 改进 delta + §9 棘轮）</td><td>Control + Judgment + Capability</td></tr>
         </tbody>
-      </table></div>
+      </table>
+      <p class="muted">各自服从其编码的理论：全部以约束而非步进书写；improve / seek 只声明 done_when + 角色隔离 + 门，任务迭代留给引擎，<b>门协议编译为不可跳过</b>——顺序合法性由 §3 第 4 格给出，不可跳过性由 §4 对 Control 的编译要求给出。</p>
     </div>
   </section>
 
-  <!-- 6 -->
+  <!-- ================= 11 ================= -->
   <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">6</span><span class="layer__tag">合流</span></div>
+    <div class="layer__rail"><span class="layer__num">11</span><span class="layer__tag">边界</span></div>
     <div class="layer__body">
-      <h2>一条轴 ——<em>留给引擎多少</em></h2>
-      <p class="h2-en">Confluence — one axis</p>
-      <p class="lead"><strong>分类</strong>看它补哪个缺口 → <strong>写</strong>就是把缺口在对的层填满、把引擎已有的削尽 → <strong>隐藏缺口</strong>靠 primitive 入口 + 语义出口兜住 → <strong>正确性</strong>用五测+接缝判定 → <strong>进化</strong>让它在门后单调爬升。一条链,一条轴。</p>
+      <h2>已知边界：<em>承诺</em>，不是欠账</h2>
+      <p>理论到此完备但不封闭。三条边界，论证到头了，如实划界：</p>
+      <ul class="plain">
+        <li><b>架构索引性。</b>§2 的穷尽性是<b>相对于当前介入面与循环结构的定理</b>，不是永恒真理。若标准演化出新介入通道（技能设置采样参数、路由模型、生成子 agent 拓扑），即出现新参数位，元组须重推。§2 的消融实验是对这条边界的常设审计。</li>
+        <li><b>泛化不可解，只可诚实定界。</b>有限留出集上的门只认证到该集合的分布；§8-4 收窄过拟合的窗口，不消灭它。理论的上限是声明边界。</li>
+        <li><b>部分 φ 机器不可判。</b>某些语义质量维度不存在编译态——正确的技能行为是声明不判并路由到 seam；"哪些维度属于此类"随模型能力移动，理论只能要求技能显式声明自己的划法。</li>
+      </ul>
     </div>
   </section>
 
-  <!-- 7 -->
-  <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">7</span><span class="layer__tag">四件套</span></div>
-    <div class="layer__body">
-      <h2>四个处理 skill 的 skill,<em>从链尾掉出来</em></h2>
-      <p class="h2-en">Four meta-skills, one kernel</p>
-      <div class="tbl"><table>
-        <thead><tr><th>skill</th><th>它是链的哪一截</th><th>类型</th></tr></thead>
-        <tbody>
-          <tr><td>evaluate</td><td>§4 那把尺本身(内核)</td><td>判断+能力</td></tr>
-          <tr><td>write</td><td>§4 把尺倒过来跑(手写)</td><td>判断+知识</td></tr>
-          <tr><td>seek</td><td>write 由语料驱动(从经验发现)</td><td>控制+判断+能力</td></tr>
-          <tr><td>improve</td><td>§5 把尺放进带门的循环</td><td>控制+判断+能力</td></tr>
-        </tbody>
-      </table></div>
-      <figure class="diagram">
-        <svg viewBox="0 0 760 170" role="img" aria-label="evaluate 是内核,其余三个都调它">
-          <rect x="300" y="65" width="160" height="44" rx="22" fill="oklch(26% 0.018 55)"/>
-          <text x="380" y="92" fill="oklch(97.6% 0.008 75)" font-size="14" font-weight="600" text-anchor="middle">evaluate</text>
-          <rect x="40" y="38" width="150" height="36" rx="18" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.5"/><text x="115" y="61" fill="oklch(45% 0.16 36)" font-size="13" font-weight="600" text-anchor="middle">write</text>
-          <rect x="40" y="100" width="150" height="36" rx="18" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.5"/><text x="115" y="123" fill="oklch(45% 0.16 36)" font-size="13" font-weight="600" text-anchor="middle">seek</text>
-          <rect x="570" y="69" width="150" height="36" rx="18" fill="none" stroke="oklch(53% 0.155 38)" stroke-width="1.5"/><text x="645" y="92" fill="oklch(45% 0.16 36)" font-size="13" font-weight="600" text-anchor="middle">improve</text>
-          <line x1="190" y1="56" x2="298" y2="80" stroke="oklch(70% 0.02 58)" stroke-width="1.5" marker-end="url(#a)"/>
-          <line x1="190" y1="118" x2="298" y2="94" stroke="oklch(70% 0.02 58)" stroke-width="1.5" marker-end="url(#a)"/>
-          <line x1="570" y1="87" x2="464" y2="87" stroke="oklch(70% 0.02 58)" stroke-width="1.5" marker-end="url(#a)"/>
-          <text x="250" y="58" fill="oklch(60% 0.012 58)" font-size="10.5" text-anchor="middle">出口闸门</text>
-          <text x="517" y="78" fill="oklch(60% 0.012 58)" font-size="10.5" text-anchor="middle">验证门</text>
-          <text x="380" y="142" fill="oklch(60% 0.012 58)" font-size="11.5" text-anchor="middle">写 = 尺的逆运算　·　寻 = 写由语料驱动　·　改 = 尺套上循环</text>
-          <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="oklch(70% 0.02 58)" stroke-width="1.4"/></marker></defs>
-        </svg>
-      </figure>
-      <div class="stamp"><p><strong>自指约束:</strong>这四个 skill 本身都遵守它们所编码的理论——都声明式、不写 Step 1/2/3;evaluate 配机械检查 primitive(入口)却把判决交给语义读(出口);improve / seek 只声明 <code>done_when</code> + 角色分离 + 门,把任务迭代留给引擎。</p></div>
-    </div>
-  </section>
-
-  <!-- 8 -->
-  <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">8</span><span class="layer__tag">修订</span></div>
-    <div class="layer__body">
-      <h2>两条让规则不自相矛盾的修订</h2>
-      <p class="h2-en">Two refinements</p>
-      <div class="divs">
-        <div class="dv"><p class="dv__k">修订一</p><h4>洗牌测试豁免"测量协议顺序"</h4><p>验证门的核心循环"改 → 测 → 保留/回滚",顺序是<strong>认知性的</strong>——你无法在不"改完再测"的前提下设门。区分:任务编排顺序(钉死 → inertia,禁)vs 测量协议顺序(改后才能测,合法)。后者不算溢填。</p></div>
-        <div class="dv"><p class="dv__k">修订二</p><h4>"迭代留给引擎"对控制型加限定</h4><p>agent 不会可靠地自我设门——这正是自生成 skill 会拉低表现的原因。所以:<strong>任务迭代留给引擎,但门协议必须具体、不可跳过。</strong>这正是修订一的推论:门协议就是那条合法的测量协议顺序。</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 9 -->
-  <section class="layer reveal">
-    <div class="layer__rail"><span class="layer__num">9</span><span class="layer__tag">两个前端</span></div>
-    <div class="layer__body">
-      <h2>抽取(寻)与失败驱动</h2>
-      <p class="h2-en">Two front-ends — extraction & failure-driven evolution</p>
-      <p>§5 管"改一个已存在的 skill"。两个前端决定 skill <em>从哪来</em>。生命周期三段:经验生成 → 技能抽取 → 技能消费 [SkillLens]。</p>
-      <p class="muted"><strong>自进化需要什么信息(最小集):</strong>① 完整轨迹(含引擎即兴造的私有原语,§3 的缺口住那);② 每条轨迹的结果信号;③ 对比——失败配一个最近邻成功(孤立失败无锚点);④ 一个与挖掘池不相交的 held-out 集(让它成为优化而非蒸馏);⑤ 当前 skill 状态(改而非重发现);⑥ 被拒编辑缓冲;⑦ 语义验证器;⑧ 安全信号;⑨ 经验饮食旋钮。</p>
-      <div class="stamp"><p><strong>抽取(寻)= write 由语料驱动 + 分类前端 + held-out 门。</strong>必避的坑:把<em>轨迹</em>(动作序列)原样编译进 skill = 溢填。抽取要蒸馏的是<em>模式</em>(复发的是哪个缺口),不是<em>路径</em>。循环:批量归纳挖复发模式 [Trace2Skill] → <strong>先分类缺口</strong>(缺事实→知识/误造操作→能力命名原语/判错好→判断/非默认循环→控制) → 按型物化 → 注入后 with/without 过门 [MUSE-Autoskill] → 去重保护、越种子语料的扩展也走同一道门 [SkillX]。</p></div>
-      <div class="stamp"><p><strong>失败驱动 = improve 把诊断源换成对比失败对。</strong>单位是<strong>对比对</strong>(失败 × 最近邻成功),不是孤立失败:定位"成功里有、失败里没有"的那个行为差 [SkillGen]。抽签名 <code>触发 → 征兆 → 成功走了而失败没走的分支</code>,喂进同一道棘轮与门。若某失败簇根本没有邻近成功 → 该 skill 缺新能力,转抽取,而非编辑 [CODESKILL]。</p></div>
-      <div class="stamp counter"><p>三个自进化失败模式正当化了这些门:<b>记忆腐烂</b>(早期错编辑被当真值回放 → held-out 用新鲜任务)、<b>顺序过拟合</b>(逐条反应过拟合 → 按失败簇 ≥3 批量归纳,绝不 n=1)、<b>误进化</b>(累积补丁拉低安全对齐 → 安全门每次都跑)。无门的自我修改不是进化,是受控的退化。</p></div>
-    </div>
-  </section>
-
+  <!-- ================= 12 / CODA ================= -->
   <section class="coda reveal">
-    <p class="eyebrow">一句话</p>
-    <p><b>分类</b>看它补哪个缺口,<b>写</b>是把缺口在对的层填满、把引擎已有的削尽,<b>正确性</b>在出口处验,<b>进化</b>在门后单调爬升。其余关于 skill 的"好",都是这一句的影子。</p>
+    <p class="eyebrow">§12 · 汇流</p>
+    <p class="one">只在循环的缺陷<b>位点</b>介入，<br>以公理 A′ 的失效所要求的<b>形态</b>介入，<br>且仅在 <b>L2</b> 认证介入。</p>
+    <p class="axis">一条轴贯穿始终——<b>留给引擎多少</b>：分类按位点，书写按恰好填充，形态按失效位置，判定按认识论层级，演化按统计宪章。每条规则都是这条轴在一个环节上的投影。</p>
   </section>
 
-  <div class="refs reveal">
-    <h3>References</h3>
-    <p class="note">所有链接已核实可达。凡某结论在二手来源里更易读到的,链接该来源并写明原始工作。</p>
-    <ul>
-      <li><b>SoK: Agentic Skills — Beyond Tool Use in LLM Agents.</b> <a href="https://arxiv.org/abs/2602.20867">arxiv.org/abs/2602.20867</a> — 技能作为程序性记忆;报告 SkillsBench(策展 +16.2pp / 自生成 −1.3pp)。</li>
-      <li><b>Externalization in LLM Agents: A Unified Review.</b> <a href="https://arxiv.org/abs/2604.08224">arxiv.org/abs/2604.08224</a> — 关于外化"过程"的相反观点;技能专长的三件构成。</li>
-      <li><b>SkillGen: Verified Inference-Time Agent Skill Synthesis.</b> <a href="https://arxiv.org/abs/2605.10999">arxiv.org/abs/2605.10999</a> — 对成功/失败轨迹的对比归纳;把技能建模为干预来验证净效果。</li>
-      <li><b>SkillOpt: Executive Strategy for Self-Evolving Agent Skills.</b> <a href="https://arxiv.org/abs/2605.23904">arxiv.org/abs/2605.23904</a> — 验证门、文本学习率、被拒编辑缓冲。</li>
-      <li><b>SkillLens</b>(SkillOpt 姊妹篇)。综述:<a href="https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7">dev.to deep-dive</a> — 抽取者≠目标;成功/失败饮食;无引导评委 46.4% 命中。</li>
-      <li><b>CoEvoSkills / EvoSkills: Self-Evolving Agent Skills via Co-Evolutionary Verification.</b> <a href="https://arxiv.org/abs/2604.01687">arxiv.org/abs/2604.01687</a> · <a href="https://evoskills.net">evoskills.net</a> — 信息隔离的代理验证器;多文件技能包;SkillsBench 32%→75%。</li>
-      <li><b>Trace2Skill.</b> <a href="https://www.emergentmind.com/topics/trace2skill">emergentmind.com/topics/trace2skill</a> — 从轨迹批量归纳出可迁移技能。</li>
-      <li><b>MUSE-Autoskill.</b> <a href="https://arxiv.org/abs/2605.27366">arxiv.org/abs/2605.27366</a> — 两阶段 with/without 技能生成协议。</li>
-      <li><b>SkillX: Automatically Constructing Skill Knowledge Bases.</b> <a href="https://arxiv.org/abs/2604.04804">arxiv.org/abs/2604.04804</a> · <a href="https://github.com/zjunlp/SkillX">github.com/zjunlp/SkillX</a> — 迭代精炼与探索性技能扩展。</li>
-      <li><b>AXIS: API-First LLM-Based Agents.</b> <a href="https://arxiv.org/abs/2409.17140">arxiv.org/abs/2409.17140</a> — 轨迹原样的技能生成(回放坑)。</li>
-      <li><b>SkillClaw: Let Skills Evolve Collectively.</b> <a href="https://arxiv.org/abs/2604.08377">arxiv.org/abs/2604.08377</a> — 集体演化;同时分析成功与失败。</li>
-      <li><b>CODESKILL: Learning Self-Evolving Skills for Coding Agents.</b> <a href="https://arxiv.org/abs/2605.25430">arxiv.org/abs/2605.25430</a> — 用失败配对学习技能修订。</li>
-      <li><b>Skill-Inject: Measuring Agent Vulnerability to Skill File Attacks.</b> <a href="https://arxiv.org/abs/2602.20156">arxiv.org/abs/2602.20156</a> · <a href="https://www.skill-inject.com">skill-inject.com</a> — 技能文件作为攻击面(攻击成功率可达约 80%)。</li>
-      <li><b>Automated Skill Discovery through Exploration and Iterative Feedback.</b> <a href="https://arxiv.org/abs/2506.04287">arxiv.org/abs/2506.04287</a> — 基于探索的轨迹合成。</li>
-      <li><b>Anthropic Agent Skills — best practices.</b> <a href="https://agentskills.io/skill-creation/best-practices">agentskills.io/skill-creation/best-practices</a> — SKILL.md 标准;把抽取扎根在真实任务上下文里。</li>
-    </ul>
-  </div>
+  <!-- ================= 参考 ================= -->
+  <section class="layer reveal">
+    <div class="layer__rail"><span class="layer__num">※</span><span class="layer__tag">参考</span></div>
+    <div class="layer__body refs">
+      <h2>参考：按可信度谱系<em>分三层</em>，不混排</h2>
 
-  <footer class="fin">
-    A Theory of Skills · 自包含推导 · MIT License<br>
-    经验性结论均标注可查出处;命名性术语(如 skill inertia)为本文术语,非主张前人首创。
-  </footer>
+      <h3>经典理论层 <span class="sec">奠基文献 · 给推导以血统</span></h3>
+      <ul>
+        <li><b>Newell (1982)</b> The Knowledge Level —— 公理 A；功能层描述的合法性执照（§2）</li>
+        <li><b>Simon (1955)</b> 有限理性 —— 公理 A′ 的血统（§1）</li>
+        <li><b>Ryle (1949)</b> The Concept of Mind —— knowing-that / knowing-how；双态的哲学祖先（§2, §4）</li>
+        <li><b>Hume (1739)</b> is / ought 之别；<b>Searle (1979/1983)</b> 适应方向；<b>von Wright (1951)</b> 道义逻辑（§2, §3）</li>
+        <li><b>Miller / Galanter / Pribram (1960)</b> TOTE 单元 —— 循环签名的认知科学原型（§2）</li>
+        <li><b>Kowalski (1979)</b> Algorithm = Logic + Control —— Procedure 排除的 CS 版本（§3）</li>
+        <li><b>Sacerdoti (1975); McAllester & Rosenblitt (1991)</b> 偏序规划 —— 顺序仅由因果理由生成（§3）</li>
+        <li><b>Anderson (1982)</b> ACT-R 知识编译 / 程序化（§4）</li>
+        <li><b>Saltzer / Reed / Clark (1984)</b> 端到端论证 —— 出口是唯一保证（§4）</li>
+        <li><b>Condorcet (1785)</b> 陪审团定理 —— judge 聚合的独立性条件（§7）</li>
+        <li><b>Neyman & Pearson (1933)</b> 功效框架；<b>Šidák (1967)</b> 族错误率（§8）</li>
+        <li><b>Dwork et al. (2015)</b> The Reusable Holdout, Science —— 固定集过拟合（§8-4）</li>
+        <li><b>Glover (1986)</b> 禁忌搜索 —— 负知识缓冲（§9）</li>
+        <li><b>Campbell (1960)</b> 盲变异-选择保留；<b>Popper (1959)</b> 猜想与反驳（§2, §9）</li>
+        <li><b>Pearl (2000)</b> Causality —— 技能作为介入、do-算子（§6, §7）</li>
+      </ul>
+
+      <h3>经验证据层 <span class="sec">已验证语料</span></h3>
+      <ul>
+        <li><b>SoK: Agentic Skills</b> arXiv 2602.20867 —— SkillsBench +16.2pp / −1.3pp；四元组 S=(C,π,T,R)</li>
+        <li><b>CTA</b> arXiv 2605.11946 —— skill inertia 的定名与测量</li>
+        <li><b>Externalization in LLM Agents</b> arXiv 2604.08224 —— 外化过程的对立观点及其和解</li>
+        <li><b>SkillGen</b> arXiv 2605.10999 —— 技能作为介入；对比归纳</li>
+        <li><b>SkillOpt</b> arXiv 2605.23904 —— 验证门、文本学习率、被拒编辑缓冲</li>
+        <li><b>SkillLens</b><span class="sec">（secondary）</span> —— 46.4% judge 精度；三个有效文本信号；成败配比</li>
+        <li><b>CoEvoSkills / EvoSkills</b> arXiv 2604.01687 —— 信息隔离的代理验证器</li>
+        <li><b>Trace2Skill</b><span class="sec">（secondary）</span> —— 批式归纳</li>
+        <li><b>MUSE-Autoskill</b> 2605.27366 · <b>SkillX</b> 2604.04804 · <b>AXIS</b> 2409.17140 · <b>SkillClaw</b> 2604.08377 · <b>CODESKILL</b> 2605.25430 · <b>Skill-Inject</b> 2602.20156</li>
+        <li><b>Personas in System Prompts Do Not Improve Performances of LLMs</b> arXiv 2311.10054, EMNLP 2024 Findings —— persona 卸载规则的经验锚（§5）</li>
+        <li><b>Anthropic Agent Skills 最佳实践</b> agentskills.io —— SKILL.md 标准（§0, §9）</li>
+      </ul>
+
+      <h3>本文构造 <span class="sec">原创主张 · 显式标注</span></h3>
+      <ul>
+        <li><b>循环签名穷尽性论证</b>（§2）—— 以介入面 + 循环参数位替代概念分析；由 §11 架构索引、由消融实验常设审计</li>
+        <li><b>消费点个体化</b>（§2）—— 原子由承重位点定义；binding time 是最近亲缘，用于切分知识类型是本文构造</li>
+        <li><b>顺序合法性的六格闭合</b>（§3）—— iff 判据 + 从 §2 继承的闭合性；各格分别有血统，闭合本身是本文推论</li>
+        <li><b>persona 卸载规则</b>（§5）—— "不可审计故须兑现"的定理化及其翻译式逃生门</li>
+      </ul>
+
+      <footer class="fin">
+        <span>A Theory of Skills</span>
+        <span>推导：介入面 → 公理 → 循环位点 → 原子 → 双态 → 正确性 → 认识论 → 统计宪章 → 演化</span>
+        <span>位点即原子 · 出口即保证 · 边界如实</span>
+      </footer>
+    </div>
+  </section>
 
 </main>
+
 <script>
   (function(){
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{rootMargin:"0px 0px -8% 0px",threshold:0.06});
-    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, {rootMargin:"0px 0px -8% 0px", threshold:0.06});
+    document.querySelectorAll('.reveal:not(.in)').forEach(function(el){ io.observe(el); });
   })();
 </script>
 </body>

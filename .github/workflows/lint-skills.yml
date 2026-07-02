@@ -2,8 +2,13 @@ name: lint-skills
 
 # Dogfooding: skillwise's own job is judging skills, so it runs its own linter
 # (the mechanical entry of evaluate-skill) on every skill in this repo on each PR.
-# The linter is a non-verdict entry check — it catches structural defects only;
-# the semantic five-test read is what actually guarantees a skill. See evaluate-skill.
+#
+# HONESTY NOTE (what green here actually means): the blocking checks cover only
+# frontmatter completeness and the existence of a (non-negated) exit keyword.
+# Everything semantic — the six tests, and certification at the behavioral layer
+# (L2, the effect gate) — is NOT run here. A green check is an entry, not a
+# verdict; per docs/THEORY.md §7 the repo's own honest grade is `static_only`
+# until the dogfood/ experiments run.
 
 on:
   push:
@@ -18,6 +23,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Shared gate copies in sync (materialized distribution, P0-1)
+        run: |
+          python scripts/sync-shared.py
+          # --porcelain also catches a deleted-and-regenerated (untracked) copy, which git diff would miss
+          drift=$(git status --porcelain -- 'skills/*/references/effect-gate.md')
+          if [ -n "$drift" ]; then
+            echo "$drift"
+            echo '::error::references/effect-gate.md copies drifted from shared/effect-gate.md — edit the source and run scripts/sync-shared.py'
+            exit 1
+          fi
       - name: Lint every skill (blocking findings fail the build)
         run: |
           LINT=skills/evaluate-skill/scripts/lint_skill.py

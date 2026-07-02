@@ -1,8 +1,8 @@
 # Type-aware diagnosis rubric
 
-This rubric is for **diagnosis** — picking the single weakest dimension to fix in the next edit. It is *not* the accept/reject gate: whether an edit actually lands is decided by the shared measurement gate (`../../../shared/effect-gate.md`), which runs the held-out scoring — the **improvement gate** (`delta_step` vs the skill's previous accepted version) for an improve-skill round — and owns the fatal negative-transfer, floor, and safety checks. Diagnose here; let the gate judge.
+This rubric is for **diagnosis** — picking the single weakest dimension to fix in the next edit. It is *not* the accept/reject gate: whether an edit actually lands is decided by the shared measurement gate (`../references/effect-gate.md`), which runs the held-out scoring — the **improvement gate** (`delta_step` vs the skill's previous accepted version) for an improve-skill round — and owns the fatal negative-transfer, floor, and safety checks. Diagnose here; let the gate judge.
 
-Pass this file to every diagnosis judge verbatim. The single principle over a uniform rubric: **classify the skill first, then weight the dimensions per type** (see the skillwise repo's `docs/THEORY.md` §1, §4), because each type has a different characteristic failure.
+Pass this file to every diagnosis judge verbatim. The single principle over a uniform rubric: **classify the skill first, then weight the dimensions per type** (see the skillwise repo's `docs/THEORY.md` §2, §6), because each type has a different characteristic failure.
 
 ## Type map (apply first)
 
@@ -29,7 +29,7 @@ Anchors 0/2/5/8/10. These rank *where the skill is weakest*, to aim the next bou
 
 ## What is NOT scored here
 
-**Measured gain vs the no-skill baseline, negative transfer, and safety** are the gate's job, not the rubric's — they are decided empirically on held-out tasks by `../../../shared/effect-gate.md`, not by reading. A skill that reads well can still lose to no-skill; that is exactly why the gate, not this rubric, has the final say.
+**Measured gain vs the no-skill baseline, negative transfer, cost, and safety** are the gate's job, not the rubric's — they are decided empirically on held-out tasks by `../references/effect-gate.md`, not by reading. A skill that reads well can still lose to no-skill; that is exactly why the gate, not this rubric, has the final say.
 
 ## Diagnosis output schema
 
@@ -47,4 +47,4 @@ Anchors 0/2/5/8/10. These rank *where the skill is weakest*, to aim the next bou
 
 ## Calibrate before looping
 
-Run the rubric on one known-good skill and two rough ones with two independent judges; require the good one to rank clearly above the rough ones and inter-judge spread to be small. If not, fix the anchors before any auto-loop — an LLM judge reading skill text is unreliable by default ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)). Final acceptance is always the gate, never the rubric score.
+Run the rubric on one known-good skill and two rough ones with two decorrelated judges (different base models, or information-isolated contexts — THEORY §7); require the good one to rank clearly above the rough ones and inter-judge spread to be small. If not, fix the anchors before any auto-loop — an LLM judge reading skill text is unreliable by default ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)). Final acceptance is always the gate, never the rubric score.

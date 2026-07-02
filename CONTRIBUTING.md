@@ -4,7 +4,7 @@ Thanks for wanting to add or sharpen a skill. The bar here is unusual: skillwise
 
 ## The bar
 
-A skill is accepted when it **fills a gap the base engine lacks, exactly** — no under-fill, no over-fill, in the right layer, with a verifiable exit. Concretely, before opening a PR:
+A skill is accepted when it **fills a gap the base engine lacks, exactly** — no under-fill, no over-fill (in order or in cost), in the right form, with a verifiable exit. Concretely, before opening a PR:
 
 1. **Classify the gap.** Say which of the four your skill fills — Knowledge, Capability, Judgment, Control — or which composite. If you can't name a gap, the engine probably already does the task for free, and the skill shouldn't exist.
 2. **Pass the linter.** It's the mechanical entry check, not a verdict:
@@ -12,8 +12,8 @@ A skill is accepted when it **fills a gap the base engine lacks, exactly** — n
    python skills/evaluate-skill/scripts/lint_skill.py --check skills/<your-skill>
    ```
    The CI runs this on every skill; blocking findings fail the build.
-3. **Run the five semantic tests** (this is the actual guarantee, by hand or with `evaluate-skill`): deletion, improvisation, shuffle, inertia-cost, exit. See [`skills/evaluate-skill/SKILL.md`](./skills/evaluate-skill/SKILL.md).
-4. **Clear the gate.** For a *new* skill, show it beats the no-skill baseline (`delta_exist > 0`): run a representative task with and without it. For an *edit to an existing* skill, show it beats the skill's *previous version* (`delta_step` beyond the noise band) while never dropping below the no-skill floor — see [`shared/effect-gate.md`](./shared/effect-gate.md). A version worse than its reference is the one defect we never merge.
+3. **Run the six semantic tests** (this is the actual read, by hand or with `evaluate-skill`): deletion, improvisation, shuffle (every order traced to one of the six cells), inertia-cost, form check, exit. See [`skills/evaluate-skill/SKILL.md`](./skills/evaluate-skill/SKILL.md).
+4. **Clear the gate.** For a *new* skill, show it beats the no-skill baseline beyond the noise band (`delta_exist > noise_band_exist`): run representative tasks with and without it. For an *edit to an existing* skill, show it beats the skill's *previous version* (`delta_step` beyond the noise band) while never dropping below the no-skill floor — see [`shared/effect-gate.md`](./shared/effect-gate.md) (the single editing source; it is materialized into each consumer skill's `references/` by `scripts/sync-shared.py`, which CI enforces). A version worse than its reference is the one defect we never merge.
 
 ## Style
 

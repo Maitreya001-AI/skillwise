@@ -1,183 +1,307 @@
-# A Theory of Skills: classification, content, authoring, and evolution
+# 从零推导：一个技能理论
 
-A self-contained derivation of what an agent skill is, how to classify one, what to put in it, how to write it, and how to let it improve over time. The reasoning stands on its own; the empirical claims are cited to published work in the References. Where this document names a phenomenon (e.g. *skill inertia*), the name is the document's own term for an effect the cited evidence demonstrates, not a claim of prior coinage.
+不预设任何既有分类。从"技能物理上是什么"开始，推出它能填什么、该怎么写、怎么判、怎么演化。每一节只使用前面各节已经建立的东西。
 
-A *skill*, in the sense used here, is the unit defined by the Agent Skills standard: a `SKILL.md` file (YAML frontmatter + Markdown body) plus optional bundled `scripts/`, `references/`, and `assets/`, loaded on demand by a base agent ([Anthropic Agent Skills](https://agentskills.io/skill-creation/best-practices)).
-
----
-
-## 0. The premise: the engine is free
-
-A modern base agent already ships a general symbol-level reasoning engine: it reads schemas, writes code, maps intent to operations, recovers from malformed input, and orchestrates multi-step work — plus general knowledge up to its training cutoff. Call the existence of this engine **Proposition A**. It is free.
-
-A skill earns its place only by supplying something this free engine *lacks* on a specific task. So the entire design question collapses to one:
-
-> **What can the engine lack?**
+全部结论所依赖的理论血统与经验证据，按可信度谱系分层列于文末《参考》。
 
 ---
 
-## 1. Classification: the kinds of gap are the kinds of skill
+## §0 对象与介入面
 
-List what the engine already has, and the gaps reduce to four. They are mutually exclusive and jointly exhaustive, and they line up with the knowledge-level / symbol-level distinction.
+**定义（基座 agent）。** 一个基座 agent = 一个语言引擎 + 一个工具循环。给定任务，它产生一串行为，行为产出一个**产物**（代码、文档、结构化数据、动作序列的结果）。理论关心的最终量只有一个：产物的质量。
 
-| atom | the gap | layer |
-|---|---|---|
-| **Knowledge** | a missing fact (current, private, domain-specific) | knowledge |
-| **Capability** | a missing reliable primitive | symbol |
-| **Judgment** | a missing criterion for "right / good / forbidden" | knowledge |
-| **Control** | a missing non-default loop | loop governance |
+**定义（技能）。** 一个技能是一个按需载入的包：一段陈述性文本（SKILL.md）加可选的可执行物（scripts/ 等），即 Agent Skills 标准定义的单元。
 
-**There is no "procedure" or "workflow" type.** Orchestration is exactly Proposition A — free. A procedure skill therefore supplies a gap that does not exist; worse, it fights the engine's own default loop. We call this failure **skill inertia**: the skill prescribes a sequence of steps while the agent optimizes for the *outcome*, so once the outcome is reached the skill is still pushing it forward, or it skips and reorders steps the author froze. The empirical shadow of this is direct: human-curated skills raise agent pass rates by 16.2 points on average, but naively self-generated skills *degrade* performance by 1.3 points, encoding overly specific or incorrect procedure ([SoK: Agentic Skills](https://arxiv.org/abs/2602.20867), reporting SkillsBench).
+**观察 0（介入面）。** 技能影响 agent 的物理通道恰好有两条：
 
-This is a contested point, and the strongest opposing view deserves a fair hearing. A recent review argues that *operational procedure* — decomposition into steps, dependencies, stopping conditions — is itself worth externalizing, because many agent errors are process-level (skipped steps, misordered operations, premature termination), not action-level ([Externalization in LLM Agents](https://arxiv.org/abs/2604.08224)). The reconciliation is precise: that same review lists three components of skill expertise — operational procedure, **decision heuristics**, and **normative constraints**. The latter two are this theory's Judgment and Control atoms. The disagreement is only over the first: freezing a literal step-march causes inertia, whereas encoding the *stopping conditions and decision heuristics* (Control + Judgment) captures the genuine process knowledge without welding an order. Procedure is not a type; the parts of "procedure" that are real gaps are Judgment and Control.
+- **通道 T（文本）**：注入引擎所条件化的上下文 token；
+- **通道 X（可执行）**：向环境提供引擎可调用、或环境可强制运行的程序。
 
-**Real skills are usually composites.** A domain skill (e.g. a DDD modeling skill, a spreadsheet skill) is Knowledge + Capability + Judgment. An extraction/pipeline skill is Control + Judgment + Capability. Decompose a composite into its atoms and the right place for a human checkpoint reveals itself: it sits at the seam between the *judgment* component and the *control/capability* component.
+没有第三条通道。技能的任何主张——"提供知识""保证正确""改进流程"——最终都必须兑现为 T 中的一段文本或 X 中的一个程序。后文所有结论都要能追溯到这两条通道上的具体物；后文的穷尽性结论，也**相对于这个介入面**成立（§11）。
 
 ---
 
-## 2. Content: describe the world, leave "how" to the engine
+## §1 引擎公理
 
-A well-written skill describes three things and stops:
+**公理 A（能力）。** 引擎具备通用推理：读 schema、写代码、分解任务、把意图映射为操作、编排多步工作；并携带截止期前的通用世界知识。这是 Newell 1982 理性原则所要求、却迟到四十年才就位的那台通用符号层引擎。
 
-1. the **world** the agent operates in — concepts, types, relations, structure;
-2. **what counts as correct** in that world — constraints, invariants, semantic signals;
-3. **what the user likely wants** — vocabulary mapping, scenario knowledge.
+**公理 A′（近似理性）。** 引擎对自身能力的**执行**是不可靠的，且失效是系统性、可具名的：
 
-Then it leaves "how" to the engine. The flow is not forgotten; it is the engine's job, and the engine adapts it to context better than any frozen script. This matches the standard guidance that skills should describe the *properties of correct output*, and that skills generated without real domain context collapse into vague generic procedure ([Anthropic Agent Skills best practices](https://agentskills.io/skill-creation/best-practices)).
+1. **跳过自验**——它能推出该检查，但不可靠地执行检查；
+2. **过早终止 / 惯性续跑**——终止判断与真实完成状态脱钩；
+3. **静默即兴**——缺少某个操作时，它当场编造一个私有的、未经审查的实现，并且不报告；
+4. **机械误执行在规模下放大**——单次小概率的手误（错位、错字段）在批量生成时被复制成系统性错误。
 
-For a domain composite, a useful default body has these sections, derived from the path an agent walks when it uses one element of a domain: **Vocabulary + Purpose** (is this the right kind of element?), **Contrast** (which similar element? — only if confusable ones exist), **Structure** (what do the fields take?), **Relationships** (how does it attach to others?), **Rendering** (what does it look like when realized? — only if visual), **Rules** (hard invariants), **Heuristics** (soft experience, scenario recipes).
+这是 Simon 有限理性在引擎上的形态。经验锚：人工策划技能平均 +16.2pp、自动生成技能 −1.3pp（SkillsBench）；过程式技能诱发 skill inertia——提前终止、跳过本会做的验证（CTA）。公理对 A/A′ 恰好是 Newell–Simon 这对合作者：理性原则，由有限理性回火。
 
-> The **Rules** section has a second life: every hard invariant is both a candidate **primitive** (§3) and a candidate **exit check** (§4). The **Heuristics** section produces nothing mechanical — that is judgment, and judgment belongs to the engine.
+**公理 B（任务特异性）。** 任务来自具体领域；领域的事实、判据、操作不完全在引擎内。
 
----
-
-## 3. The hidden gap: provide primitives, guard with a semantic exit
-
-"Describe the knowledge, the engine implements it" quietly bundles two claims:
-
-- **Proposition A — the engine exists** (it has general reasoning *ability*). True.
-- **Proposition B — the primitives are ready** (the domain *operations* the engine will act through already exist). Often false.
-
-When B fails, the engine has the ability but not the material, so it improvises a private, unreviewed primitive at runtime — and that improvised layer is where silent bugs live. A representative failure: at scale the engine writes a throwaway script to generate output in bulk; a constructor takes positional arguments; a value meant for one field lands in another; the error is copied across hundreds of elements. The skill never saw the script, the positional call had no field names to flag the mistake, and a schema validator only asks "is this well-formed?" — all three checks stay silent. This trajectory-replay danger is exactly what trajectory-faithful extractors reproduce when they compile an action sequence directly into a skill ([AXIS](https://arxiv.org/abs/2409.17140)).
-
-Defend at both ends:
-
-- **Entry — supply a named-field primitive** so a wrong value has no slot to land in: `build({kind, label, tags, note})`, never positional. This lowers error *frequency*; it is not a guarantee.
-- **Exit — a semantic verifier** that checks the *product* against "what correct looks like," not "is it well-formed." This is immune to how the output was produced, and it is the *only* guarantee.
-
-**Primitive granularity — the shuffle test.** Hand the engine all the primitives in scrambled order. Still completes the task → you gave vocabulary (correct). Only works in your order → you welded in a procedure (over-fill). Too coarse (`buildWholeArtifactFromIntent()`) swallows the engine's semantic judgment; too fine (`setKind`/`addTag`/`setNote` as a mandatory sequence) needs a manual, which is a procedure in disguise. The right band seals exactly one class of mechanical correctness and zero semantic judgment.
-
-> Packaging is not layer. A script in `scripts/` is still a symbol-level primitive. The body *may state that a primitive exists* ("use `scripts/build`, which forces named fields"); it *must not* narrate the call sequence. Stating existence is knowledge; narrating flow crosses a layer.
+A 说引擎强，A′ 说它强而不稳，B 说世界比它大。三条公理共同决定：技能有存在的空间（B）、有不该占的空间（A）、有一类特殊的必须占的空间（A′）。
 
 ---
 
-## 4. Correctness: a ruler you can run
+## §2 缺口空间：从循环签名读出四原子
 
-> **Correct = the gap is filled exactly** — not under-filled, not over-filled, in the right layer, with a verifiable exit.
+**为什么不从概念出发。** 一条诱人的推导路径是从"任何目标导向的生产过程"这个概念里分析缺口空间。但概念是开放的，概念分析原则上封不了口——由它得到的穷尽性只能是断言。奠基对象必须是不开放的东西。
 
-Five tests, each catching one failure and naming it:
+**正确的奠基对象：循环。** 基座 agent 的循环不是开放概念，是一段有限的、可检视的具体结构：
 
-1. **Deletion test — is there a gap?** Remove the skill, run the typical task. Still passes → the skill supplies Proposition A and should not exist (pure over-fill). Ask "should this exist?" before "is it correct?"
-2. **Improvisation test — under-fill?** Run the typical task; count how much gap-bearing material the engine had to improvise. Greater than zero → under-fill.
-3. **Shuffle test — over-fill?** Scramble the primitives; still works → vocabulary; order-dependent → welded procedure.
-4. **Inertia-cost test — over-fill's other face.** On a task the engine already handles, compare with/without the skill. Markedly longer or costlier with no gain → skill inertia.
-5. **Exit test — guaranteeable?** Is there a semantic check against "what correct looks like"? None → the skill cannot guarantee a correct result.
+```
+context ← 任务 + 技能
+while not done:
+    output ← engine(context)        # 生成：条件于上下文
+    result ← execute(调用)           # 行动：使用可用原语
+    检验(output / 产物)              # 验证
+    续 / 停 / 分支 决策               # 调度
+```
 
-For composites, add the **seam test**: the human checkpoint must sit at the boundary between the judgment component and the control/capability component; misplacement means the machine overstepped into judgment (over-fill) or a human was inserted where automation belonged (under-fill).
+§0 已限定技能只能经 T/X 两条通道介入；注入物**成为承重的位置**，只能是这个循环签名的参数位。参数位是从循环结构里**数出来**的，不是从概念里分析出来的。恰有四个：
 
-**Type-specific discipline:**
-
-| type | characteristic failure | discipline | exit |
+| 位点 | 注入物在此承重的方式 | 原子 | 缺口形态 |
 |---|---|---|---|
-| Knowledge | goes stale, floods context | body routes only, never inlines facts; carries version/date | freshness check |
-| Capability | wrong primitive granularity | seal mechanical correctness, leave semantic judgment to the engine | bundled tests + plausibility |
-| Judgment | written as procedure → inertia | declare what "right/good/forbidden" looks like; taste as negative fences | "is this plausible?" |
-| Control | loop hard-coded as steps | declare `done_when` + role separation; iteration left to the engine | the `done_when` predicate |
+| **Σ 生成位** | 作为引擎条件化的世界模型 | **Knowledge** | 缺一个事实（时新的、私有的、领域的） |
+| **Π 行动位** | 作为行动时可调用的操作 | **Capability** | 缺一个可靠原语（否则静默即兴，A′-3） |
+| **φ 验证位** | 作为对产物施加的检验 | **Judgment** | 缺一条"对/好/禁止"的判据 |
+| **γ 调度位** | 作为对续/停/分支的治理 | **Control** | 缺一条非默认的过程规范（门、终止绑定、角色隔离、检查点） |
 
-**A caution about screening skills by reading them.** Textual plausibility has diverged from actual utility: an unguided LLM judge asked which of two skills will perform better picks correctly only 46.4% of the time — no better than chance, and on clear cases it tends to pick the *worse*-reading-better skill, because fluent prose does not predict downstream gain ([SkillLens, summarized here](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)). The practical consequences: (a) the only reliable verdict compares the skill *as an intervention* against a no-skill baseline ([SkillGen](https://arxiv.org/abs/2605.10999) models skills exactly this way); (b) take the median of two or more independent judges rather than trusting one. Three reading-level signals do correlate with utility and are worth checking explicitly: whether the skill encodes failure mechanisms (`if X then Y else Z`), whether instructions are executable rather than hedged, and whether it carries a dedicated high-risk-action blacklist. Apply these type-aware — for Knowledge and Judgment skills, "has a workflow" is not a virtue.
+**定义（原子的个体化）。** 一个原子由**其内容成为承重的循环位点**个体化。这是定义，不是有待证明的主张——由它，原子的种类数等于位点数，穷尽性从概念断言变成结构事实。
 
----
+**功能层的执照。** 机制层上一切注入物都是 token，凭什么四位点划分合法？这正是 Newell 1982 的原始论证：一个描述层级合法，当且仅当系统能在该层自洽描述、无须引用下层。且这里不止自洽，而且**必需**——存在只有该划分才能命名的可观察失效：把判据写成事实（错层），内容在生成时被读过一遍、在验证位从未被执行，产物照常携带缺陷通过一切格式检查。抹平位点区分，就失去了命名这类失效的语言。
 
-## 5. Evolution: monotone improvement behind a gate
+**归约攻击的定义性消解。**
 
-To let a skill improve from experience without degrading or drifting, the control gates matter more than any clever induction.
+*"Judgment 是关于好坏的 Knowledge。"* 句子层面可以这样改写，但原子由位点个体化：同一句话放在生成位是背景知识，放在验证位是出口判据——说 Judgment 是 Knowledge，如同说函数的返回类型就是它的参数类型，因为两者都是类型。范畴错误。
 
-- **Batch, don't react serially.** Induce over a diverse pool of trajectories rather than reacting to one at a time; serial reaction overfits to trajectory-local lessons ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)).
-- **Validation gate (default deny).** Every edit must beat the skill's **own previous accepted version beyond measurement noise** on a fixed held-out set (`delta_step > noise_band`), never falling below a permanent no-skill **floor**, or it is rejected. Beating *no-skill* is a separate, one-time *existence* question (`delta_exist`); an iterator keyed on it stalls whenever the base model already ceilings the task, so the per-round criterion is improvement-vs-previous, not existence-vs-baseline. A set with no headroom to show a gain is reported unfit and hardened, not used to reject. This is the single cut that turns unconditional self-editing into propose-and-test, and the only source of monotone, non-degrading improvement ([SkillOpt](https://arxiv.org/abs/2605.23904)).
-- **Bounded step.** A textual learning rate: cap how much one edit may change, to forbid destructive single-step rewrites ([SkillOpt](https://arxiv.org/abs/2605.23904)).
-- **Persist negative knowledge.** Rejected edits go into a buffer with the score drop they caused, so the optimizer stops repeating them ([SkillOpt](https://arxiv.org/abs/2605.23904)).
-- **Tune the experience diet.** Do not learn from an all-failure pool; the optimal success/failure ratio is domain-specific ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)).
-- **Separate roles.** Extractor, executor, and evaluator are distinct jobs that must not inherit each other's bias; an information-isolated verifier produces reliable signal even without ground truth ([CoEvoSkills](https://arxiv.org/abs/2604.01687)).
-- **Treat safety as a loss.** Refusal rate, attack-success rate, and scope-creep into judgment the engine should own belong in the same gate; skill files are a real attack surface ([Skill-Inject](https://arxiv.org/abs/2602.20156)).
-- **Break plateaus.** When progress stalls, allow one larger exploratory rewrite that may exceed the step budget, then keep it only if it clears the gate.
+*"done_when 是判据，所以 Control ⊂ Judgment。"* 谓词 P 的**内容**（"什么算完成"）确属 φ；"循环在 P 成立前不得终止、且此检查不可跳过"是调度位上的约束，属 γ。Judgment 供谓词，Control 供**绑定**。谓词无绑定 = 知而不行（A′-1 原样发作）；绑定无谓词 = 空转。二者正交。
 
----
+**Control 的特殊地位。** 其余三个原子填**认知缺口**（内容缺失，由公理 B 保证存在空间）；Control 填**执行缺口**——内容引擎往往推得出，但不会可靠执行（公理 A′）。即使任务领域引擎全懂，A′ 的失效仍在，γ 类介入仍必要。
 
-## 6. Confluence: one axis
+**三角验证。** 独立传统落在相近划分上：内容侧，注入的句子必属描述（is）、操作（can）、规范（ought）三种模态之一——is/ought 之别是休谟的，二者的当代严格形式是 Searle 的适应方向（词就世界 / 世界就词）；knowing-that 与 knowing-how 不可互相归约是 Ryle 的；ought 的逻辑是 von Wright 开创的道义逻辑；ought 按作用对象二分为产物规范与过程规范，即 φ 与 γ。形式侧，MDP 的 (S, A, R, π)、Russell–Norvig 的任务环境刻画、认知科学的 TOTE 单元（Test-Operate-Test-Exit，1960——test 即 φ、operate 即 Π、exit 即 γ）、以及 SoK 的技能四元组 S=(C, π, T, R)，各自独立地切出同构的划分。三角验证不是证明，但四个互不相识的传统同落一处，不是巧合的形状。
 
-The taxonomy, the content rules, the correctness ruler, and the evolution gates are one axis: **how much is left to the engine.** Classify a skill by which gap it fills; write it by filling that gap at the right layer and deleting whatever the engine already supplies; guard the hidden primitive gap with a named entry and a semantic exit; verify at the exit; and let it climb monotonically behind a gate.
+**可证伪预测。** 穷尽性由此成为可运行的实验命题：对任何高效技能做逐段消融，每个承重片段（删除后行为 delta 下降的）都应可归入四位点之一；出现"承重但不可归位"的残片，即为反例。该实验可直接排入评估工具的日程——理论主动交出自己的死法。
 
 ---
 
-## 7. Four meta-skills fall out
+## §3 为什么没有 Procedure 原子，以及顺序的六个合法居所
 
-Applying the theory to skills *about skills* yields four, with one kernel:
+**排除的推导。** 一个 procedure（固定步骤序列）是一个**具体策略**——γ 所约束的空间中的一个点。策略合成正是公理 A 定义为引擎所有的东西；公理 A′ 指出引擎的弱点在策略**治理**而非策略**合成**。所以 γ 位的缺陷是**规范性的**（过程必须满足什么），不是**生成性的**（序列长什么样）。供给一整条固定策略，是在填一个不存在的缺口，同时替换掉引擎随语境自适应的合成——引擎为结果优化，技能为步骤推进，二者打架，产生惯性成本。这是 Kowalski "Algorithm = Logic + Control" 的技能版：陈述 what，把 how 留给推理机。
 
-| skill | what it is | type |
+**顺序合法性定理。** 一条顺序约束属于技能，**当且仅当它可还原为某个原子的内容**。由 §2 的穷尽性，"顺序能住进哪些格"是有限枚举——闭合性是继承来的推论，不需要第二次断言。逐格推导，恰得六格：
+
+| 格 | 宿主原子 | 顺序的性质 | 例 |
+|---|---|---|---|
+| 1 | Σ | **依赖顺序**：因果/数据依赖的世界事实 | 无法分类尚未挖掘出的模式；含时限（市场收盘前） |
+| 2 | Σ | **不可逆顺序**：风险事实 | 迁移前必须备份——逆操作不存在 |
+| 3 | γ | **外部强制顺序**：道义/合规规范 | 采集数据前必须取得同意 |
+| 4 | γ | **认识论顺序**：测量/理解协议 | 先改动、后测量、再取舍；先读警告再用 API |
+| 5 | φ | **产物序**：产物本身必须呈现的顺序 | 文档章节序、记录中握手先于传数据——是出口可检的产物性质，根本不是过程顺序 |
+| 6 | Π | **编译序**：焊在原语内部的顺序 | 脚本内部的步骤对编排空间不可见——该焊的顺序就编译掉，永远合法 |
+
+闭合性靠推导而非清单，差别是实质的：清单靠枚举，不知道自己漏了什么；格靠推导，把洞自己找出来——第 5、6 格正是仅靠直觉枚举时最容易漏掉的两格。第 5 格还携带一条设计律——大量被写成 Step 1/2/3 的东西，正确形态是一条 φ（把"按此顺序做"改写为"产物须呈现此序"，出口可检，引擎爱怎么达成怎么达成）。第 6 格解释了为什么 scripts/ 内部的顺序从不触发 shuffle test。
+
+血统：顺序仅在有因果理由时存在，是偏序规划（least-commitment planning）的核心原则——排序约束只由因果链与威胁消解生成，其余保持无序。
+
+**shuffle test 的一般形式**：打乱技能给出的元素，观察哪里失败；**每一处失败必须能追溯到六格之一**；追溯不到的顺序即焊死的 procedure。推论：新遇到的顺序类型被**分类**而非**追加**——教学序/认知负荷序落入第 4 格（理解协议）或编译为渐进披露的物理结构（第 6 格）。有推导的闭合性带预测力，这是它优于清单的证明。
+
+---
+
+## §4 双态：陈述与编译
+
+**定义。** 每个原子有两种实现形态，分别落在 §0 的两条通道上：
+
+| 原子 | 陈述态（通道 T） | 编译态（通道 X） |
 |---|---|---|
-| **evaluate-skill** | the correctness ruler of §4 (the kernel / exit verifier) | Judgment + Capability |
-| **write-skill** | the ruler run in reverse — author by hand (§1–4) | Judgment + Knowledge |
-| **seek-skill** | write-skill driven by a corpus — discovery from experience (§5, §9) | Control + Judgment + Capability |
-| **improve-skill** | the ruler in a gated loop (§5) | Control + Judgment + Capability |
+| Knowledge | 正文陈述的事实 / 路由指引 | 查询脚本、数据接口 |
+| Capability | 描述一个操作怎么做 | 交付一个具名字段的原语 |
+| Judgment | 陈述判据 | 语义验证器 |
+| Control | 陈述协议 | 不可绕过的钩子 / CI 门 |
 
-`evaluate-skill` is the kernel; `write-skill` and `seek-skill` call it as an exit gate (the gate's **existence** branch, `delta_exist` vs no-skill), and `improve-skill` runs its structural read while applying the gate's **improvement** branch (`delta_step` vs the previous version) inside its loop. Each of the four obeys the theory it encodes: all are declarative rather than step-marches, `evaluate-skill` ships a mechanical entry primitive and defers the guarantee to a semantic read, and `improve-skill`/`seek-skill` specify only `done_when` + role separation + gates, leaving iteration to the engine.
+这个双态本身有认知科学原型：ACT-R 称之为知识编译/程序化——陈述性知识向程序性形态的转化；Ryle 的 knowing-that/knowing-how 是它的哲学祖先。
 
----
+**定理（告知与强制）。** 陈述态**告知**引擎；编译态**强制**环境。陈述态的兑现依赖引擎的执行，因此继承公理 A′ 的全部失效；编译态的兑现独立于引擎当次的状态。推论：凡是必须**成立**（而不仅是被**知道**）的正确性，必须在 A′ 失效发作的位点具备编译态：
 
-## 8. Two refinements the theory needs
+- A′-3/4（静默即兴、规模化手误）发作在**行动位** → Capability 必须编译：具名字段原语让错值无槽可落（"使非法状态不可表示"；制造业的防错设计同理）——描述"参数依次是 kind、label……"是陈述态，仍会被位置调用绕过；
+- A′-1（跳过自验）发作在**验证位** → Judgment 必须在出口编译：验证器检查**产物**而非过程，因此对产物是如何生成的免疫。这是端到端论证（Saltzer/Reed/Clark 1984）的技能形态：正确性检查只有放在端点才能保证端到端性质，中间环节的保证不可传递——**任何入口只塑造生产路径，唯有对产物的编译态检验与生产路径无关**。出口是保证，入口只降频率；
+- A′-1/2（跳门、错误终止）发作在**调度位** → Control 的门必须编译为不可跳过。
 
-Two qualifications keep the rules from contradicting themselves in practice.
-
-**The shuffle test exempts measurement-protocol order.** A validation loop's core sequence — change, then measure, then keep-or-revert — is *epistemic*, not task orchestration: you cannot have a gate without "measure after change." So distinguish task-orchestration order (welding it causes inertia — forbidden) from measurement-protocol order (legitimate, and is the gate's definition). The latter is not over-fill.
-
-**"Leave iteration to the engine" is qualified for Control skills.** Agents do not reliably gate themselves — that is precisely why self-generated skills can degrade performance. So leave *task* iteration to the engine, but make the *gate protocol* concrete and non-skippable. This is the corollary of the first refinement: the gate protocol is exactly the legitimate measurement-protocol order.
+**定理（编译的代价）。** 编译态买到可强制性，付出可移植性与维护成本（脚本绑定运行时；跨 agent 分发时陈述态是唯一通货）。因此"机械规则写成散文而非原语"不是无条件的缺陷，而是这条权衡曲线上的一个点——当分发约束压过强制需求时，陈述态是理性选择。评估时给这个权衡定价，而不是给形态定罪。
 
 ---
 
-## 9. Two front-ends: extraction (seeking) and failure-driven evolution
+## §5 正文写什么：从原子直接导出
 
-§5 governs editing a skill that exists. Two front-ends decide where skills *come from*. The lifecycle is three stages: experience generation → skill extraction → skill consumption ([SkillLens](https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7)).
+一个良构技能的正文描述四件事然后停笔：
 
-**9.1 What self-evolution needs (the information set).** In rough order of importance: (1) *full trajectories*, not just outcomes — inputs, actions, tool calls, intermediate states, and especially the primitives improvised at runtime, where the §3 hidden gap lives; (2) an *outcome signal* per trajectory; (3) *contrast* — each failure paired with a neighboring success, because a lone failure has no anchor and all-failure pools produce the worst skills; (4) a *held-out selection set* disjoint from the mining pool — what makes this optimization rather than distillation; (5) the *current skill state*, to revise rather than rediscover and to preserve old capabilities; (6) a *rejected-edit buffer*; (7) a *semantic verifier* (the exit); (8) *safety signals*; (9) an *experience-diet knob*.
+1. **Σ**：世界——概念、类型、关系、结构；含一个常被遗漏的子类：**关于用户的 Σ**（意图词表、场景到元素的映射）；
+2. **φ**：什么算对——约束、不变量、语义信号；
+3. **Π 的存在性**：声明有哪些原语（"用 scripts/build，它强制具名字段"）——声明存在是 Σ；叙述调用顺序不属于六格，被 §3 排除（该焊的序编译进原语内部，第 6 格）；
+4. **γ**：过程必须满足的约束——done_when 谓词 + 绑定、角色隔离、检查点——以约束形式，不以步骤形式。
 
-**9.2 Extraction (seeking) is write-skill driven by a corpus.** It adds two things to authoring: a classification front-end and a held-out gate. The recurring trap is to compile the *trajectory* (an action sequence) into the skill — over-fill by §1. Extraction must distil the *pattern* (which gap recurs), not the *path*. The loop: induce recurring patterns over a diverse pool in batch ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)); classify each pattern's gap (missing fact → Knowledge; mis-improvised operation → Capability primitive; recurring "what good looks like" → Judgment; non-default loop → Control); materialize type-disciplined; gate on the held-out set as an intervention against a no-skill baseline ([MUSE-Autoskill](https://arxiv.org/abs/2605.27366) uses exactly this with/without protocol; [SkillX](https://arxiv.org/abs/2604.04804) adds exploratory expansion beyond seed data); dedup and preserve against the existing library ([SkillClaw](https://arxiv.org/abs/2604.08377)).
+引擎的份额（怎么走、先后、如何组合）全部删除——这不是遗漏，是 §3 的直接要求。
 
-**9.3 Failure-driven evolution swaps the diagnosis source.** The unit of learning is the *contrastive pair* (failure × neighboring success), not the lone failure: locate the behavior present in the success and absent in the failure ([SkillGen](https://arxiv.org/abs/2605.10999) calls this contrastive induction; [CODESKILL](https://arxiv.org/abs/2605.25430) pairs a failing trajectory with an existing skill to expose its missing conditions). Extract a signature — `trigger → symptom → the branch the success took` — and feed it as a candidate edit into the same ratchet and gate as §5. If a failure cluster has no neighboring success, the skill likely needs a *new* capability — route to extraction, not editing.
+**路由的推导。** 技能按需载入；载入决策由引擎读元数据做出；所以 description 必须编码**缺口签名**（"当 X 缺失/当你需要 Y 而引擎给不出时"），而不仅是产出描述（"生成 Z"）——后者让路由器只能在产出重叠时瞎猜。路由信息本质上是**关于技能自身的 Σ**。
 
-> Three evolution failure modes justify the gates. **Memory-rot:** an early wrong edit, having passed the gate once, is later replayed as ground truth — so held-out tasks must be fresh, never the skill's own past output. **Sequential overfitting:** reacting one failure at a time overfits trajectory-local lessons — so batch-induce over a cluster (≥3 sharing a signature), never edit from n=1. **Misevolution:** accumulating patches can lower safety alignment — so the safety gate runs on every edit. Ungated self-modification is not evolution; it is controlled degradation.
+**persona 卸载规则。** "你是 X 领域专家"这类内容占据不了任何循环位点：它命名不了产物性质（无 φ 可检）、供给不了事实或原语、约束不了过程——它只能通过**不可核算地扰动**四个位点起作用。所以它在本理论自己的测试下结构性失败，不需要禁令：无从做出口检验、无从归类缺口、有界步长的改进循环对它无从下手。它不是非法，是**不可审计**。
+
+处置规则：persona 是**未兑现的原子内容压缩包**——作为写作启发合法（先写"像资深审稿人一样"，再逼问自己"资深审稿人的哪几条判据"），作为出厂内容非法：装运前必须兑现为显式原子内容（"expert"通常在隐式抬高 φ）。经验锚：对 162 个角色、4 个模型家族、2410 道事实题的系统评估表明，系统提示中加入 persona 相比无 persona 对照不提升表现，且效应随角色的性别、类型、领域漂移（arXiv 2311.10054, EMNLP 2024 Findings）——同一论文 2023 年初版摘要曾报告一致提升、2024 年扩展实验后结论翻转，恰是"不可核算扰动"的活体演示。逃生门保持开着：若某条 persona 真在 L2（§7）上稳定产出 delta，理论的回应不是接纳而是**翻译**——找出它实际扰动的位点，把那内容直接陈述出来。
 
 ---
 
-## References
+## §6 正确性：恰好填充，与它的测试
 
-All links verified reachable. Where a finding is most accessibly summarized in a secondary source, that source is linked and the primary work named.
+**定义。** 技能正确 ⇔ 它恰好填充其目标缺口：不欠填、不过填、形态正确、有编译态出口。失效恰有六种，每种一个测试：
 
-- **SoK: Agentic Skills — Beyond Tool Use in LLM Agents.** https://arxiv.org/abs/2602.20867 — skill as procedural memory; reports SkillsBench (+16.2pp curated, −1.3pp self-generated).
-- **Externalization in LLM Agents: A Unified Review.** https://arxiv.org/abs/2604.08224 — the opposing view on externalizing procedure; the three components of skill expertise.
-- **SkillGen: Verified Inference-Time Agent Skill Synthesis.** https://arxiv.org/abs/2605.10999 — contrastive induction over success/failure; skills modeled as interventions.
-- **SkillOpt: Executive Strategy for Self-Evolving Agent Skills.** https://arxiv.org/abs/2605.23904 — validation gate, text learning rate, rejected-edit buffer.
-- **SkillLens** (companion to SkillOpt). Summary: https://dev.to/wonderlab/is-your-agent-skill-actually-good-microsofts-dual-paper-deep-dive-into-skill-evaluation-and-28b7 — extractor≠target roles; success/failure diet; 46.4% unguided-judge accuracy.
-- **CoEvoSkills / EvoSkills: Self-Evolving Agent Skills via Co-Evolutionary Verification.** https://arxiv.org/abs/2604.01687 · https://evoskills.net — information-isolated surrogate verifier; multi-file skill packages; 32%→75% on SkillsBench.
-- **Trace2Skill.** https://www.emergentmind.com/topics/trace2skill — batch induction of transferable skills from trajectories.
-- **MUSE-Autoskill.** https://arxiv.org/abs/2605.27366 — two-phase with/without skill-generation protocol.
-- **SkillX: Automatically Constructing Skill Knowledge Bases.** https://arxiv.org/abs/2604.04804 · https://github.com/zjunlp/SkillX — iterative refinement and exploratory skill expansion.
-- **AXIS: API-First LLM-Based Agents.** https://arxiv.org/abs/2409.17140 — trajectory-faithful skill generation (the replay trap).
-- **SkillClaw: Let Skills Evolve Collectively.** https://arxiv.org/abs/2604.08377 — collective evolution; analyzing both successes and failures.
-- **CODESKILL: Learning Self-Evolving Skills for Coding Agents.** https://arxiv.org/abs/2605.25430 — failure-paired skill revision learned from downstream feedback.
-- **Skill-Inject: Measuring Agent Vulnerability to Skill File Attacks.** https://arxiv.org/abs/2602.20156 · https://www.skill-inject.com — skills as an attack surface (up to ~80% ASR).
-- **Automated Skill Discovery through Exploration and Iterative Feedback.** https://arxiv.org/abs/2506.04287 — exploration-based trajectory synthesis.
-- **Anthropic Agent Skills — best practices.** https://agentskills.io/skill-creation/best-practices — the SKILL.md standard; grounding extraction in real task context.
+| 失效 | 含义 | 测试 |
+|---|---|---|
+| **无缺口** | 填的是公理 A 已供给的 | **deletion**：撤掉技能跑典型任务，仍过 → 不该存在 |
+| **欠填** | 缺口仍有残留，引擎仍在即兴 | **improvisation**：数引擎被迫即兴的缺口承载物，>0 → 欠填 |
+| **过填（顺序）** | 焊入不可归入六格的顺序 | **shuffle**（§3 一般形式） |
+| **过填（成本）** | 引擎本已胜任处强加成本 | **inertia-cost**：带/不带对比，更贵且无增益 |
+| **错形态** | 该编译处只有陈述（或反之） | **形态检查**：对照 §4 的三个必须编译位 |
+| **无出口** | 缺编译态 φ | **exit**：有无对产物的语义检验 |
 
-## License
+deletion 与带/不带对比的方法论身份是 Pearl 意义上的**介入**：do(有技能) vs do(无技能)，最小的受控实验。
 
-Released under the MIT License (see `LICENSE`). Contributions welcome.
+**seam 定理（复合技能）。** 多数真实技能是复合（如领域技能 = Knowledge + Capability + Judgment）。已声明的 φ 有覆盖边界；边界之外是**剩余裁决**（机器不可判的语义质量、taste）。γ 必须在 φ 覆盖用尽处停机等人——人拥有的不是 judgment 整体（那会取消 Judgment 原子的意义），而是**已声明判据之外的残差**。检查点错位的两个方向：机器越过边界自判残差（过填），或人在 φ 已覆盖处被插入（欠自动化）。推论：对机器不可判的质量维度，技能的正确做法是**声明不判**并路由到 seam，而不是模拟一个判。
+
+---
+
+## §7 判定的认识论：三层与去相关
+
+以上测试由谁执行、可信度如何？这需要独立推导，因为执行者本身是一个引擎。
+
+**定义（三层）。**
+
+- **L0 机械判定**：语法、schema、frontmatter——可靠但只触及形态；
+- **L1 阅读预测**：LLM 读技能文本预测其效用——经验锚：无引导的 judge 二选一挑更好的技能，准确率 46.4%，不优于掷硬币；仅三个文本信号有效度证据（失效机制编码、可执行具体性、高危黑名单）；
+- **L2 行为实验**：带/不带技能在留出任务上对比产物——唯一的认证层。
+
+**推导。** 技能是对循环的**介入**；介入的效应只能由受控的结果对比认证；阅读是对介入效应的**预测**，而该预测器的测得精度在随机水平。故认证权只在 L2；L0 是入口（降低机械缺陷频率），L1 是预测（须标注为预测）。
+
+**推论（测试的层归属）。** §6 的测试按定义分层：deletion、improvisation、inertia-cost 的定义含"跑任务"——它们是 **L2 原生**的；对它们的静态阅读只是 L1 预测版，结论不得冒充 L2。shuffle 的结构半（顺序可归格核查）与 exit、形态检查是文本可查的，属 L0/L1 中相对可靠的部分。任何"静态裁决"必须显式区分这两组，否则在用 L1 的可靠度出 L2 的结论。
+
+**定理（相关 judge 的聚合）。** 对多个 judge 取中位数，压掉的是**采样方差**，压不掉**共享偏差**；同模型、同提示框架的 judge 误差高度相关，第二个 judge 的边际信息趋近于零。这是孔多塞陪审团定理的独立性条件：投票者独立时多数判优于个体，相关时定理失效。因此"独立"必须定义为**去相关**：不同模型，或至少信息隔离（无先验发现、无对方结论、不知哪个是带技能的运行）。角色隔离是同一定理在演化循环里的形态。
+
+---
+
+## §8 统计宪章：门的六原则
+
+L2 的测量者（LLM judge + 随机引擎）是噪声源。**门里的每一次比较都是统计推断，必须声明噪声模型与错误方向。**六条原则：
+
+**1. 效应须越过噪声。** 任何进入取舍的 delta（存在性、改进性）都要一条噪声带：对参照条件重复运行以估计散布，delta 须超出散布才算信号。带的估计量须与重复次数解耦（分位数或标准差倍数，不用随次数增长的极差）。无带的 `delta > 0` 会放行抖动；无带的 `delta ≤ 0 → 杀` 会误杀低功效集合上的真技能。
+
+**2. 致命项须可复现。** 逐任务零容忍 × 噪声 judge × 集合规模 = 必然误杀：设单任务假性回归率 p，n 个任务至少一次假致命的概率为 1−(1−p)ⁿ（族错误率）——集合越认真越容易冤案。因此"负迁移致命"须限定为**在重复运行的中位数上仍成立**的回归。零容忍的对象是复现的回归，不是单次观测。
+
+**3. 裁决前先验功效。** 集合的分辨率有下界（n 个 pass/fail 任务的 delta 最小刻度为 1/n）；小于分辨率的效应在该集合上**不可表示**。集合无力回答所问问题（天花板、低功效、无方差）时，路由到"集合不适格、加固集合"，绝不折算为技能的失败或成功。四个任务的裁决只能标注为提示性，不得进入认证结论。血统：Neyman–Pearson 的功效框架。
+
+**4. 单调性只对被测集合成立。** 在固定集合上反复迭代、且循环能看到逐任务结果，是自适应过拟合的教科书条件（可复用留出集问题，Dwork et al. 2015）。棘轮保证的是**集合上的**不降，不是泛化。认证"已改进"须依赖循环从未接触的确认切片，或集合轮换 / 每集封顶轮数。这与"不用技能自身历史产出当留出集"是两道独立防线：后者防记忆腐化，前者防对测试集本身的拟合。
+
+**5. 成本属于认证层。** §6 定义的失效之一（惯性成本）以成本为构成要件；若认证层不测成本（token / 时延），则理论自己定义的一种过填在唯一可靠的判定层上不可测——不融贯。effect 报告必须携带成本；"成本显著回归而增益在噪声带内"应当可判定。
+
+**6. 两个 delta，两个问题。** *存在性*（带技能 vs 无技能）回答"该不该存在"，一次性判定 + 永久地板；*改进性*（被测版 vs 上一接受版）回答"这次编辑更好吗"，每轮判定。混同二者的循环在强基座上必然停摆：无技能已达天花板时，任何版本都赢不了存在性问题，但版本间仍可比较。地板永远是护栏，不是每轮的横杆。
+
+---
+
+## §9 演化：不可信的自编辑
+
+技能须随经验改进；但公理 A′ 意味着**无门的自编辑不是演化，是受控退化**（经验锚：自生成技能平均劣化）。全部演化规则由此推出，其总纲是 Campbell 的盲变异-选择保留：变异自由，保留过门。
+
+- **提议-检验（默认拒绝）**：每次编辑过 §8 的改进门才落地；
+- **有界步长**：单次编辑的改动量封顶（文本学习率），禁止毁灭性单步重写；
+- **负知识持久化**：被拒编辑连同其分数落差入缓冲，循环不得重提死路（禁忌搜索的 tabu list）；
+- **批式归纳**：对 ≥3 条共享签名的轨迹簇归纳，不对单条失败反应（n=1 过拟合轨迹局部教训）；
+- **对比对为学习单元**：失败 × 邻近成功，定位"成功里有、失败里无"的行为——孤立失败无锚点，全失败池产出最差技能；无邻近成功的失败簇提示缺**新**能力，路由到抽取（0→1）而非编辑；
+- **角色隔离**：抽取者、执行者、评估者不得互继偏差（§7 去相关定理的循环形态）；
+- **安全入损失**：拒答率、攻击成功率、越界侵入引擎应有裁量，与任务分同门——技能文件是真实攻击面；
+- **抽取的陷阱**：把轨迹（动作序列）编译进技能 = 把一条具体策略固化 = §3 排除的 procedure。抽取蒸馏的是**模式**（哪个位点的缺口在反复出现），不是**路径**。分类前端就是问：反复缺席的是事实（→Knowledge）、被反复即兴的操作（→Capability）、反复出现的"好的样子"（→Judgment）、还是非默认循环（→Control）。
+
+三个演化失效对应三道防线：记忆腐化（早期错误编辑被当作 ground truth 回放）→ 留出任务保持新鲜、永不取自技能自身历史产出；序贯过拟合 → 批式归纳；错向演化（补丁累积降低安全）→ 安全门逐编辑运行。
+
+---
+
+## §10 元技能的落点
+
+把理论施加于"关于技能的技能"，落出四个，共享一个内核：
+
+| 元技能 | 是什么 | 原子构成 |
+|---|---|---|
+| **evaluate** | §6 的尺 + §7/§8 的门（内核：出口验证器） | Judgment + Capability |
+| **write** | 尺反向运行——按 §2–§6 手工作成，含 persona 卸载检查 | Judgment + Knowledge |
+| **seek** | write 由语料驱动 + 存在性门（§9 抽取） | Control + Judgment + Capability |
+| **improve** | 尺置于门后循环（§8 改进 delta + §9 棘轮） | Control + Judgment + Capability |
+
+各自服从其编码的理论：全部以约束而非步进书写；evaluate 的机械入口只降频率、保证在语义出口；improve/seek 只声明 done_when + 角色隔离 + 门，任务迭代留给引擎，**门协议编译为不可跳过**——其顺序的合法性由 §3 第 4 格（认识论顺序）给出，其不可跳过性由 §4 对 Control 的编译要求给出。
+
+---
+
+## §11 已知边界（诚实清单）
+
+理论到此完备但不封闭。三条边界，性质是**承诺**而非欠账——论证到头了，如实划界：
+
+1. **架构索引性。** §2 的穷尽性是**相对于当前介入面（§0）与循环结构（§2）的定理**，不是永恒真理。若 Agent Skills 标准演化出新的介入通道（技能设置采样参数、路由模型、生成子 agent 拓扑），即出现新的参数位，元组须重推。§2 的消融实验是对这条边界的常设审计。
+2. **泛化不可解，只可诚实定界。** 任何有限留出集上的门只认证到该集合的分布；§8-4 的确认切片把过拟合的窗口收窄，不消灭它。理论的上限是声明边界，不是超越边界。
+3. **部分 φ 机器不可判。** 语义质量的某些维度（一张思维导图"好不好"）不存在编译态。此时正确的技能行为是声明不判并把残差路由到 seam（§6）；而"哪些维度属于此类"是一个随模型能力移动的经验边界——理论无法先验划定它，只能要求技能显式声明自己的划法。
+
+---
+
+## §12 汇流：一句话与一条轴
+
+整个理论可压缩为一句话：
+
+> **只在循环的缺陷位点介入，以公理 A′ 的失效所要求的形态介入，且仅在 L2 认证介入。**
+
+一条轴贯穿始终——**留给引擎多少**：分类按位点（不是按产出），书写按恰好填充（删除引擎的份额），形态按失效位置（该编译处编译），判定按认识论层级（阅读只是预测），演化按统计宪章（门外无真步）。每条规则都是这条轴在一个环节上的投影。
+
+---
+
+## 参考
+
+按可信度谱系分三层，不混排。
+
+### 经典理论层（奠基文献，给推导以血统）
+
+- Newell, A. (1982). *The Knowledge Level.* AAAI 主席演讲 / Artificial Intelligence 18. —— 公理 A；功能层描述的合法性执照（§2）。
+- Simon, H. A. (1955). *A Behavioral Model of Rational Choice.* —— 有限理性；公理 A′ 的血统（§1）。
+- Ryle, G. (1949). *The Concept of Mind.* —— knowing-that / knowing-how 不可归约；Knowledge 与 Capability 之别、双态的哲学祖先（§2, §4）。
+- Hume, D. (1739). *A Treatise of Human Nature.* —— is/ought 之别（§2）。
+- Searle, J. (1979/1983). 适应方向（direction of fit）。—— is 与 ought 的当代严格形式（§2）。
+- von Wright, G. H. (1951). *Deontic Logic.* Mind. —— ought 的逻辑（§2, §3 第 3 格）。
+- Miller, G., Galanter, E., & Pribram, K. (1960). *Plans and the Structure of Behavior.* —— TOTE 单元；循环签名的认知科学原型（§2）。
+- Kowalski, R. (1979). *Algorithm = Logic + Control.* CACM. —— 陈述 what、how 留给推理机；Procedure 排除的 CS 版本（§3）。
+- Sacerdoti, E. (1975); McAllester, D. & Rosenblitt, D. (1991). 偏序规划。—— 顺序仅由因果理由生成（§3）。
+- Anderson, J. R. (1982). *Acquisition of Cognitive Skill.* —— ACT-R 知识编译/程序化；双态的认知科学形态（§4）。
+- Saltzer, J., Reed, D., & Clark, D. (1984). *End-to-End Arguments in System Design.* —— 出口是唯一保证（§4）。
+- Condorcet (1785). 陪审团定理。—— judge 聚合的独立性条件（§7）。
+- Neyman, J. & Pearson, E. (1933). 统计功效框架。—— 功效前置（§8-3）。
+- Šidák, Z. (1967). 族错误率校正。—— 1−(1−p)ⁿ（§8-2）。
+- Dwork, C. et al. (2015). *The Reusable Holdout.* Science. —— 自适应数据分析下留出集失效（§8-4）。
+- Glover, F. (1986). 禁忌搜索。—— 负知识缓冲（§9）。
+- Campbell, D. T. (1960). 盲变异-选择保留。—— 演化总纲（§9）。
+- Popper, K. (1959). 猜想与反驳的认识论。—— 可证伪预测（§2）、提议-检验（§9）。
+- Pearl, J. (2000). *Causality.* —— 技能作为介入、do-算子（§6, §7）。
+
+### 经验证据层（已验证语料）
+
+- **SoK: Agentic Skills** — arXiv 2602.20867 —— SkillsBench：+16.2pp 策划 / −1.3pp 自生成（§1, §3, §9）；四元组 S=(C,π,T,R)（§2 三角验证）。
+- **CTA** — arXiv 2605.11946 —— skill inertia 的定名与测量（§1, §3）。
+- **Externalization in LLM Agents** — arXiv 2604.08224 —— 外化过程的对立观点及其与本理论的和解（决策启发与规范约束即 Judgment 与 Control）。
+- **SkillGen** — arXiv 2605.10999 —— 技能作为介入建模；对比归纳（§6, §9）。
+- **SkillOpt** — arXiv 2605.23904 —— 验证门、文本学习率、被拒编辑缓冲（§8, §9）。
+- **SkillLens** —（经二手摘要引用，标注为 secondary）—— 46.4% 无引导 judge 精度；三个有效文本信号；成败配比（§7, §9）。
+- **CoEvoSkills / EvoSkills** — arXiv 2604.01687 —— 信息隔离的代理验证器（§7 去相关）。
+- **Trace2Skill** —（emergentmind 聚合页，标注为 secondary）—— 批式归纳（§9）。
+- **MUSE-Autoskill** — arXiv 2605.27366 —— with/without 协议（§6, §9）。
+- **SkillX** — arXiv 2604.04804 —— 门内的探索扩展（§9）。
+- **AXIS** — arXiv 2409.17140 —— 轨迹忠实抽取的回放陷阱（§9）。
+- **SkillClaw** — arXiv 2604.08377 —— 集体演化、去重保全（§9）。
+- **CODESKILL** — arXiv 2605.25430 —— 失败配对的技能修订（§9）。
+- **Skill-Inject** — arXiv 2602.20156 —— 技能文件作为攻击面（§9）。
+- **Personas in System Prompts Do Not Improve Performances of LLMs** — arXiv 2311.10054, EMNLP 2024 Findings —— 162 角色 × 4 模型家族 × 2410 题：persona 不提升且效应漂移；persona 卸载规则的经验锚（§5）。
+- **Anthropic Agent Skills 最佳实践** — agentskills.io —— SKILL.md 标准；真实任务语境的抽取要求（§0, §9）。
+
+### 本文构造（原创主张，显式标注）
+
+- **循环签名穷尽性论证**（§2）——以介入面 + 循环参数位替代概念分析；由 §11-1 架构索引、由消融实验常设审计。
+- **消费点个体化**（§2）——原子由承重位点定义；程序语言理论的绑定时间（binding time）是其最近亲缘，但用于切分知识类型是本文构造。
+- **顺序合法性的六格闭合**（§3）——iff 判据 + 从 §2 继承的闭合性；各格分别有血统，闭合本身是本文推论。
+- **persona 卸载规则**（§5）——"不可审计故须兑现"的定理化及其翻译式逃生门。

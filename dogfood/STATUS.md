@@ -2,18 +2,18 @@
 
 skillwise's own skills must clear the ruler they apply to others. This directory keeps that account honest: it holds **experiments, not product surface**. CI never runs anything here (cost); the repo's CI stays lint-only.
 
-## Current honest grade: `static_only`
+## Current honest grades
 
-By their own tier classification all four meta-skills are **production/library**, so the effect layer (L2 — the only certifying layer, `docs/THEORY.md` §7) is *mandatory* for them. It has not been run as a held-out certification. Per the gate's own resolution order, an effect layer that is required but unrun resolves to **`static_only`**, not `pass`:
+By their own tier classification all four meta-skills are **production/library**, so the effect layer (L2 — the only certifying layer, `docs/THEORY.md` §7) is *mandatory* for them. Per the gate's resolution order, required-but-unrun resolves to **`static_only`**, not `pass`; and a run that fails resolves to `fail`, recorded here rather than euphemized:
 
 | skill | tier | structural layer (L0 entry + static read) | effect layer (L2) |
 |---|---|---|---|
-| evaluate-skill | production | checked (linter clean; adversarially reviewed) | **not run** → `static_only` |
+| evaluate-skill | production | checked (linter clean; adversarially reviewed) | **ran 2026-07 → `fail` (reproduced negative transfer)** on the hardened seed set with sonnet judges: +0.17 on broken-skill detection, −0.25 on good-skill preservation. Gap confirmed real (`no_skill` 0.75). Routed to `improve-skill` per the sub-floor rule; repair target: weld §4's pricing discipline into the form check. See [`evaluate-delta-run/results.md`](./evaluate-delta-run/results.md). |
 | write-skill | library | checked | **not run** → `static_only` |
 | seek-skill | production | checked | **not run** → `static_only` |
 | improve-skill | production | checked | **not certified** → `static_only` (one live KEEP demo exists — `delta_step +0.375` on `write-changelog-entry` — an anecdote of the loop working once, not a held-out certification of the skill) |
 
-"Each meta-skill obeys the theory it encodes" is therefore a claim about the **structural layer only**. The behavioral claim stays open until the experiments below run; the README carries the same qualification.
+"Each meta-skill obeys the theory it encodes" remains a claim about the **structural layer only** — and the first behavioral measurement made the distinction concrete: the kernel's static read is clean, and its measured existence delta on a hard set was *negative*. That is the framework working, not failing: a static pass is not a verdict, and the gate exists precisely to catch this before "obeys the theory" gets quoted as certification. The README carries the same qualification.
 
 ## What would close the account
 

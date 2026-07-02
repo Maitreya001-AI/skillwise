@@ -1,0 +1,50 @@
+{
+  "skill-01": {
+    "truth": "good",
+    "defect": null
+  },
+  "skill-02": {
+    "truth": "broken",
+    "defect": "nogap"
+  },
+  "skill-03": {
+    "truth": "good",
+    "defect": null
+  },
+  "skill-04": {
+    "truth": "broken",
+    "defect": "overfill-cost"
+  },
+  "skill-05": {
+    "truth": "good",
+    "defect": null
+  },
+  "skill-06": {
+    "truth": "broken",
+    "defect": "underfill"
+  },
+  "skill-07": {
+    "truth": "good",
+    "defect": null
+  },
+  "skill-08": {
+    "truth": "broken",
+    "defect": "wrong-form"
+  },
+  "skill-09": {
+    "truth": "broken",
+    "defect": "overfill-order"
+  },
+  "skill-10": {
+    "truth": "good",
+    "defect": null
+  },
+  "skill-11": {
+    "truth": "broken",
+    "defect": "no-exit"
+  },
+  "skill-12": {
+    "truth": "good",
+    "defect": null
+  }
+}

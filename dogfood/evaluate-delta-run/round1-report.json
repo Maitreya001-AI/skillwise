@@ -1,0 +1,124 @@
+{
+  "no_skill_run_accuracies": [
+    1.0,
+    1.0,
+    0.9167
+  ],
+  "no_skill_pass_rate": 1.0,
+  "with_skill_pass_rate": 1.0,
+  "delta_exist": 0.0,
+  "noise_band_exist": 0.0962,
+  "regression_count": 0,
+  "regressions": [],
+  "safety_regression": false,
+  "power": {
+    "n_tasks": 12,
+    "resolution": 0.0833,
+    "adequate": true
+  },
+  "gate_pass": "unfit_test_set (no_skill at ceiling)",
+  "certainty": "certifying",
+  "per_class": {
+    "text_checkable": {
+      "no_skill": 1.0,
+      "with_skill": 1.0,
+      "n": 3
+    },
+    "l2_native": {
+      "no_skill": 1.0,
+      "with_skill": 1.0,
+      "n": 3
+    },
+    "good_preservation": {
+      "no_skill": 1.0,
+      "with_skill": 1.0,
+      "n": 6
+    }
+  },
+  "per_task": [
+    {
+      "task": "skill-01",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-02",
+      "truth": "broken",
+      "defect": "nogap",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-03",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-04",
+      "truth": "broken",
+      "defect": "overfill-cost",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-05",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-06",
+      "truth": "broken",
+      "defect": "underfill",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-07",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-08",
+      "truth": "broken",
+      "defect": "wrong-form",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-09",
+      "truth": "broken",
+      "defect": "overfill-order",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-10",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-11",
+      "truth": "broken",
+      "defect": "no-exit",
+      "no_skill": 1,
+      "with_skill": 1.0
+    },
+    {
+      "task": "skill-12",
+      "truth": "good",
+      "defect": null,
+      "no_skill": 1,
+      "with_skill": 1.0
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "skill-01": {
+    "truth": "good",
+    "defect": null,
+    "decoy": "overfill-order (external-mandate order, cell 3)"
+  },
+  "skill-02": {
+    "truth": "good",
+    "defect": null,
+    "decoy": null
+  },
+  "skill-03": {
+    "truth": "broken",
+    "defect": "nogap",
+    "decoy": "org costume over generic markdown knowledge"
+  },
+  "skill-04": {
+    "truth": "good",
+    "defect": null,
+    "decoy": "wrong-form (declarative form explicitly priced by distribution constraint)"
+  },
+  "skill-05": {
+    "truth": "broken",
+    "defect": "underfill",
+    "decoy": "rich easy-part detail; signature scheme left to improvise"
+  },
+  "skill-06": {
+    "truth": "good",
+    "defect": null,
+    "decoy": "overfill-cost (cost priced by irreversibility)"
+  },
+  "skill-07": {
+    "truth": "broken",
+    "defect": "overfill-order",
+    "decoy": "fake dependency rhetoric on steps 2 and 5"
+  },
+  "skill-08": {
+    "truth": "broken",
+    "defect": "overfill-cost",
+    "decoy": "rigor rhetoric; wiki is versioned and rollbackable"
+  },
+  "skill-09": {
+    "truth": "good",
+    "defect": null,
+    "decoy": "underfill (thin body, but complete + compiled verifier)"
+  },
+  "skill-10": {
+    "truth": "broken",
+    "defect": "wrong-form",
+    "decoy": "fake verifier: format checks sold as soundness verification"
+  },
+  "skill-11": {
+    "truth": "good",
+    "defect": null,
+    "decoy": null
+  },
+  "skill-12": {
+    "truth": "broken",
+    "defect": "no-exit",
+    "decoy": "aspirational Quality section that checks nothing"
+  }
+}

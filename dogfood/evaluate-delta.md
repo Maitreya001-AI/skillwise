@@ -22,4 +22,9 @@ Whether a **compiled exit verifier** produces a behavioral difference over prose
 
 ## Status
 
-Designed, not run. Until it runs, `evaluate-skill`'s row in [`STATUS.md`](./STATUS.md) stays `static_only` and the README claim stays qualified.
+**Run — twice, 2026-07-03** (full trace in [`evaluate-delta-run/`](./evaluate-delta-run/), writeup in [`evaluate-delta-run/results.md`](./evaluate-delta-run/results.md)):
+
+- **Round 1** (plainly-written defects, `seed-skills/`): `unfit_test_set` — `no_skill` at ceiling (an unaided sonnet judge aces blatant implants); hardened per the gate's routing.
+- **Round 2** (theory-boundary decoys, `seed-skills-r2/`): **`fail` — reproduced negative transfer** (`delta_exist −0.042`; the skill lifts broken-skill detection +0.17 but drops good-skill preservation 1.00 → 0.75; cleanest regression: both with-skill runs mislabeled an honestly-priced prose-rules skill as `wrong-form`). The gap is real (`no_skill` 0.75), so per the sub-floor routing this goes to `improve-skill` — first repair target: the form check must carry its own §4 pricing discipline instead of relying on a nearby paragraph.
+
+The side question came back too: the with-skill gain concentrates in exactly what a static read can see, and the loss concentrates where applying the method needs judgment — §7's claim, observed behaviorally.

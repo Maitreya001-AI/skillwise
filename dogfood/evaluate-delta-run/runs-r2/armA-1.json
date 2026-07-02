@@ -1,0 +1,12 @@
+[{"skill":"skill-01","verdict":"good","primary_defect":null,"reason":"Specific consent, retention, anonymization rules a base agent wouldn't know; order is legally mandated."},
+{"skill":"skill-02","verdict":"broken","primary_defect":"wrong-form","reason":"Multi-field SQL rules are mechanically checkable but shipped as prose, no linter script."},
+{"skill":"skill-03","verdict":"good","primary_defect":null,"reason":"Real team-specific table conventions; appropriately lightweight prose form for low-stakes style rules."},
+{"skill":"skill-04","verdict":"good","primary_defect":null,"reason":"Explicitly prices the prose-vs-script trade-off for cross-runtime distribution; correctly justified, not a defect."},
+{"skill":"skill-05","verdict":"broken","primary_defect":"underfill","reason":"Leaves signature-verification mechanics unspecified ('shared-secret scheme'); agent must improvise the security-critical step."},
+{"skill":"skill-06","verdict":"good","primary_defect":null,"reason":"Heavy irreversible-deletion protocol matches real stakes; order justified by dependency and irreversibility."},
+{"skill":"skill-07","verdict":"broken","primary_defect":"overfill-order","reason":"Mandates a rigid debugging step order with rationalized, unproven dependencies; forbids reordering."},
+{"skill":"skill-08","verdict":"broken","primary_defect":"overfill-cost","reason":"Three-reviewer sign-off, evidence memo, screenshots, 24h cooling apply even to a typo fix."},
+{"skill":"skill-09","verdict":"good","primary_defect":null,"reason":"Compiled verifier script matches multi-field semver rules; declared non-skippable and authoritative."},
+{"skill":"skill-10","verdict":"broken","primary_defect":"wrong-form","reason":"Script only checks section headers, length, keywords — doesn't verify claimed argumentative soundness."},
+{"skill":"skill-11","verdict":"good","primary_defect":null,"reason":"Specific org handoff format fills a real gap; lightweight, appropriately-matched grep-based exit."},
+{"skill":"skill-12","verdict":"broken","primary_defect":"no-exit","reason":"No exit or 'what correct looks like' section; 'Quality' guidance is vague, unverifiable prose."}]

@@ -20,7 +20,7 @@ A skill can influence an agent through exactly two channels — injected text an
 | [`seek-skill`](./skills/seek-skill) | authoring driven by a corpus — discovery | mining or auto-generating a skill from traces, a run, or a codebase |
 | [`improve-skill`](./skills/improve-skill) | the ruler in a gated loop | a skill isn't triggering, is over-built, or fails cases; evolving from failure traces |
 
-`evaluate-skill` is the kernel: `write-skill` and `seek-skill` call it as an exit gate, and `improve-skill` calls it as the gate inside its loop. Together they span the skill lifecycle — experience → extraction (`seek`) → consumption and evolution (`improve`) — with hand-authoring (`write`) and judgment (`evaluate`) throughout. Each works alone; they're designed to work together.
+`evaluate-skill` is the kernel: `write-skill` and `seek-skill` call it as an exit gate, and `improve-skill` calls it as the gate inside its loop. Together they span the skill lifecycle — experience → extraction (`seek`) → consumption and evolution (`improve`) — with hand-authoring (`write`) and judgment (`evaluate`) throughout. Each works alone; they're designed to work together. There is also one **explicit entry**: type `/skillwise <a skill path | a requirement | a corpus>` and it routes you to the right door on observable evidence (a compiled state probe), hands off once, and stops — it never orchestrates, and it stays out of automatic routing (the four skills' own triggers are unchanged).
 
 ## Install
 
@@ -51,7 +51,7 @@ npx skills@latest add Maitreya001-AI/skillwise --all -g -a claude-code -y
 /plugin install skillwise@skillwise
 ```
 
-Then just talk to it — "evaluate this skill", "write a skill for X", "improve this skill from these traces" — and the skills trigger by description. Explicit invocation is namespaced: `skillwise:evaluate-skill`.
+Then just talk to it — "evaluate this skill", "write a skill for X", "improve this skill from these traces" — and the skills trigger by description. Explicit invocation is namespaced: `skillwise:evaluate-skill`; and `/skillwise` is the explicit front door when you'd rather be routed than pick the skill yourself.
 
 ### 3. Manual
 

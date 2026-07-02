@@ -9,13 +9,14 @@
     {
       "name": "skillwise",
       "source": "./",
-      "description": "Four meta-skills (evaluate / write / seek / improve) for working on agent skills, plus a dependency-free linter.",
+      "description": "Four meta-skills (evaluate / write / seek / improve) for working on agent skills, plus a dependency-free linter and a /skillwise explicit entry.",
       "strict": false,
       "skills": [
         "./skills/evaluate-skill",
         "./skills/write-skill",
         "./skills/seek-skill",
-        "./skills/improve-skill"
+        "./skills/improve-skill",
+        "./skills/skillwise"
       ]
     }
   ]

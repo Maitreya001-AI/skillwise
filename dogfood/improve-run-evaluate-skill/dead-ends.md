@@ -22,11 +22,12 @@
   into the verdict protocol (forced per-suspect probe in the output contract), not more prose.
 - **e3 "default-verdict-unless-quoted" (+2 lines, decoy probes compiled into the verdict protocol)** —
   screened 11/12 on burned r2 (caught the fake-specificity decoy with the right token, zero FP)
-  but **REVERTED at the round-3 gate**: the mechanism transmits reliably (all three decoy tasks
-  02/03/29 caught in every edited run — the transmission problem d1 died of is solved) yet the
-  strengthened default over-fires on genuine goods whose content skirts generic practice:
-  reproduced conviction of task-10 (SQL review bar; nogap'd in 2 of 2 runs → median 0, floor
-  breach) plus 1-run convictions of task-12/18. Negative transfer relocated, not removed.
+  but **REVERTED at the round-3 gate**: the mechanism transmits reliably (decoy tasks 02/03/29
+  all flipped on medians — the transmission problem d1 died of is solved) yet the strengthened
+  default over-fires on genuine goods whose content skirts generic practice: reproduced
+  conviction of task-10 (SQL review bar; nogap'd 2 of 3 runs → median 0, floor breach) and a
+  reproduced task-07 drop (also a floor breach), plus 1-run convictions of task-12/18.
+  delta_step +0.0345 ≤ band 0.0398 besides. Negative transfer relocated, not removed.
   Combined lesson of rounds 2+3: prose under-applies (1/3 runs), forced defaults over-apply —
   the org-specific-vs-generic discrimination is exactly the deletion test, which THEORY §7
   classifies as L2-native; no wording of a static L1 prediction makes it reliably calibrated.

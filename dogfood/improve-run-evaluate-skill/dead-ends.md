@@ -10,3 +10,13 @@
   *implicitly* (fixtures where pricing requires judgment, not recitation); (2) cannot rule out
   that "burden of proof is on the finding" wording induces general leniency beyond wrong-form —
   the next candidate should scope the default-deny strictly to the wrong-form verdict sentence.
+- **d1 "self-description is a claim, never evidence" (+2 lines, prose decoy discipline)** — screened
+  12/12 on burned r2 (only candidate to fix both directions; c4/c5/c6/d2/d3 all ≤10/12) but
+  **REVERTED at the round-2 authoritative gate** on the hardened 29-seed working set:
+  delta_step 0.000 ≤ band 0.0398; no regressions; entry floor breach on task-03 unrepaired.
+  The edit transmitted in exactly 1 of 3 runs (b-2 caught two costume nogaps citing the new rule;
+  b-1/b-3 never applied it). Same failure shape as round-1's c1 and r2's pricing clause: a prose
+  paragraph does not reliably change verdict behavior where applying it requires judgment —
+  which is THEORY §4's form theorem observed on ourselves: content that must HOLD (be applied
+  every run) cannot ship merely as declarative text. Round-3 hypothesis: same content, compiled
+  into the verdict protocol (forced per-suspect probe in the output contract), not more prose.

@@ -1,0 +1,122 @@
+{
+ "skill": "skills/evaluate-skill",
+ "tier": "production",
+ "evaluated_layers": [
+  "structural",
+  "effect"
+ ],
+ "gate_pass": "pass",
+ "certainty": "certifying",
+ "scope": "existence branch; 29-seed held-out set (dogfood r3/r4 working slice) under the pre-registered behavioral label key; consumer engine: claude-sonnet judges in isolated contexts; 2026-07-06",
+ "power": {
+  "n_tasks": 29,
+  "resolution": 0.0345,
+  "adequate": true
+ },
+ "judges": [
+  {
+   "model": "claude-sonnet",
+   "isolated": true,
+   "runs": "ns x3, with-skill x3, fresh contexts, name-neutral variants"
+  }
+ ],
+ "structural": {
+  "findings": [],
+  "failure_taxonomy": {},
+  "waived_count": 0,
+  "note": "L0 linter clean; adversarially reviewed"
+ },
+ "effect": {
+  "no_skill_pass_rate": 0.7241,
+  "with_skill_pass_rate": 0.8276,
+  "delta_exist": 0.1034,
+  "noise_band_exist": 0.0796,
+  "tokens_no_skill": null,
+  "tokens_with_skill": null,
+  "cost_ratio": null,
+  "cost_note": "not instrumented (standing debt, dogfood/STATUS.md); the inertia-cost fatal is structurally inapplicable when delta_exist clears the band",
+  "floor_ok": true,
+  "regression_count": 0,
+  "safety_regression": false,
+  "per_task": [
+   {
+    "task": "task-02",
+    "truth": "broken",
+    "defect": "nogap",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-05",
+    "truth": "broken",
+    "defect": "nogap",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-08",
+    "truth": "broken",
+    "defect": "wrong-form",
+    "no_skill": 0,
+    "with_skill": 1
+   },
+   {
+    "task": "task-15",
+    "truth": "broken",
+    "defect": "wrong-form",
+    "no_skill": 0,
+    "with_skill": 1
+   },
+   {
+    "task": "task-16",
+    "truth": "broken",
+    "defect": "wrong-form",
+    "no_skill": 0,
+    "with_skill": 1
+   },
+   {
+    "task": "task-17",
+    "truth": "broken",
+    "defect": "nogap",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-24",
+    "truth": "good",
+    "defect": null,
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-29",
+    "truth": "broken",
+    "defect": "overfill-order",
+    "no_skill": 0,
+    "with_skill": 0
+   }
+  ]
+ },
+ "discrimination": null,
+ "fix_list": [
+  {
+   "finding_id": "ADV1",
+   "priority": 1,
+   "hint": "decoy-boundary headroom: on tasks 02/05/17 (behaviorally-nogap conventions) the skill matches no-skill at 0 \u2014 no negative transfer, no lift; five prompt-layer repair mechanisms all reverted (see dead-ends.md); next viable form is an orchestrator-run deletion probe that does not compete with the judge's read"
+  },
+  {
+   "finding_id": "ADV2",
+   "priority": 2,
+   "hint": "wrong-form vs no-exit token confusion persists across all conditions on silent-drop seeds (08/15/16 class) \u2014 a taxonomy-boundary clarification candidate for a future round on a fresh set"
+  },
+  {
+   "finding_id": "ADV3",
+   "priority": 3,
+   "hint": "order-mandate acquittals with plausible dependency narratives (task-29) resist every tried mechanism \u2014 candidate for behavioral shuffle probing"
+  }
+ ],
+ "history": {
+  "r2_existence_run": "fail (2026-07-03) on the 12-seed r2 set under by-construction labels; superseded as the current best-grounded reading by this run \u2014 both records stand in dogfood/",
+  "improve_rounds": "5 rounds incl. plateau-break, all REVERT, terminal already_optimal on this set (dogfood/improve-run-evaluate-skill/)"
+ }
+}

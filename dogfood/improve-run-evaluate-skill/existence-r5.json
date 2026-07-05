@@ -1,0 +1,35 @@
+{
+ "skill": "skills/evaluate-skill (entry version, r2-era text)",
+ "branch": "existence",
+ "key": "labels-behavioral.json (pre-registered procedure, behavioral-labels.md)",
+ "ns_run_aggregates": [
+  0.7586,
+  0.6897,
+  0.7586
+ ],
+ "noise_band_exist": 0.0796,
+ "no_skill_pass_rate": 0.7241,
+ "with_skill_pass_rate": 0.8276,
+ "delta_exist": 0.1034,
+ "regression_count": 0,
+ "regressions": [],
+ "safety_regression": false,
+ "cost": "not instrumented (standing debt); the inertia-cost fatal is structurally inapplicable when delta_exist clears the band",
+ "power": {
+  "n_tasks": 29,
+  "resolution": 0.0345,
+  "adequate": true
+ },
+ "judges": [
+  {
+   "model": "claude-sonnet",
+   "isolated": true,
+   "runs": "ns x3, with-skill x3, fresh contexts, name-neutral variants"
+  }
+ ],
+ "headroom": {
+  "no_skill_at_ceiling": false
+ },
+ "verdict": "pass",
+ "certainty": "certifying (n>=6) \u2014 scoped to this seed distribution, sonnet judges, behavioral key"
+}

@@ -18,6 +18,41 @@
 - Round cap: 10 (default). Bounded step: <=30 changed lines inside skills/evaluate-skill/.
 - Cost: sub-agent token counts not exposed by the harness -> cost_delta recorded as n/a (advisory).
 
+## Amendment 3 (logged 2026-07-06, after the Amendment-2 calibration runs, BEFORE any candidate was gated)
+
+**Calibration verdict on the 23-seed slice: `unfit_test_set` for the improvement question — halt and harden (gate rule, §8-3).**
+The Amendment-2 conditions ran as declared (no-skill ×2; previous-accepted ×3 fresh). Three findings, recorded before any edit was applied or screened against this set:
+
+1. **The r2-diagnosed defect does not express here.** Zero `wrong-form` false positives on the four implicit repair-class seeds (25–28) across all three reference runs (12/12 preserved). The r2 negative transfer appears narrower than diagnosed: its expression class is "mechanically-checkable-*looking* rule grammars" (r2's skill-02 was an org SQL bar), not prose-rules-with-manual-exit in general — tone/register/email/visual seeds do not bait the FP.
+2. **The live defect on this set is the leniency face**: reference per-seed medians fall below the no-skill floor on task-02 (nogap in team costume) and task-23 (welded march with fake-dependency rhetoric) — the same two failure shapes as round-1's REVERT fatals.
+3. **Structural unfitness**: reference run aggregates 0.957 / 0.826 / 0.913 → noise band 0.133, while the max showable `delta_step` (2 headroom tasks / 23) is 0.087 — no candidate can mathematically KEEP. Same shape as the r2 run's limitation #3.
+
+**Hardening (this amendment):** six seeds added to `seed-skills-r4/` — skill-31/32 (broken, nogap in org costume: generic Python error-handling / REST pagination wisdom in team dress), skill-33/34 (broken, overfill-order with fake-dependency rhetoric: "the discipline is the sequence" / "visual thinking contaminates query thinking"), skill-35/36 (good, the *actual* r2 FP-expression class: SQL review bar / Terraform naming grammar — mechanically-checkable-looking, implicit pricing, manual review exit, no guarantee claim). Working slice: **29 seeds (14 good / 15 broken)**, resolution 0.0345, adequate. Confirmation slice untouched. All conditions re-run fresh on the 29-seed slice (no-skill ×2, previous-accepted ×3, edited ×3); the 23-seed calibration runs are archived as `calibration-23/`, not authoritative. Round-2 diagnosis updates to the **decoy-leniency mechanism** (self-justifying rhetoric accepted as evidence); the wrong-form-FP scoped candidates (c4/c5/c6, screened on burned r2) are recorded but not selected — their target does not express on the authoritative set.
+
+## Amendment 2 (logged 2026-07-06, BEFORE any round-2 run)
+
+**Working set hardened for the diagnosed defect (per round-1's prescription in dead-ends.md).**
+Round 1 established the r3 working slice never expresses the wrong-form-FP defect: its
+repair-class seeds (03, 09) recite their §4 pricing in-text. Per the gate ("the remedy is
+harder or more numerous fixtures"), six fresh seeds were authored into `dogfood/seed-skills-r4/`:
+
+- skill-25..28 — **good, repair-class, implicit pricing**: prose rules + honest manual exit
+  where the *context* (human-read artifact, loud cheap failure, or an honestly-manual visual
+  dimension) makes declarative form rational, but the justification is never recited in-text.
+  Judging them correctly requires applying the pricing clause, not quoting the seed.
+- skill-29..30 — **broken, wrong-form with a guarantee claim**: machine-parsed downstream,
+  silent drops, scale, a claimed guarantee their prose form cannot deliver, no
+  validator/builder. These punish the leniency direction round-1's c1 died on.
+
+Working slice for round 2: r3 {01..10, 12..18} + r4 {25..30} = **23 seeds (12 good / 11 broken)**;
+power: n_tasks=23, resolution=0.0435, adequate. Confirmation slice unchanged (r3 skill-19..24,
+still untouched, labels still outside the repo). For the runs, seeds are copied to a session
+workspace under neutral names task-01..task-23 (interleaved mapping, recorded) so the r4
+additions are not identifiable as a block; labels-r4 stay outside the repo until runs complete.
+All conditions re-run fresh on the 23-seed slice this round: no-skill ×2, previous-accepted
+(= entry version @HEAD, round 1 reverted) ×3, edited ×3 — the tested condition moves to 3 runs
+per round-1's protocol note on the weak n=2 median filter.
+
 ## Amendment (logged 2026-07-03, after gate run ns-2 arrived, BEFORE any a/b result)
 
 **skill-11 excluded from scoring (working n: 18 -> 17; resolution 0.0588, still adequate).**

@@ -9,19 +9,20 @@ e1 10/12, e2 11/12 (conviction routed through a wrong token with FP-flavored rea
 
 ## The numbers (edited ×3; reference and floor reused from round 2 per protocol — same set, same entry version)
 
-| | run accuracies | notes |
+| | run accuracies | per-seed-median aggregate |
 |---|---|---|
-| edited (e3) | 0.897 · 0.862 (third run pending at write-up; decision invariant) | gains: task-02/03/29 **caught in every run** |
+| edited (e3) ×3 | 0.828 · 0.897 · 0.862 | **0.897** (`delta_step +0.0345` ≤ band 0.0398) |
 
-- **Gains**: all three reproducibly-failed decoy tasks flipped — costume nogaps 02/03 and the
-  fake-dependency march 29 (medians 1 vs reference 0). The transmission failure that killed d1
-  is solved: a default-verdict rule is applied every run.
-- **Fatal**: **task-10** (SQL review bar, good) convicted `nogap` in 2 of 2 received runs —
-  median 0 vs reference 1 and vs no-skill 1: **reproduced regression + floor breach**, locked
-  regardless of the third run (median of {0,0,x} = 0). Additional 1-run convictions:
-  task-12 (blameless register), task-18 (terraform naming), task-07 drop.
-- **Ratchet: REVERT** (`git checkout -- skills/evaluate-skill`). The average improved
-  (+0.017 on received-run medians); the average is void against a reproduced per-task fatal.
+- **Gains**: all three reproducibly-failed decoy tasks flipped on medians — costume nogaps 02/03
+  and the fake-dependency march 29 (each caught in ≥2 of 3 runs; 03 and 29 in all three). The
+  transmission failure that killed d1 is solved: a default-verdict rule gets applied.
+- **Fatals (reproduced on medians)**: **task-10** (SQL review bar, good) convicted `nogap` in
+  2 of 3 runs — median 0 vs reference 1 and vs no-skill 1; **task-07** (feature-flag underfill)
+  dropped to median 0 vs reference 1 and no-skill 0.5. Both are regressions vs previous *and*
+  floor breaches. One-run convictions (not reproduced, logged only): task-12, task-18.
+- **Ratchet: REVERT** (`git checkout -- skills/evaluate-skill`). The aggregate improved
+  (+0.0345) and would still have been within the noise band; either way the reproduced per-task
+  fatals decide — the average is void against them. Full gate object: `round3-runs/round3-gate.json`.
 
 ## Terminal analysis — why this loop stops here (and where it routes)
 

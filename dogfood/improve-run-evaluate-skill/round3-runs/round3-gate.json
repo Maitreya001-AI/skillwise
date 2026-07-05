@@ -1,0 +1,25 @@
+{
+ "b_run_aggregates": [
+  0.8276,
+  0.8966,
+  0.8621
+ ],
+ "with_edited_pass_rate": 0.8966,
+ "prev_accepted_pass_rate": 0.8621,
+ "delta_step": 0.0345,
+ "noise_band": 0.0398,
+ "gains": [
+  "task-02",
+  "task-03",
+  "task-29"
+ ],
+ "regressions_vs_previous": [
+  "task-07",
+  "task-10"
+ ],
+ "floor_breaches": [
+  "task-07",
+  "task-10"
+ ],
+ "decision": "REVERT (reproduced regressions + floor breaches)"
+}

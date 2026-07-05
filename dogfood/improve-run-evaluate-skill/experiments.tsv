@@ -1,4 +1,4 @@
 round	weakest_dimension	delta_step	delta_exist	cost_delta	floor_ok	regression_count	safety_regression	change	decision	commit
 1	form-check precision (wrong-form FP on good skills)	0.0000	+0.0588	n/a	FALSE	2	false	c1 default-deny wrong-form gate (+6/-1)	REVERT	7eca923
 2	decoy-leniency (costume nogap / fake-dependency acquittal)	0.0000	+0.0690	n/a	FALSE	0	false	d1 evidence-source rule (+2 prose lines)	REVERT	4e44584
-3	decoy-leniency (same defect, compiled-er form)	+0.0172*	+0.0862*	n/a	FALSE	4*	false	e3 default-verdict-unless-quoted (+2 lines)	REVERT (reproduced regression + floor breach task-10)	f3d9169
+3	decoy-leniency (same defect, compiled-er form)	+0.0345	+0.1034	n/a	FALSE	2	false	e3 default-verdict-unless-quoted (+2 lines)	REVERT (reproduced regression + floor breach task-10)	f3d9169

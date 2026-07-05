@@ -1,0 +1,10 @@
+- Output must be valid JSON — parse-round-trip the result before returning it; never emit partially-formatted or truncated JSON.
+- Preserve key order as given in the input; do not alphabetize or reorder object keys unless explicitly requested.
+- Use a consistent, explicit indent width (2 or 4 spaces) throughout the entire document — no mixed tabs/spaces, no drifting indentation.
+- Preserve original data types and precision: do not coerce numeric strings to numbers, truncate floating-point precision, or convert null/booleans to strings.
+- Preserve full Unicode content; do not force-escape non-ASCII characters unless the target format requires ASCII-safe output, and never mangle escaped sequences (\n, \", \\uXXXX) during reformatting.
+- For diffing use cases, keep formatting deterministic and stable across runs (same input → byte-identical output) so diffs show only real content changes, not re-serialization noise.
+- When trimming for documentation, use explicit, visibly-marked truncation (e.g., a `"...": "truncated"` placeholder or comment note outside the JSON) rather than silently dropping keys/array elements.
+- Reject or flag inputs that aren't valid JSON (e.g., JS object literals with unquoted keys, trailing commas, comments) instead of silently "fixing" them into a different structure without calling that out.
+- Match the surrounding context's convention for large numbers/IDs (e.g., int64 values that lose precision in JS) — don't silently reformat them in a way that changes their represented value.
+- When embedding formatted JSON into Markdown, wrap it in a fenced code block tagged ```json and ensure no trailing whitespace or stray blank lines are introduced.

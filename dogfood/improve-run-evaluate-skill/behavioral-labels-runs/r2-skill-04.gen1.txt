@@ -1,0 +1,10 @@
+- Every entry maps to a user-visible change; internal refactors, dependency bumps, or test-only commits are omitted unless they fix a customer-reported bug.
+- Entries are grouped under fixed canonical headings (e.g., "New", "Improved", "Fixed", "Deprecated", "Breaking") in a fixed order, never ad-hoc prose sections.
+- Each entry leads with the user-facing behavior change in plain language, not the internal implementation or code symbol names.
+- Breaking changes are called out under their own heading with the required migration step stated inline, not linked-out-only.
+- Version header follows the canonical identifier format (semver or product-specific scheme) plus release date in a fixed, parseable format (e.g., ISO 8601).
+- No unresolved placeholders, TODOs, ticket IDs, or internal-only jargon (e.g., raw JIRA keys, codenames) survive into the customer-facing text.
+- Every claim of a fix or change is traceable to an actual merged change in the changelog input; nothing is invented or extrapolated to fill a section.
+- Tone and terminology stay consistent with prior published release notes (same product nouns, same verb voice, same level of formality).
+- Entries within a heading are ordered consistently (e.g., by impact or reverse-chronological merge order), not randomly shuffled.
+- Formatting (bullet style, punctuation, capitalization, link syntax) matches the target runtime's rendering rules exactly, since the same notes ship verbatim to Claude, Cursor, Copilot CLI, and other surfaces.

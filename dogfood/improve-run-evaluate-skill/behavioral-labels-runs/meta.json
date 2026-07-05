@@ -1,0 +1,217 @@
+{
+ "w-task-02": {
+  "path": "dogfood/seed-skills-r4/skill-31",
+  "label": "broken",
+  "name": "acme-python-errors",
+  "desc": "Handle errors in Acme's Python services to the platform team's standard. Use when writing or reviewing exception handling, retries, or error logging in any Acme Python codebase.",
+  "rules": [
+   "Catch the specific exception you can handle; a bare `except:` (or `except Exception:` without re-raise) never ships.",
+   "Re-raise with cause preserved: `raise ServiceError(...) from e`, never a naked `raise ServiceError(...)` that severs the chain.",
+   "Log at the boundary where the error is handled, once \u2014 not at every frame it passes through.",
+   "Include operation context in the log line (what was being attempted, with which key identifiers), never just `str(e)`.",
+   "Never swallow an error to \"keep the service up\" without a metric or log marking the swallow.",
+   "Timeouts and retries live at the call site with explicit budgets; a retry loop without a cap never ships."
+  ]
+ },
+ "w-task-03": {
+  "path": "dogfood/seed-skills-r3/skill-02",
+  "label": "broken",
+  "name": "git-commit-style",
+  "desc": "Write commit messages to the team's standard. Use when committing, reviewing commit history, or asked to clean up a branch's messages.",
+  "rules": [
+   "Subject line: imperative mood, <= 72 chars, capitalized, no trailing period (\"Add rate limiter to ingest path\").",
+   "Body: wrap at 72, explain *why* over *what*; reference issues as `Fixes #123`.",
+   "One logical change per commit; unrelated fixes get their own commits.",
+   "Prefix conventional types where they help: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`."
+  ]
+ },
+ "w-task-04": {
+  "path": "dogfood/seed-skills-r4/skill-25",
+  "label": "good",
+  "name": "review-comment-etiquette",
+  "desc": "Write code-review comments to this team's bar. Use when reviewing a pull request, replying in a review thread, or asked to soften or sharpen review feedback.",
+  "rules": [
+   "Never open with \"why didn't you just\u2026\" \u2014 ask what constraint drove the choice, then propose.",
+   "A blocking objection must carry an alternative or a concrete question; a bare \"this is wrong\" never ships.",
+   "Name what kind of comment it is in the sentence itself \u2014 a preference reads \"I'd prefer\u2026\", a defect reads \"this breaks\u2026\"; never leave the author guessing which one they got.",
+   "Never rewrite the author's function wholesale inside a comment; point at the smallest line range that needs to move.",
+   "After three back-and-forths on one thread, take it to a call and post the resolution \u2014 never grind it out inline.",
+   "Praise specifically (\"this made the retry path testable\"), never generically (\"nice!\")."
+  ]
+ },
+ "w-task-05": {
+  "path": "dogfood/seed-skills-r3/skill-03",
+  "label": "good",
+  "name": "support-macro-tone",
+  "desc": "Judge and write customer-support macro responses to this team's tone bar. Use when writing or reviewing canned support replies, help-center answers, or escalation templates.",
+  "rules": [
+   "Never open with an apology template (\"We're sorry for the inconvenience\") \u2014 open with what you're doing about it.",
+   "Never say \"as per our policy\" \u2014 state the policy's substance in plain words.",
+   "Never promise a timeline support doesn't control (engineering ETAs, refund processing by the payment provider).",
+   "Never close with \"Is there anything else?\" on an unresolved ticket \u2014 close with the next concrete step and who owes it."
+  ]
+ },
+ "w-task-10": {
+  "path": "dogfood/seed-skills-r4/skill-35",
+  "label": "good",
+  "name": "sql-review-bar",
+  "desc": "Judge committed SQL against this team's review bar. Use when writing or reviewing analytics queries, dbt models, or any SQL headed for the shared repository.",
+  "rules": [
+   "Keywords uppercase, identifiers lowercase; one clause per line for anything beyond a one-liner.",
+   "No `SELECT *` in committed queries \u2014 name the columns; a model's contract is its column list.",
+   "Aliases are words, not letters: `orders o` fails review, `orders ord` passes.",
+   "Beyond two levels of nesting, restructure as CTEs; each CTE named for what it holds, not `t1`/`t2`.",
+   "Every JOIN carries its condition explicitly; implicit cross joins and USING-clause shortcuts fail review.",
+   "Magic constants get a comment or a reference table; a bare `WHERE status = 3` fails review."
+  ]
+ },
+ "w-task-12": {
+  "path": "dogfood/seed-skills-r4/skill-26",
+  "label": "good",
+  "name": "postmortem-language",
+  "desc": "Write incident postmortems in this org's blameless register. Use when drafting or editing a postmortem, an incident summary, or the analysis section of an incident review doc.",
+  "rules": [
+   "No individual is ever the cause. \"The engineer restarted the primary\" becomes \"the runbook permitted a primary restart without a replica check.\"",
+   "\"Human error\" never appears as a root cause \u2014 name the missing guardrail instead.",
+   "Every counterfactual is phrased as an absent system property (\"nothing alerted on replication lag\"), never as a person's failure to act.",
+   "Timeline entries are observations with timestamps, not judgments \u2014 \"14:02 deploy finished\" not \"14:02 the bad deploy landed\".",
+   "The word \"obviously\" and its cousins (\"clearly\", \"simply\") never appear; if it were obvious it would not have happened."
+  ]
+ },
+ "w-task-14": {
+  "path": "dogfood/seed-skills-r4/skill-32",
+  "label": "broken",
+  "name": "platform-rest-pagination",
+  "desc": "Design list endpoints to the platform team's pagination conventions. Use when adding a collection endpoint, reviewing API designs, or migrating an endpoint from offset to cursor paging.",
+  "rules": [
+   "Cursor-based paging for any collection that can grow unboundedly; offset paging only for small, bounded lists.",
+   "Cursors are opaque tokens \u2014 clients never parse or construct them.",
+   "The sort underlying a cursor is stable and unique (tiebreak on id), or pages can skip and repeat rows.",
+   "Default page size 50, maximum 200; requests above the max are clamped, not rejected.",
+   "The response carries `next_cursor` (null on the last page); clients stop on null, never on a short page.",
+   "Filters and sort order are baked into the cursor; changing them mid-iteration restarts the walk."
+  ]
+ },
+ "w-task-17": {
+  "path": "dogfood/seed-skills-r3/skill-09",
+  "label": "good",
+  "name": "grpc-service-naming",
+  "desc": "Name gRPC services, methods, and messages to this org's API standards. Use when designing or reviewing a proto file, adding an RPC, or naming request/response messages.",
+  "rules": [
+   "Services are `<Domain>Service` (`LedgerService`), never `<Domain>API` or bare `<Domain>`.",
+   "Methods are verb-first imperative: `CreateInvoice`, `ListCharges` \u2014 never `InvoiceCreate`, never `GetAll*`.",
+   "Request/response messages pair with their method: `CreateInvoiceRequest` / `CreateInvoiceResponse`, even when the response is empty today (empty responses grow fields; `google.protobuf.Empty` freezes you).",
+   "Streaming methods say so: `WatchOrders`, `StreamEvents` \u2014 a non-streaming `Watch*` fails review.",
+   "Field names are `snake_case`; enums are `SCREAMING_SNAKE` with a zero value named `<ENUM>_UNSPECIFIED`."
+  ]
+ },
+ "w-task-18": {
+  "path": "dogfood/seed-skills-r4/skill-36",
+  "label": "good",
+  "name": "terraform-naming",
+  "desc": "Name Terraform resources and modules to this org's grammar. Use when writing new Terraform, reviewing an infra PR, or importing existing resources into state.",
+  "rules": [
+   "Resource names: `<env>-<team>-<purpose>`, hyphenated, lowercase \u2014 `prod-payments-ledger-db`, never `LedgerDatabase2`.",
+   "The `env` segment is one of `dev`, `stage`, `prod`; nothing else, no abbreviations.",
+   "Module directories are nouns for what they provision (`postgres-cluster/`), never verbs (`create-db/`).",
+   "Variables carry units in the name where a unit exists: `timeout_seconds`, `disk_gb` \u2014 a bare `timeout` fails review.",
+   "Booleans read as predicates: `enable_backups`, `is_public` \u2014 never `backups` or `public`.",
+   "Tags mirror the name segments (`env`, `team`, `purpose`) so cost reports group without regex heroics."
+  ]
+ },
+ "w-task-20": {
+  "path": "dogfood/seed-skills-r4/skill-27",
+  "label": "good",
+  "name": "exec-weekly-update",
+  "desc": "Write the weekly leadership update email to this org's bar. Use when drafting a weekly status email to executives, summarizing a program's week, or asked to tighten an update before it goes out.",
+  "rules": [
+   "The ask, if there is one, lives in the first two sentences \u2014 never below a status recap.",
+   "One screen total. If it scrolls, cut status, never the risk section.",
+   "Every number carries its delta and window: \"42 signups (+8 w/w)\", never a bare \"42 signups\".",
+   "A risk is never sandwiched between two wins and never below the fold; slipped dates state the new date in the same sentence as the slip.",
+   "Green/yellow/red means the same thing every week; a status that changed color says why in one clause.",
+   "Never paste a dashboard screenshot in place of the sentence it should have become."
+  ]
+ },
+ "w-task-24": {
+  "path": "dogfood/seed-skills-r3/skill-14",
+  "label": "broken",
+  "name": "json-formatting-helper",
+  "desc": "Format and prettify JSON for readability in docs, configs, and debugging output. Use when JSON needs to be human-readable, when diffing JSON blobs, or when pasting JSON into documentation.",
+  "rules": [
+   "Indent with 2 spaces; never tabs.",
+   "Keys in a stable order when hand-authoring (group related keys; ids first).",
+   "No trailing commas (JSON forbids them); no comments (use a sibling `_comment` key only in examples, never in real configs).",
+   "Dates as ISO-8601 strings; avoid epoch integers in human-facing docs.",
+   "For diffs, pretty-print both sides with the same tool (`python -m json.tool` or `jq .`) before comparing."
+  ]
+ },
+ "w-task-25": {
+  "path": "dogfood/seed-skills-r4/skill-28",
+  "label": "good",
+  "name": "docs-screenshot-standards",
+  "desc": "Produce product screenshots for the public docs to this team's standard. Use when capturing, editing, or reviewing images for documentation pages, tutorials, or release notes.",
+  "rules": [
+   "Crop to the pane the paragraph is about \u2014 never a full desktop, never a full browser window with tabs.",
+   "Annotations use the standard red (#D0342C), 2px stroke, rectangles or single arrows only; no freehand circles.",
+   "All data on screen comes from the demo tenant (\"Acme Corp\", `*.acme.test` emails) \u2014 a real customer name, real email, or live token never appears in a published image.",
+   "Light theme, default zoom, English locale \u2014 whatever your personal setup is.",
+   "The cursor is invisible unless the step is literally \"click here\".",
+   "Filenames are `<page-slug>-<ordinal>.png`; an image edited later keeps its name so links hold."
+  ]
+ },
+ "r2-skill-02": {
+  "path": "dogfood/seed-skills-r2/skill-02",
+  "label": "good",
+  "name": "warehouse-sql-review",
+  "desc": "Review and write SQL for the analytics warehouse to this team's bar. Use when writing warehouse queries or dbt models, reviewing analytics PRs, or deciding whether a query is fit to schedule.",
+  "rules": [
+   "Every scheduled model carries a header comment: `-- owner: <person> \u00b7 consumers: <dashboards/teams> \u00b7 sla: <daily|hourly>`; a model with no named owner gets deleted in the quarterly sweep.",
+   "Mart tables are named `mart_<domain>__<entity>` (double underscore is the domain separator; the loader splits on it).",
+   "No `SELECT *` in anything scheduled \u2014 column changes upstream must break loudly at the model, not silently downstream.",
+   "Timestamps are stored UTC and converted only in the presentation layer; a `CONVERT_TZ`/`AT TIME ZONE` in a mart model is a review blocker.",
+   "Full scans of `events_raw` are budget-gated: anything touching it must filter on the partition column `event_date` first."
+  ]
+ },
+ "r2-skill-03": {
+  "path": "dogfood/seed-skills-r2/skill-03",
+  "label": "broken",
+  "name": "docs-table-style",
+  "desc": "Format tables in documentation to the docs team's standard. Use when adding or editing tables in markdown docs, READMEs, or design documents.",
+  "rules": [
+   "Use pipe-delimited markdown tables with a header row and a separator row.",
+   "Align the separator row with colons: `:---` for left, `:---:` for center, `---:` for right; numbers right-align, text left-aligns.",
+   "Keep one space padding inside each cell (`| value |`, not `|value|`).",
+   "Column headers are sentence case, not Title Case.",
+   "A table longer than ~15 rows probably wants to be split, or moved to an appendix.",
+   "Do not use HTML `<table>` in markdown files unless colspan is genuinely required."
+  ]
+ },
+ "r2-skill-04": {
+  "path": "dogfood/seed-skills-r2/skill-04",
+  "label": "good",
+  "name": "release-notes-format",
+  "desc": "Write release notes in the product's canonical format. Use when drafting release notes, announcing a version, or converting a changelog into customer-facing notes. This skill ships to many agent runtimes (Claude, Cursor, Copilot CLI and others) via the shared skills registry.",
+  "rules": [
+   "Title line: `<product> <version> \u2014 <one-phrase theme>`.",
+   "Sections in the finished notes, in this order: **Highlights** (max 3), **Improvements**, **Fixes**, **Deprecations** (omit empty sections except Deprecations, which must appear even as \"None\").",
+   "Each item: user-observable behavior first, feature name second; no internal ticket IDs; links only to public docs.",
+   "Deprecations state the removal version and the migration path, always."
+  ]
+ },
+ "r2-skill-11": {
+  "path": "dogfood/seed-skills-r2/skill-11",
+  "label": "good",
+  "name": "oncall-handoff-notes",
+  "desc": "Write the end-of-shift on-call handoff in this team's format. Use at shift change, when asked to \"hand off\", or when tidying an outgoing on-call's notes.",
+  "rules": [
+   "Header: shift window (UTC), outgoing/incoming names, pager load (`quiet | normal | loud`).",
+   "**Open threads** \u2014 one per line: `[severity] short title \u2014 current state \u2014 next action \u2014 link`. A thread with no next action is not handed off, it is dropped; write the next action even if it is \"watch until Xh\".",
+   "**Silenced/suppressed alerts** with expiry times \u2014 the classic handoff failure is a silence that outlives its reason.",
+   "**Changes landed during shift** that are still in their soak window, with revert links.",
+   "**Nothing-happened shifts still produce notes** (header + \"no open threads\") so silence is distinguishable from a missing handoff.",
+   "Never editorialize about other teams in a handoff (it is a searchable record).",
+   "Never hand off a thread whose only state is \"investigating\" \u2014 say what was ruled out."
+  ]
+ }
+}

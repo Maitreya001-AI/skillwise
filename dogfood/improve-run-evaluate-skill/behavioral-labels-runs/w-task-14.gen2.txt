@@ -1,0 +1,10 @@
+- Every collection endpoint uses opaque cursor-based pagination (`cursor`/`page_token`), never raw offset/limit or page numbers, for any resource that can grow beyond one page or receive concurrent writes.
+- Cursors are opaque, encoded tokens (e.g., base64 of a signed struct), never raw IDs or offsets exposed to the client; clients must treat them as unguessable and non-parseable.
+- Every paginated response includes a `next_cursor` (or `next_page_token`) field that is `null`/absent when no further pages exist — never an empty string or a magic sentinel the client must special-case.
+- Page size is client-controllable via a single `limit`/`page_size` param with a documented default and a hard server-enforced max; requests exceeding the max are clamped or rejected with a 400, never silently ignored.
+- Cursors are stable under concurrent inserts/deletes — pagination is anchored to a stable sort key (e.g., `(created_at, id)` tuple), not row position, so items already returned are never repeated or skipped due to writes during iteration.
+- Sort order is explicit and documented per endpoint (default field + direction), and any endpoint supporting alternate sort orders issues cursors that embed or are scoped to that sort order so a cursor can't be replayed against a different order.
+- Total counts are never computed or returned by default (no `total`/`total_pages` field requiring a full table scan); if a count is genuinely needed it's a separate, explicitly-opt-in, documented-as-expensive endpoint.
+- Cursors from one endpoint/version/filter set are rejected (400, not 500 or silent wrong data) if replayed against a different filter combination, endpoint, or API version — cursors are validated and never trusted as free-form input.
+- Cursors have a bounded validity window or are tolerant of underlying data expiry (e.g., soft-deleted rows) with a defined behavior (skip vs. 410 Gone), not an unhandled exception.
+- Response envelope and field naming (`items`/`data`, `next_cursor`, `limit`) match the platform-wide convention exactly — no endpoint invents its own pagination shape.

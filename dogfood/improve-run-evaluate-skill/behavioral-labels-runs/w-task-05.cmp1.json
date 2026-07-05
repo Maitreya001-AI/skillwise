@@ -1,0 +1,8 @@
+```json
+[
+  {"rule": "Never open with an apology template (\"We're sorry", "status": "covered", "substantive": false, "why": "B bans the same phrase and requires apology to pair with a cause/fix rather than standing alone as an opener"},
+  {"rule": "Never say \"as per our policy\" — state", "status": "covered", "substantive": false, "why": "B explicitly bans 'per our policy' as a deflection phrase unless followed by a concrete alternative"},
+  {"rule": "Never promise a timeline support doesn't control (engineering", "status": "covered", "substantive": false, "why": "B's unfulfillable-promises rule requires every commitment (refund, fix ETA) map to an action the team can actually execute, which excludes externally-controlled timelines"},
+  {"rule": "Never close with \"Is there anything else?\" on", "status": "covered", "substantive": false, "why": "B requires ending with a single clear action item, explicitly rejecting the generic 'let us know if you have questions' close"}
+]
+```

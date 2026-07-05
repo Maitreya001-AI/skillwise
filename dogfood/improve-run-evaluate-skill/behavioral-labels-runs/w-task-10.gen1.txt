@@ -1,0 +1,10 @@
+- Every model has an explicit primary key declared and tested (`unique` + `not_null` dbt tests, or equivalent constraint/assertion) — no query ships without a verified grain.
+- No `SELECT *` in committed code; every column consumed downstream is named explicitly, including in CTEs that feed joins.
+- Every join specifies its type explicitly (`inner`/`left`/etc.) and includes a comment or test asserting expected row-count behavior (fan-out or dedup) when joining one-to-many.
+- All filtering logic (date ranges, status exclusions, soft-delete flags) lives in one canonical place (a staging model or shared macro), never re-implemented ad hoc in each downstream query.
+- No hardcoded IDs, magic numbers, or environment-specific literals (account IDs, table names, dates) — these are parameters, seeds, or config vars.
+- Every model/CTE has a single, testable responsibility; queries longer than ~100 lines or nesting more than 2-3 CTEs deep must be split into named intermediate models.
+- Source freshness and referential assumptions are declared (`source()`/`ref()` used throughout, no raw table names), so lineage and dependency graphs stay accurate.
+- Any metric or business definition (e.g., "active user," "revenue") matches the team's single documented definition — no silent reinterpretation in a new query.
+- Every new or changed model includes at least one row-count or value-based regression check (before/after diff, or a dbt test) proving output didn't silently shift.
+- Window functions and aggregations state their partition/order explicitly and are checked for correct handling of ties, nulls, and late-arriving data.

@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "No individual is ever the cause.", "status": "covered", "substantive": true, "why": "Matches B's system-as-subject rule and root-cause-as-chain rule (B1, B5)."},
+  {"rule": "\"Human error\" never appears as", "status": "covered", "substantive": true, "why": "Directly matches B13's ban on human error as terminal root cause."},
+  {"rule": "Every counterfactual is phrased as", "status": "covered", "substantive": true, "why": "Matches B9's ban on person-directed counterfactuals, allowing only system/monitoring framing."},
+  {"rule": "Timeline entries are observations with", "status": "covered", "substantive": true, "why": "Matches B4 (observable timestamped events only) and B14 (no competence/diligence adjectives in timeline)."},
+  {"rule": "The word \"obviously\" and its", "status": "survives", "substantive": true, "why": "B bans competence-judging adjectives and blame-coded diction lists but never names 'obviously/clearly/simply' or the hindsight-bias rationale."}
+]
+```

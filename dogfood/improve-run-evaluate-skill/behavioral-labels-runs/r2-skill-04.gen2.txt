@@ -1,0 +1,10 @@
+- Every entry must map to a shipped, user-visible change — no internal refactors, dependency bumps, or non-functional commits unless they carry a direct customer impact (e.g., performance, security).
+- Use the canonical section headers and order defined by the product's format spec (e.g., Breaking Changes, New Features, Improvements, Bug Fixes, Deprecations) — never invent ad hoc categories or reorder them.
+- Each entry must be a single, complete sentence in the imperative or past tense specified by the format (pick one and apply consistently), with no sentence fragments or trailing colons.
+- Breaking changes must state the concrete migration action the customer must take, not just that a break occurred.
+- Version number, release date, and any required links (docs, migration guide, PR/issue reference) must be present and correctly formatted per the template — no placeholders like "TBD" or "vX.Y.Z" left in the output.
+- No internal identifiers leak into customer-facing text — no Jira keys, internal service names, feature-flag names, or engineer handles unless the format explicitly calls for attribution.
+- Entries must be deduplicated and non-overlapping — the same user-visible change must not appear under two sections (e.g., both "New Features" and "Bug Fixes").
+- Tone and terminology must match the product's existing glossary — no synonyms for established product nouns/verbs, no inconsistent capitalization of feature names.
+- Severity/impact framing must be accurate: a fix for a crash or data-loss bug must be distinguishable from a cosmetic fix, not flattened into the same generic phrasing.
+- Output must render correctly in the target distribution channel's markup (changelog page, in-app dialog, email) — no unsupported syntax (raw HTML in Markdown-only channels, broken links, unclosed formatting tokens).

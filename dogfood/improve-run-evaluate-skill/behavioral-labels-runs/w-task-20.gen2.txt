@@ -1,0 +1,10 @@
+- Lead with a one-line status verdict (on track / at risk / off track) before any narrative — reader must know the bottom line without scrolling.
+- Cap the email at 400 words or one screen; anything longer gets moved to a linked doc, not inlined.
+- Every claim of progress cites a verifiable artifact (PR link, dashboard, ticket ID, metric with timestamp) — no unsourced "made good progress."
+- Risks/blockers section is mandatory even when empty; if empty, state "no blockers" explicitly rather than omitting the section.
+- Each risk or ask names a single directly responsible owner and a decision date — no risk without an owner, no ask without a deadline.
+- Numbers must match the last reported figure or explain the delta — no silent revision of last week's metrics without a callout.
+- No jargon or internal acronyms without inline expansion on first use — assume the reader is one level removed from the work.
+- Actions requested of the executive are separated from FYI content — a reader skimming only the "needs from you" section must get everything actionable.
+- Past-tense recap is capped at 2-3 bullets — the email is forward-looking (this week's decisions/risks), not a changelog.
+- No adjectives standing in for data ("significant," "strong," "solid") — replace with the number or cut the sentence.

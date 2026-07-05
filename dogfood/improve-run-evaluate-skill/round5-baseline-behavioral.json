@@ -1,0 +1,18 @@
+{
+ "a_run_aggregates": [
+  0.8276,
+  0.8276,
+  0.7931
+ ],
+ "noise_band": 0.0398,
+ "ref_median_aggregate": 0.8276,
+ "ns_median_aggregate": 0.7241,
+ "ref_median_zero_tasks": [
+  "task-02",
+  "task-05",
+  "task-17",
+  "task-24",
+  "task-29"
+ ],
+ "max_showable_delta": 0.1724
+}

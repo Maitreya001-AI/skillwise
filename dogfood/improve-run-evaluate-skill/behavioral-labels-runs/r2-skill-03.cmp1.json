@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Use pipe-delimited markdown tables with a header row", "status": "covered", "substantive": true, "why": "Header row, delimiter row, and pipe format are all explicitly required across B's rules."},
+  {"rule": "Align the separator row with colons: `:---` for", "status": "covered", "substantive": true, "why": "B requires delimiter-row alignment markers to match content type (text left, numbers right/center)."},
+  {"rule": "Keep one space padding inside each cell (`|", "status": "covered", "substantive": true, "why": "B states the identical `| Cell |` not `|Cell|` padding requirement verbatim."},
+  {"rule": "Column headers are sentence case, not Title Case.", "status": "survives", "substantive": true, "why": "B explicitly mandates title-cased column headers, the opposite convention, with no sentence-case allowance."},
+  {"rule": "A table longer than ~15 rows probably wants", "status": "survives", "substantive": true, "why": "B only gives a column/width threshold (~5-6 columns) for restructuring, never a row-count threshold or appendix action."},
+  {"rule": "Do not use HTML `<table>` in markdown files", "status": "survives", "substantive": true, "why": "B never addresses HTML `<table>` usage or a colspan exception; it only discusses `<br>` inside cells."}
+]
+```

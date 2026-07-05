@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "Every scheduled model carries a header comment:", "status": "covered", "substantive": false, "why": "B requires named owner + documented consumer with deprecation for unowned/unconsumed models, an equivalent constraint"},
+  {"rule": "Mart tables are named `mart_<domain>__<entity>`", "status": "survives", "substantive": true, "why": "B has no table-naming/grammar convention for marts anywhere"},
+  {"rule": "No `SELECT *` in anything scheduled — column", "status": "covered", "substantive": false, "why": "B states this near-verbatim twice, feeding models/dashboards must not use select *"},
+  {"rule": "Timestamps are stored UTC and converted only", "status": "survives", "substantive": true, "why": "B only requires explicit tz conversion, not layer-restriction or blocking CONVERT_TZ in mart models specifically"},
+  {"rule": "Full scans of `events_raw` are budget-gated:", "status": "covered", "substantive": false, "why": "B requires partition/cluster filters and a bytes-scanned/cost check before merge, same substance"}
+]
+```

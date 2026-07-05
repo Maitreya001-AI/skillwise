@@ -1,0 +1,11 @@
+```json
+[
+  {"rule": "Header: shift window (UTC), outgoing/incoming names, pager", "status": "survives", "substantive": true, "why": "B never requires a header with shift window/names/pager-load enum"},
+  {"rule": "Open threads — one per line: [severity] short title", "status": "covered", "substantive": false, "why": "B's status/last-state/next-action-owner/links bullets jointly cover this even without the exact line grammar"},
+  {"rule": "Silenced/suppressed alerts with expiry times — the classic", "status": "covered", "substantive": false, "why": "B explicitly requires silenced/snoozed alerts listed with expiry/re-arm condition"},
+  {"rule": "Changes landed during shift that are still in", "status": "covered", "substantive": false, "why": "B's deploy/config-change and unreverted-mitigation-with-undo bullets cover flagging in-flight changes"},
+  {"rule": "Nothing-happened shifts still produce notes (header +", "status": "survives", "substantive": true, "why": "B has no requirement that empty shifts still produce an explicit handoff note"},
+  {"rule": "Never editorialize about other teams in a handoff", "status": "survives", "substantive": true, "why": "B never addresses tone or editorializing about other teams"},
+  {"rule": "Never hand off a thread whose only state is", "status": "covered", "substantive": false, "why": "B requires stating hypothesis/last action instead of bare 'still looking into it'"}
+]
+```

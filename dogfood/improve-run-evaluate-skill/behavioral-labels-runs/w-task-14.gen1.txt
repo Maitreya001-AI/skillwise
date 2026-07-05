@@ -1,0 +1,10 @@
+- Every list endpoint uses opaque, base64-encoded cursor tokens for `page[after]`/`page[before]` (or equivalent) — never raw offsets, row IDs, or timestamps exposed directly as pagination parameters.
+- Cursors encode the full sort key (including a unique tiebreaker column, e.g. `(created_at, id)`), not just a single field, so pagination is stable under duplicate sort values.
+- Default and maximum page size are both enforced server-side (e.g. default 20, max 100); a client-requested `page[size]` above the max is clamped or rejected with a 400, never silently honored.
+- Every paginated response includes a `next` cursor (and `prev` cursor if bidirectional paging is supported) plus an explicit has-more indicator; the client must never have to infer end-of-list from an empty-page heuristic alone.
+- Cursors are opaque and unstable across deploys/schema changes by contract — the API must reject or gracefully degrade on a malformed/expired cursor with a documented error code, not a 500 or silent misbehavior.
+- Total counts (`total`) are either omitted or explicitly marked as approximate/expensive; endpoints must not do an unpaginated `COUNT(*)` on every page request to satisfy a "total" field.
+- Sort order must be explicit and stable (documented default sort, tiebreaker included) — an endpoint must never allow an unordered or non-deterministic sort that breaks cursor semantics.
+- Filtering parameters are applied before pagination is computed, and the cursor encodes/validates the filter state so switching filters mid-pagination is rejected or restarts pagination rather than returning corrupted results.
+- Offset-to-cursor migrations preserve the old parameter name behind a deprecation window (documented sunset date) rather than a breaking hard cutover, and both paths cannot be mixed within a single client session.
+- Pagination parameters and response envelope shape (field names, cursor location, has-more flag) match the platform-wide convention exactly — no per-team bespoke variants (e.g. `next_page_token` vs `cursor` vs `after`) without an explicit documented exception.

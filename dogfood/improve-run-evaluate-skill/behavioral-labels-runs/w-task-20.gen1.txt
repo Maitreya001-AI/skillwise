@@ -1,0 +1,10 @@
+- Lead with a one-line status verdict (on track / at risk / blocked) before any narrative — reader must know the bottom line without scrolling.
+- Every bullet under "risks" or "blockers" names an owner and a next decision date; no risk statement without an accountable name attached.
+- Cap the update at one screen (≤ ~200 words body, excluding metrics table) — cut supporting detail to a linked doc rather than inlining it.
+- No status claim ("shipped," "on track," "resolved") without a verifiable artifact reference (PR link, dashboard, ticket ID) — no unsourced assertions of progress.
+- Numbers reported this week must be diffed against last week's email (delta stated, not just current value) — a metric with no prior-week comparison is not reportable as-is.
+- Any ask of leadership (decision, budget, headcount, escalation) is stated as an explicit, singular action in its own line — never buried inside a paragraph.
+- Banned language: no hedge-words doing load-bearing work ("should be fine," "mostly done," "in progress" with no %) — replace with a quantified or binary state.
+- Every "at risk"/"blocked" item from last week's update must be explicitly closed out (resolved / still open / escalated) — silent drop of a prior risk is a defect.
+- Wins are stated with a metric or customer/business impact, not activity ("shipped X") alone — activity without outcome is cut.
+- Draft is read once from the CEO's seat only ("what decision do I need to make from this") — any paragraph that doesn't inform a decision or de-risk something gets cut before send.

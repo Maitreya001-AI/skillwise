@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Resource names: `<env>-<team>-<purpose>`, hyphenated, lowercase — `prod-payments-ledger-db`, never", "status": "covered", "substantive": true, "why": "B's `<org>-<env>-<system>-<component>` grammar is an equivalent fixed, hyphenated, lowercase naming scheme that also bars PascalCase."},
+  {"rule": "The `env` segment is one of `dev`,", "status": "survives", "substantive": true, "why": "B never enumerates an allowed set of env values (dev/stage/prod) or bans abbreviations specifically for that segment."},
+  {"rule": "Module directories are nouns for what they provision", "status": "covered", "substantive": true, "why": "B's rule that module dirs must mirror the module's resource domain (`modules/rds-postgres/`) is the same noun-not-verb constraint."},
+  {"rule": "Variables carry units in the name where a", "status": "survives", "substantive": true, "why": "B has no requirement that variable names carry unit suffixes like `_seconds`/`_gb`."},
+  {"rule": "Booleans read as predicates: `enable_backups`, `is_public` — never", "status": "survives", "substantive": true, "why": "B has no rule governing boolean variable naming as predicates."},
+  {"rule": "Tags mirror the name segments (`env`, `team`, `purpose`)", "status": "covered", "substantive": true, "why": "B's rule that tags must be generated from the same `local.tags` map used for naming enforces the same name/tag mirroring."}
+]
+```

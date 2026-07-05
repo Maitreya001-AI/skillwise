@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "Indent with 2 spaces; never tabs.", "status": "survives", "substantive": true, "why": "B permits 2 or 4 spaces, not specifically 2; only the no-tabs part overlaps"},
+  {"rule": "Keys in a stable order when hand-authoring (group", "status": "survives", "substantive": true, "why": "B only bars silent reordering during processing; it has no ids-first/grouping authoring convention"},
+  {"rule": "No trailing commas (JSON forbids them); no comments", "status": "covered", "substantive": true, "why": "B's no-trailing-comma rule and JSONC/JSON5 comment-stripping rule cover the same substance"},
+  {"rule": "Dates as ISO-8601 strings; avoid epoch integers in", "status": "survives", "substantive": true, "why": "B has no rule addressing date representation or ISO-8601 vs epoch format"},
+  {"rule": "For diffs, pretty-print both sides with the same", "status": "covered", "substantive": true, "why": "B's deterministic/byte-identical formatting and diff-friendliness rules capture the same intent minus the specific tool names"}
+]
+```

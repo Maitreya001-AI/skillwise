@@ -1,0 +1,8 @@
+```json
+[
+  {"rule": "Subject line: imperative mood, <= 72 chars, capitalized,", "status": "survives", "substantive": true, "why": "Length cap, imperative mood, and no-trailing-period are covered, but B never requires a capitalized first letter."},
+  {"rule": "Body: wrap at 72, explain *why* over *what*;", "status": "covered", "substantive": false, "why": "B covers 72-char wrap, why-over-what rationale, and the `Fixes #123` footer format explicitly."},
+  {"rule": "One logical change per commit; unrelated fixes get", "status": "covered", "substantive": false, "why": "B explicitly requires one atomic change per commit with unrelated changes split out."},
+  {"rule": "Prefix conventional types where they help: `feat:`, `fix:`,", "status": "survives", "substantive": true, "why": "B never mentions Conventional Commits type prefixes (feat:/fix:/docs:/refactor:/test:/chore:) anywhere."}
+]
+```

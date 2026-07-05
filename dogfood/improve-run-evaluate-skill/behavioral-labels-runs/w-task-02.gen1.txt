@@ -1,0 +1,10 @@
+- Never use bare `except:` or `except Exception:` without immediately re-raising or logging with full stack trace (`logger.exception(...)` or `exc_info=True`); catch the narrowest exception type the call site can actually raise.
+- Every caught exception that is not re-raised must be logged exactly once, at the point where it is handled, with structured context (operation name, relevant IDs) — never log-and-rethrow the same error at multiple layers, and never swallow silently.
+- Retries are only allowed around operations that are idempotent or made idempotent via an idempotency key; non-idempotent operations (payment capture, non-upsert writes) must not be wrapped in automatic retry logic.
+- Every retry loop must use exponential backoff with jitter and a hard cap on attempts (max attempts or max elapsed time), never an unbounded `while True` retry.
+- Retries must only trigger on transient failure classes (timeouts, connection errors, 429/503) explicitly enumerated at the call site; retrying on 4xx client errors (other than 429) or on validation/programming errors is forbidden.
+- Custom exceptions must subclass a service-specific base exception (not bare `Exception`), and must not be used to control normal (non-error) flow.
+- Errors crossing a service/API boundary must be translated into the caller's defined error contract (e.g., mapped to a documented error code/schema) rather than leaking internal exception types, tracebacks, or third-party SDK exception classes.
+- Logged error messages must never include secrets, tokens, PII, or full request/response bodies from sensitive endpoints; use redaction helpers or allowlisted fields only.
+- Resource cleanup (connections, file handles, locks, transactions) on the error path must use `try/finally` or context managers, never rely on code after a `try` block that can be skipped by an exception.
+- Every custom exception class and every function that can raise must document (docstring or type-level) which exceptions can propagate out, so callers know what to catch — undocumented raise paths are a review blocker.

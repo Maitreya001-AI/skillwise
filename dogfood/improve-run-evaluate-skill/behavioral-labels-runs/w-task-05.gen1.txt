@@ -1,0 +1,10 @@
+- Open with acknowledgment of the customer's specific issue (paraphrased, not generic) before any explanation, apology-only, or policy language appears.
+- Never use passive-voice blame deflection ("it was noted that...", "the order was cancelled") — name the actor or the system, including "we," even when the news is bad.
+- No unfulfillable promises: every commitment (refund, callback, fix ETA) must map to a concrete, verifiable action the team can actually execute within the stated timeframe.
+- Ban corporate hedge-filler ("we apologize for any inconvenience this may have caused," "please be advised," "at this time") — cut or replace with a specific, concrete statement.
+- State the resolution or next step in the first two sentences after acknowledgment; do not bury the answer under policy justification.
+- Match contraction/formality level to the team's set register consistently within a single macro — no mixing "we're happy to help!" with "kindly be advised" in the same message.
+- If declining a request, state the decline plainly, give the concrete reason, and offer the nearest available alternative — never leave a "no" implied or unstated.
+- Every macro must survive a find/replace test: if swapping the customer's name/order number breaks the sentence logic (wrong pronoun, mismatched plurality), reject it.
+- No exclamation points stacked with negative or neutral news (e.g., "Unfortunately, that item is out of stock!"); reserve exclamation marks for genuinely positive moments only.
+- End with a single clear action item (what the customer should do next, or what "done" looks like) — not a generic "let us know if you have questions" unless no further action exists on either side.

@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "The ask, if there is one, lives in", "status": "survives", "substantive": true, "why": "B leads with status verdict first and separates asks into their own line, but never says the ask must sit in the first two sentences or forbids it appearing after the status recap."},
+  {"rule": "One screen total. If it scrolls, cut status,", "status": "survives", "substantive": true, "why": "B caps length (one screen/400 words) and makes risks mandatory, but states no trimming priority that status must be cut before risk content."},
+  {"rule": "Every number carries its delta and window:", "status": "covered", "substantive": false, "why": "B requires every number be diffed against last week's figure with delta stated, matching this constraint."},
+  {"rule": "A risk is never sandwiched between two wins", "status": "survives", "substantive": true, "why": "B mandates a risks section but says nothing about placement relative to wins/fold, or that a slipped date's new date must appear in the same sentence as the slip."},
+  {"rule": "Green/yellow/red means the same thing every week;", "status": "survives", "substantive": true, "why": "B has no rule fixing color/status semantics across weeks or requiring a one-clause explanation when a status color changes."},
+  {"rule": "Never paste a dashboard screenshot in place of", "status": "survives", "substantive": true, "why": "B requires citing artifacts like dashboards as evidence but never prohibits substituting a screenshot for the narrative sentence itself."}
+]
+```

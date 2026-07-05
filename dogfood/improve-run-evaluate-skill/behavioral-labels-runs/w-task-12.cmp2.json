@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "No individual is ever the cause. \"The", "status": "covered", "substantive": true, "why": "B bans person/team as causal subject and requires system/process-chain root cause with same rephrasing pattern"},
+  {"rule": "\"Human error\" never appears as a", "status": "covered", "substantive": true, "why": "B states human error is never a terminal root cause and must be followed by the systemic condition"},
+  {"rule": "Every counterfactual is phrased as an", "status": "covered", "substantive": true, "why": "B bans counterfactuals about what a person should have done, allowing only monitoring/tooling-would-have-caught-it framing"},
+  {"rule": "Timeline entries are observations with timestamps,", "status": "covered", "substantive": true, "why": "B requires timeline entries be observable timestamped facts with no judgment/competence adjectives"},
+  {"rule": "The word \"obviously\" and its cousins", "status": "survives", "substantive": true, "why": "B's banned-diction lists target blame-coded phrasing (failed to, should have, careless) but never name hindsight-bias words like obviously/clearly/simply"}
+]
+```

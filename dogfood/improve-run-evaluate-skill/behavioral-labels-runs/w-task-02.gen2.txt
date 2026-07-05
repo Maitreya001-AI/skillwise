@@ -1,0 +1,10 @@
+- Never use bare `except:` or `except Exception:` without immediately re-raising or logging with full traceback (`logger.exception`/`exc_info=True`); swallowing exceptions silently is a blocking defect.
+- Catch only the specific exception types the calling code can meaningfully handle; do not catch broad base classes to paper over unknown failure modes.
+- Every caught exception that is not re-raised must be logged with structured context (operation name, relevant IDs, input parameters) sufficient to reproduce the failure without re-running the code.
+- Retries must use exponential backoff with jitter and a hard cap on attempts; retrying on non-idempotent operations requires an explicit idempotency key or is disallowed.
+- Never retry on exceptions that indicate programmer error or permanent failure (`ValueError`, `TypeError`, `KeyError`, 4xx client errors except 429); only retry on transient/infrastructure errors (timeouts, connection errors, 5xx, 429).
+- Custom exception classes must inherit from a documented service-level base exception, never directly from `Exception` or `BaseException`, and must not shadow built-in exception names.
+- Error messages surfaced to logs or callers must not leak sensitive data (credentials, PII, tokens, internal stack traces) — sanitize before logging or returning to clients.
+- Every `raise ... from` must preserve or explicitly suppress (`from None`) the original exception chain deliberately, never accidentally drop it via a bare `raise NewException(...)`.
+- Resource cleanup (connections, file handles, locks) must use context managers or `finally` blocks, never rely on exception-path code reaching cleanup logic.
+- Functions that can fail must document their exception contract (docstring or type hints via `Result`/`Union` pattern) so callers know what to catch without reading the implementation.

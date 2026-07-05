@@ -1,0 +1,10 @@
+- Service names use PascalCase, end in `Service`, and are declared in a versioned package (e.g. `package myorg.orders.v1;`); no bare top-level services outside a versioned package.
+- RPC method names are PascalCase verbs or verb phrases describing a single action (`GetOrder`, `ListOrders`, `CancelOrder`), never noun-only, generic (`Process`, `Handle`, `Do`), or overloaded with unrelated behavior.
+- Every RPC uses dedicated, non-shared request/response messages named `<MethodName>Request` and `<MethodName>Response` — no reusing one message across multiple RPCs and no bare scalar/well-known-type request or response.
+- List/collection RPCs are named `List<Plural>`, accept `page_size`/`page_token`, and return `<Plural>` plus `next_page_token`; never return unbounded repeated fields without pagination.
+- Field names are `snake_case`, singular for scalars and singular-message fields, plural for repeated fields, with no type-redundant suffixes (`name`, not `name_string`; `count`, not `count_int`).
+- Resource identifiers follow the org's resource-name convention (`orders/{order}/items/{item}` style) and the field is named `name` for the canonical resource path or `<resource>_id` for a bare ID, consistently across all messages referencing that resource.
+- Enums are `UpperCamelCase` type names with `SCREAMING_SNAKE_CASE` values prefixed by the enum name, and every enum's zero value is `<ENUM_NAME>_UNSPECIFIED`, never a meaningful default.
+- Standard CRUD verbs are used exactly and consistently (`Get`, `List`, `Create`, `Update`, `Delete`, `BatchGet`, etc.) — no synonyms (`Fetch`, `Remove`, `Add`) mixed in alongside the standard set within the same or sibling services.
+- Streaming RPCs are named to reflect their streaming nature and cardinality (e.g. `Watch<Resource>` for server-streaming) rather than reusing unary naming patterns like `Get`/`List` for a stream.
+- Deprecated fields/methods/enum values are marked with `[deprecated = true]` and a comment pointing to the replacement, never silently removed, renumbered, or renamed in place.

@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Cursor-based paging for any collection that can", "status": "covered", "substantive": false, "why": "B requires opaque cursor pagination for any growable/concurrently-written resource, matching the unbounded-vs-bounded carve-out"},
+  {"rule": "Cursors are opaque tokens — clients never parse", "status": "covered", "substantive": false, "why": "B states cursors are opaque/encoded and clients must treat them as unguessable and non-parseable"},
+  {"rule": "The sort underlying a cursor is stable and", "status": "covered", "substantive": false, "why": "B requires cursors to encode a unique tiebreaker (e.g. created_at, id) so pages never skip/repeat rows"},
+  {"rule": "Default page size 50, maximum 200; requests", "status": "survives", "substantive": true, "why": "B explicitly permits rejecting with 400 as an alternative to clamping, whereas A mandates clamp-only and never reject"},
+  {"rule": "The response carries `next_cursor` (null on the", "status": "covered", "substantive": false, "why": "B requires next_cursor null/absent on last page and forbids inferring end-of-list from a short/empty page"},
+  {"rule": "Filters and sort order are baked into", "status": "covered", "substantive": false, "why": "B requires cursors to encode/validate filter and sort state, rejecting or restarting pagination when either changes mid-walk"}
+]
+```

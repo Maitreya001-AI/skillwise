@@ -1,0 +1,10 @@
+- Every table has a header row with concise, title-cased column names; no header cell is left blank or generic (e.g., "Column1").
+- Column alignment markers in the delimiter row (`---`, `:---`, `---:`, `:---:`) match the actual content type per column (left for text, right or center for numbers/status codes) and are applied consistently across all tables in the same doc.
+- Pipe characters are padded with single spaces (`| Cell |`, not `|Cell|`) and columns are visually aligned in the raw markdown source, not just in rendered output.
+- Cell content contains no raw line breaks, block elements, or nested tables; use `<br>` only when the docs team's standard explicitly permits it, otherwise reformat as separate rows or a linked sub-table.
+- Every row has the same number of cells as the header; no ragged rows, and no reliance on renderer-specific auto-padding.
+- Long or code-like values (paths, flags, identifiers) are wrapped in backticks within cells, and cells are truncated or abbreviated with a footnote/link rather than forcing horizontal overflow.
+- Tables exceeding a reasonable width (docs team threshold, typically ~5-6 dense columns or content that forces horizontal scroll) are restructured into multiple tables, a definition list, or transposed rather than left wide.
+- Units, ranges, and defaults are stated explicitly in the header or a dedicated column (e.g., "Timeout (ms)"), never left ambiguous in a bare "Value" column.
+- Every table is preceded by a one-line caption or introductory sentence stating what it enumerates, and referenced by that description elsewhere in the doc if cross-referenced.
+- Empty or not-applicable cells use a consistent placeholder (e.g., `—` or `N/A`) rather than being left blank or mixing conventions within the same table.

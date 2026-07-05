@@ -1,0 +1,10 @@
+- Every model declares its grain explicitly (docs or comment) and has a `unique`/`not_null` test (or `dbt_utils.unique_combination_of_columns`) enforcing it — no model merges without a verified primary key.
+- No `select *` in any model that feeds another model or a dashboard — every output column is named so upstream schema drift breaks loudly, not silently.
+- Before any one-to-many join, the many-side is deduped or pre-aggregated to the join grain; if fan-out is possible, a row-count assertion (before vs. after the join) is present in the PR.
+- Incremental models must be idempotent: rerunning the same window twice (or backfilling) produces identical results to running it once, verified via `unique_key` + a stated incremental predicate.
+- All table references go through `source()`/`ref()` — zero hardcoded `schema.table` strings — so lineage graph and freshness checks stay accurate.
+- Every source consumed by a scheduled model has a freshness check; any model tolerating staleness documents the tolerance and why.
+- Timezone and date-grain are explicit at every comparison or join across tables (`cast`/`convert_timezone` to a named tz, `date_trunc` to a named grain) — no bare timestamp comparisons across sources with differing implicit assumptions.
+- Any query scheduled against a partitioned or clustered table includes a filter on that partition/cluster key — no unscheduled full-table scans get promoted to production.
+- NULL behavior in join keys and aggregates is stated explicitly (coalesce, exclude, or count separately) — reviewer must be able to say what happens to null-key rows without reading the query twice.
+- Every PR changing a model's logic or schema includes a before/after row-count or sample diff — no logic change merges purely on "tests pass" without evidence row counts didn't silently shift.

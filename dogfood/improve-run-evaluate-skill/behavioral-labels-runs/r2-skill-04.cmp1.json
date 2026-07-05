@@ -1,0 +1,8 @@
+```json
+[
+  {"rule": "Title line: `<product> <version> — <one-phrase", "status": "survives", "substantive": true, "why": "B requires version+date format but never requires a one-phrase theme in the title"},
+  {"rule": "Sections in the finished notes, in this order:", "status": "survives", "substantive": true, "why": "B's fixed-heading rule is generic; the max-3-Highlights cap and mandatory-'None'-Deprecations rule are not covered"},
+  {"rule": "Each item: user-observable behavior first, feature name second;", "status": "covered", "substantive": false, "why": "behavior-first ordering and ticket-ID exclusion are both stated in B's entry-content and no-internal-identifiers rules"},
+  {"rule": "Deprecations state the removal version and the migration", "status": "survives", "substantive": true, "why": "B mandates migration steps only for Breaking changes, not a removal-version+migration-path rule for Deprecations"}
+]
+```

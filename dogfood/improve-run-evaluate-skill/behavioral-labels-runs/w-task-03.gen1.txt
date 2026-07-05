@@ -1,0 +1,10 @@
+- Subject line ≤50 characters (hard cap 72); body lines wrapped at 72 characters.
+- Subject uses imperative mood ("Add", "Fix", "Remove"), never past tense ("Added") or gerund ("Adding").
+- Subject has no trailing period and is not a sentence fragment restating the diff ("update files").
+- Blank line separates subject from body; body is required for any non-trivial change (anything beyond a one-line typo/format fix).
+- Body explains why the change was made (motivation, root cause, tradeoff), not a restatement of what lines changed — the diff already shows what.
+- Each commit is one logical, atomic change; unrelated changes (e.g., a refactor plus a bug fix) must be split into separate commits.
+- Every commit in history must build and pass tests standalone — no "WIP", "fixup!", "temp", or "will fix later" commits left in a branch intended for merge/review.
+- Breaking changes, migrations, or behavior changes affecting other teams are called out explicitly in the body (e.g., a `BREAKING:` or equivalent marker).
+- Ticket/issue references use the team's fixed format (e.g., `Fixes #123` or `JIRA-456`) placed in the footer, not embedded mid-sentence in the subject.
+- No secrets, credentials, internal hostnames, or debug artifacts (commented-out code, console logs) introduced silently without mention in the body.

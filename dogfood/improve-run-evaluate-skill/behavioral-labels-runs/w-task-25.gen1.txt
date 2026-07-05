@@ -1,0 +1,10 @@
+- Capture at native/2x resolution on a clean OS/browser chrome with no personal data, bookmarks bars, extensions, or unrelated tabs visible; use a dedicated demo account/dataset, never real customer data.
+- Crop to the minimum region that supports the surrounding text — no full-desktop screenshots when a single dialog or panel is the subject.
+- Standardize viewport/window size and zoom level across a doc set (e.g., fixed width, 100% browser zoom) so screenshots don't visibly vary in scale from one step to the next.
+- Use the current shipped UI only; screenshot must be retaken (not touched up) if the underlying UI has changed since last capture — no editing stale screenshots to hide drift.
+- Annotations (arrows, boxes, numbered callouts) use the team's standard style (color, stroke width, font) and must not obscure the element they point to.
+- Redact or replace any sensitive/identifying data (emails, tokens, org names, IPs, real usernames) with clearly fake placeholder values before the image is saved.
+- Export as compressed PNG (or WebP where supported) at a defined max file size/dimension, with filenames following the doc's asset naming convention and stored in the correct assets directory.
+- Every screenshot must have descriptive alt text and, if referenced in a numbered step, must match the current step's UI state exactly (no showing a prior or later step).
+- Light/dark mode and OS platform (Windows/macOS/Linux) must match what the surrounding doc claims or the doc's stated default theme — no mixing themes across a single doc's screenshots.
+- Re-review and update or remove screenshots whenever the referenced feature, flow, or copy changes as part of the same PR that ships the UI change.

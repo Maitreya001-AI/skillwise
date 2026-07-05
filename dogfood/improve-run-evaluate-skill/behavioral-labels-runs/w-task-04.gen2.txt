@@ -1,0 +1,10 @@
+- Every comment on a defect must state the concrete failure scenario (input/state that breaks) or observed behavior — never assert "this is wrong" without evidence.
+- Blocking issues (bugs, security, data loss, broken contracts) must be labeled distinctly from non-blocking ones (style, naming, nits) so the author knows what gates merge.
+- Feedback targets the code, never the author — no "you always," no character judgments, no sarcasm.
+- Every "change this" comment proposes a concrete alternative (a snippet, a pattern, or a named approach), not just "this is bad" with no path forward.
+- Praise specific, non-obvious decisions inline (e.g., an edge case correctly handled) rather than issuing generic approval or none at all.
+- Scope comments to lines actually changed in the diff; pre-existing issues outside the diff go in a separate non-blocking note, not mixed into the blocking list.
+- Questions asking for clarification are phrased as genuine questions ("why X over Y?"), not rhetorical jabs implying the author erred.
+- Repeated instances of the same issue are flagged once with "applies to lines X, Y, Z" rather than repeated verbatim at every occurrence.
+- Nitpicks are explicitly marked as optional (e.g., prefixed "nit:") and never phrased with the same urgency as blocking comments.
+- Comments cite the specific rule, convention, or prior decision being applied (style guide, ADR, past incident) rather than asserting a preference as objective fact.

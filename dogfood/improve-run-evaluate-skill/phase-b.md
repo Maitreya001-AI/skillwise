@@ -61,3 +61,17 @@ never created. The dangling reference is an objective, judgment-free defect (fil
 so the seed's ground-truth label ("good") is contaminated: careful judges who check the
 reference are penalized by the label, careless ones rewarded. Exclusion applies identically
 to all conditions (ns / a / b). Decision recorded before any variant-arm result was received.
+
+## Amendment 4 (logged 2026-07-06, after Phase-A behavioral labeling, BEFORE any round-5 run)
+
+**Scoring key for round 5 onward: `labels-behavioral.json`** (working set) and
+`labels-r2-behavioral.json` (screening substrate) — six labels overturned by the pre-registered
+behavioral procedure in `behavioral-labels.md` (task-03/14/24 and r2 skill-03 → good;
+task-05/17 → broken/nogap). Stored reference (a-1..3) and floor (ns-1..2) runs are re-scored
+under the new key without re-running (verdicts are data; the key was wrong): reference
+aggregates 0.828 · 0.828 · 0.793 → band 0.0398, median aggregate 0.828; no-skill median
+aggregate 0.724; reproducibly-failed reference tasks {02, 05, 17, 24, 29} → max showable
+delta_step 0.172. Headroom/power: fit. All four prior REVERTs stand under the new key (their
+deciding fatals were on labels the procedure confirmed). Round 5 proceeds as the sanctioned
+**plateau-break** (4 rounds, no KEEP): one larger rewrite — `scripts/deletion_probe.py` as a
+compiled Capability primitive plus SKILL.md wiring — branch first, gate fatals unchanged.

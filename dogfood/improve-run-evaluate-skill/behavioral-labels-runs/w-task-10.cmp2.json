@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Keywords uppercase, identifiers lowercase; one clause", "status": "survives", "substantive": true, "why": "B has no formatting/casing/line-layout rule at all"},
+  {"rule": "No `SELECT *` in committed queries — name", "status": "covered", "substantive": false, "why": "B states this near-verbatim twice, explicit column naming requirement"},
+  {"rule": "Aliases are words, not letters: `orders o`", "status": "survives", "substantive": true, "why": "B never addresses alias naming/length conventions"},
+  {"rule": "Beyond two levels of nesting, restructure as", "status": "covered", "substantive": false, "why": "B has both the nesting-depth split rule and the named-CTE-not-t1/t2 rule"},
+  {"rule": "Every JOIN carries its condition explicitly; implicit", "status": "covered", "substantive": false, "why": "B requires explicit join type and keys, which precludes implicit/USING shortcuts"},
+  {"rule": "Magic constants get a comment or reference", "status": "covered", "substantive": false, "why": "B's no-hardcoded-magic-numbers rule covers the same substance"}
+]
+```

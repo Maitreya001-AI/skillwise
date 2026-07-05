@@ -1,0 +1,10 @@
+- No named individual (or anonymized-but-identifiable "the engineer on call") is cast as the causal agent of the failure — attribute causation to systems, processes, or decisions, not people.
+- Ban blame-coded diction: "failed to," "forgot to," "should have," "didn't bother to," "neglected," "was careless," "incorrectly assumed" — replace with neutral descriptions of what the system/process did or lacked.
+- "Human error" is never a terminal root cause — every instance must be followed by the systemic condition that let that error reach production (missing validation, absent review gate, no automated check, unclear runbook).
+- Action items must target systems, tooling, or process (add a check, add monitoring, add a guardrail, fix the default) — "retrain," "remind," "be more careful," or "communicate better" cannot appear as a standalone remediation.
+- Timeline entries state observable facts and timestamps only — no adjectives judging competence, intent, or diligence ("carelessly," "should have known," "ignored the warning").
+- Contributing-factors section requires at least two independent systemic factors — a single-cause narrative that reduces to one person's action is rejected as under-specified.
+- No counterfactual character claims ("a more experienced engineer would have caught this") — if the gap is expertise-shaped, the fix is a process/tooling control, not a statement about who should have known better.
+- Register must be uniform across sections — a blameless summary paired with a blame-coded timeline or action-items section fails review as a whole.
+- Quotes, Slack excerpts, or chat logs included as evidence must be scrubbed of blame-coded language or paraphrased into neutral terms before inclusion, even if that's how it was said at the time.
+- Severity/impact framing may not imply the incident's cost is a measure of an individual's failure ("this cost us $X because someone missed Y") — cost is attributed to the systemic gap, not the person who triggered it.

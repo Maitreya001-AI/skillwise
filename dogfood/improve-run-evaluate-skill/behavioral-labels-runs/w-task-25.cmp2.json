@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Crop to the pane the paragraph is about", "status": "covered", "substantive": false, "why": "B's crop-to-minimum-region rules explicitly forbid full-desktop/browser-chrome shots unless chrome is the subject."},
+  {"rule": "Annotations use the standard red (#D0342C), 2px stroke,", "status": "covered", "substantive": false, "why": "B requires a defined standard style (color, stroke width) and bans freehand/inconsistent annotations, same substance at a lower specificity."},
+  {"rule": "All data on screen comes from the demo", "status": "covered", "substantive": false, "why": "B mandates a dedicated demo account/dataset and redaction of real names, emails, tokens before publishing."},
+  {"rule": "Light theme, default zoom, English locale — whatever", "status": "survives", "substantive": false, "why": "B mandates a sanctioned, standardized theme/zoom/locale and forbids ad hoc personal workspaces — the opposite of 'whatever your personal setup is', and the clause doesn't actually enforce anything."},
+  {"rule": "The cursor is invisible unless the step is", "status": "survives", "substantive": true, "why": "No bullet in B addresses cursor visibility at all."},
+  {"rule": "Filenames are `<page-slug>-<ordinal>.png`; an image edited later", "status": "survives", "substantive": true, "why": "B's naming rule cites 'versioning' as part of convention, not a stable-name-across-edits guarantee, and never specifies the slug-ordinal.png format."}
+]
+```

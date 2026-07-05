@@ -1,0 +1,10 @@
+- Consistent indentation (2 or 4 spaces, never tabs) applied uniformly across the entire document with no mixed levels.
+- Deterministic key ordering (either preserve source order or sort explicitly) so repeated formatting of the same data produces byte-identical output.
+- No trailing commas or trailing whitespace on any line, since strict JSON parsers will reject the former and diffs will flag the latter.
+- One value per line for objects and arrays beyond a trivial size (e.g., >1 key or >1 element), rather than collapsing nested structures onto a single line.
+- Line length capped (e.g., ~100-120 chars) — long scalar values (base64 blobs, long strings) either left inline or explicitly flagged rather than silently wrapped in ways that break valid JSON.
+- No alteration of value types or precision during reformatting (numbers, booleans, null, and string escaping must round-trip exactly — e.g., no float rounding, no unescaping of unicode that changes byte meaning).
+- Comments and trailing metadata stripped or clearly called out if the source is JSONC/JSON5, since standard JSON has no comment syntax and silent stripping can lose intent.
+- Empty objects/arrays rendered as `{}`/`[]` on one line rather than expanded across multiple lines.
+- Diff-friendliness prioritized over compactness: when the artifact will be diffed, prefer one-element-per-line formatting even for short arrays/objects, to minimize line-level diff noise on future edits.
+- Output validated as parseable JSON before being presented (round-trip parse check), so formatting never silently produces invalid output from valid input or masks an already-invalid input without a clear error.

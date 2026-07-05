@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "The ask, if there is one, lives in", "status": "survives", "substantive": true, "why": "B only requires ask in its own skimmable line/section, not specifically within the first two sentences or barred from following a status recap"},
+  {"rule": "One screen total. If it scrolls, cut status,", "status": "covered", "substantive": true, "why": "B's one-screen/word cap plus mandatory risk section and capped past-tense recap jointly enforce trimming status before risk"},
+  {"rule": "Every number carries its delta and window: \"42", "status": "covered", "substantive": true, "why": "B requires every number diffed against last week with delta stated, equivalent constraint minus the explicit window label"},
+  {"rule": "A risk is never sandwiched between two wins", "status": "survives", "substantive": true, "why": "no B rule constrains risk placement relative to wins/fold or requires the slipped-date-in-same-sentence formatting"},
+  {"rule": "Green/yellow/red means the same thing every week; a", "status": "survives", "substantive": true, "why": "B never mandates consistent color semantics across weeks or a one-clause explanation when status color changes"},
+  {"rule": "Never paste a dashboard screenshot in place of", "status": "survives", "substantive": true, "why": "B endorses citing dashboards as evidence but never bans screenshots substituting for a written sentence"}
+]
+```

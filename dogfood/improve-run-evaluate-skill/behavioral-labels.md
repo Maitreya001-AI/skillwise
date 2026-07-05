@@ -60,6 +60,37 @@ were never contested on this axis.
    procedure overturns. All generation/comparison artifacts land in `behavioral-labels-runs/`
    for audit.
 
+## Results (run 2026-07-06; artifacts in `behavioral-labels-runs/`; decision in its `decision.json`)
+
+64 engine calls (2 generations + 2 comparisons × 16 seeds); zero comparator entry-count
+mismatches; both comparator runs agreed on zero-vs-nonzero for every seed (no third-run
+tiebreaks needed). **10 labels confirmed, 6 overturned by the pre-registered rule:**
+
+| seed | was | behavioral | deciding evidence |
+|---|---|---|---|
+| task-03 git-commit-style | broken/nogap | **good** | 72-char subject grammar + conventional-type prefixes survived both comparators |
+| task-05 support-macro-tone | good | **broken/nogap** | all four tone fences covered by the unaided bar in both runs |
+| task-14 platform-rest-pagination | broken/nogap | **good** | the 50/200/clamp-not-reject selection survived |
+| task-17 grpc-service-naming | good | **broken/nogap** | every rule covered — gRPC naming is public-standard content |
+| task-24 json-formatting | broken/nogap | **good** | stable key order + ISO-8601-over-epoch survived (boundary case, recorded as such) |
+| r2 skill-03 markdown-table-style | broken/nogap | **good** | sentence-case headers + HTML-table restriction survived |
+
+Notable confirmations: task-12 (postmortem register) stays **good** (1 substantive survivor) —
+so rounds 3–4's convictions of it remain true fatals and those REVERTs stand under the new key;
+task-10 (SQL bar) and r2 skill-02 (warehouse bar) stay **good** — the r2-era wrong-form FPs on
+them were genuinely wrong. task-02 (acme errors) stays **broken/nogap** with zero survivors.
+
+**Reinterpretation of rounds 2–4 (decisions unchanged):** every REVERT-deciding fatal
+(task-10 in round 3, task-12 in round 4, the round-3 task-07 drop) was scored against a label
+this procedure *confirms* — all four REVERTs survive relabeling. What does not survive is part
+of the "decoy leniency" diagnosis itself: judges' persistent "misses" on task-03/14 were
+correct readings of behaviorally-good seeds mislabeled by construction. The repair loop was
+partly being asked to convict good skills; the gate refused every time. Round-5 baseline under
+the behavioral key (recomputed from the stored reference/floor runs — verdicts unchanged, key
+corrected): reference 0.828/0.828/0.793, band 0.0398, median aggregate 0.828 vs no-skill 0.724;
+five reproducibly-failed tasks {02, 05, 17, 24, 29}, max showable delta 0.172. See
+`round5-baseline-behavioral.json`.
+
 **Known limits, accepted in advance:** two generation samples bound derivability from below
 (more samples could only cover more, pushing labels *toward* nogap — so a "good" verdict here
 is conservative in the direction that round 3/4's fatals bit); the comparator is a same-family

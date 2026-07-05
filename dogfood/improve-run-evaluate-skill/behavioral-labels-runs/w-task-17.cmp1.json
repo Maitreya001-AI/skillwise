@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "Services are `<Domain>Service` (`LedgerService`), never `<Domain>API` or bare", "status": "covered", "substantive": true, "why": "B requires service names end in `Service`, excluding `API` suffix or bare domain names"},
+  {"rule": "Methods are verb-first imperative: `CreateInvoice`, `ListCharges` — never", "status": "covered", "substantive": true, "why": "B requires PascalCase verb-first method names with standard verb vocabulary, banning noun-only/synonym forms"},
+  {"rule": "Request/response messages pair with their method: `CreateInvoiceRequest` /", "status": "covered", "substantive": true, "why": "B requires dedicated `<MethodName>Request`/`Response` messages and bans well-known-type (e.g. Empty) responses"},
+  {"rule": "Streaming methods say so: `WatchOrders`, `StreamEvents` — a", "status": "covered", "substantive": true, "why": "B requires streaming RPCs be named to reflect streaming nature/cardinality rather than unary patterns"},
+  {"rule": "Field names are `snake_case`; enums are `SCREAMING_SNAKE` with", "status": "covered", "substantive": true, "why": "B states snake_case fields and SCREAMING_SNAKE_CASE enum values with `<ENUM_NAME>_UNSPECIFIED` zero value"}
+]
+```

@@ -1,0 +1,171 @@
+{
+ "w-task-02": {
+  "current": "broken",
+  "behavioral": "broken",
+  "flip": false,
+  "substantive_survivors": [],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-03": {
+  "current": "broken",
+  "behavioral": "good",
+  "flip": true,
+  "substantive_survivors": [
+   "Subject line: imperative mood, <= 72 chars, capitalized, no ",
+   "Prefix conventional types where they help: `feat:`, `fix:`, "
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-04": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "Never rewrite the author's function wholesale inside a comme",
+   "After three back-and-forths on one thread, take it to a call"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-05": {
+  "current": "good",
+  "behavioral": "broken",
+  "flip": true,
+  "substantive_survivors": [],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-10": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "Keywords uppercase, identifiers lowercase; one clause per li",
+   "Aliases are words, not letters: `orders o` fails review, `or"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-12": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "The word \"obviously\" and its cousins (\"clearly\", \"simply\") n"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-14": {
+  "current": "broken",
+  "behavioral": "good",
+  "flip": true,
+  "substantive_survivors": [
+   "Default page size 50, maximum 200; requests above the max ar"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-17": {
+  "current": "good",
+  "behavioral": "broken",
+  "flip": true,
+  "substantive_survivors": [],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-18": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "The `env` segment is one of `dev`, `stage`, `prod`; nothing ",
+   "Variables carry units in the name where a unit exists: `time",
+   "Booleans read as predicates: `enable_backups`, `is_public` \u2014"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-20": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "The ask, if there is one, lives in the first two sentences \u2014",
+   "A risk is never sandwiched between two wins and never below ",
+   "Green/yellow/red means the same thing every week; a status t",
+   "Never paste a dashboard screenshot in place of the sentence "
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-24": {
+  "current": "broken",
+  "behavioral": "good",
+  "flip": true,
+  "substantive_survivors": [
+   "Keys in a stable order when hand-authoring (group related ke",
+   "Dates as ISO-8601 strings; avoid epoch integers in human-fac"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "w-task-25": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "The cursor is invisible unless the step is literally \"click "
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "r2-skill-02": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "Mart tables are named `mart_<domain>__<entity>` (double unde",
+   "Timestamps are stored UTC and converted only in the presenta"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "r2-skill-03": {
+  "current": "broken",
+  "behavioral": "good",
+  "flip": true,
+  "substantive_survivors": [
+   "Column headers are sentence case, not Title Case.",
+   "Do not use HTML `<table>` in markdown files unless colspan i"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "r2-skill-04": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "Title line: `<product> <version> \u2014 <one-phrase theme>`.",
+   "Sections in the finished notes, in this order: **Highlights*",
+   "Deprecations state the removal version and the migration pat"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ },
+ "r2-skill-11": {
+  "current": "good",
+  "behavioral": "good",
+  "flip": false,
+  "substantive_survivors": [
+   "Header: shift window (UTC), outgoing/incoming names, pager l",
+   "**Nothing-happened shifts still produce notes** (header + \"n",
+   "Never editorialize about other teams in a handoff (it is a s"
+  ],
+  "runs_agree_on_zero": true,
+  "rules_counted": true
+ }
+}

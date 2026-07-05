@@ -1,0 +1,10 @@
+- Every comment must state the concrete issue and its concrete consequence — never a bare judgment ("this is bad") or a bare preference ("I'd do it differently") without the reason it matters.
+- Tag severity explicitly (e.g. "blocking:", "nit:", "question:") so the author can triage without guessing your intent.
+- Propose the fix or an alternative inline (code snippet, diff, or named pattern) whenever you ask for a change — never just point out the problem and walk away.
+- Phrase all feedback about the code or decision, never the person — no "you always," no naming the author, no character judgments.
+- Ask a genuine question ("what happens if X is empty here?") instead of a rhetorical one ("did you even test this?") when the intent is to probe, not to conclude.
+- Match comment weight to actual impact: one line for style/nits, a full paragraph with reasoning only for correctness, security, or architectural concerns.
+- Never repeat the same class of objection across multiple threads in one review — consolidate into one comment that names all affected locations.
+- Explicitly say when something is a matter of taste versus a hard requirement, so the author knows what's negotiable.
+- Acknowledge good decisions or clever fixes in the diff, not only problems — a review that is 100% negative reads as adversarial regardless of intent.
+- Close every blocking comment with a clear resolution condition (what would make you approve) rather than leaving it open-ended.

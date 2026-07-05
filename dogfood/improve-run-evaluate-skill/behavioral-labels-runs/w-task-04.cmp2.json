@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Never open with \"why didn't you just…\" — ask", "status": "covered", "substantive": false, "why": "B's genuine-vs-rhetorical-question rule plus its propose-alternative rule together cover the same intent"},
+  {"rule": "A blocking objection must carry an alternative or", "status": "covered", "substantive": false, "why": "B requires every change-request to propose a concrete alternative, never a bare objection"},
+  {"rule": "Name what kind of comment it is in", "status": "covered", "substantive": false, "why": "B's explicit severity tagging and taste-vs-requirement labeling ensure the author isn't guessing the comment type"},
+  {"rule": "Never rewrite the author's function wholesale inside", "status": "survives", "substantive": true, "why": "B has no constraint on comment-fix size or scoping to the smallest line range, only on comment length matching impact"},
+  {"rule": "After three back-and-forths on one thread, take", "status": "survives", "substantive": true, "why": "B never specifies a numeric exchange threshold or escalation-to-a-call mechanism, only that blocking comments need a resolution condition"},
+  {"rule": "Praise specifically (\"this made the retry path", "status": "covered", "substantive": false, "why": "B explicitly requires specific, non-obvious praise instead of generic approval"}
+]
+```

@@ -1,0 +1,10 @@
+- Every new model has an explicit `materialized` config and a matching `unique_key`/grain comment; incremental models declare their `is_incremental()` predicate and it's tested against a backfill run before merge.
+- No `SELECT *` in committed code — every column is named, and every join specifies its keys and cardinality expectation (1:1, 1:many) in a comment or test.
+- Every model has at least a `not_null` + `unique` test on its primary/grain key, and every foreign key referenced in a join has a `relationships` test somewhere in the DAG.
+- No hardcoded dates, environment names, or account/project IDs — these come from `dbt_utils.current_timestamp()`, vars, or env-specific target config, not string literals.
+- CTEs are named for what they produce (not `t1`/`cte2`), and any CTE over ~20 lines or with a non-obvious filter has a one-line comment explaining the business rule, not the SQL mechanics.
+- Window functions and self-joins that can change row count are followed by a row-count assertion (test or explicit comment on expected fan-out) so silent duplication is caught at review time, not in a dashboard.
+- No logic duplicated across models that already exists in an upstream model or macro — if the same CASE/WHEN or join pattern appears in 2+ places, it's extracted to a shared model or macro before merge.
+- Every model is referenced via `{{ ref() }}`/`{{ source() }}` only — no raw schema.table references — and every `source()` has a corresponding entry in a `sources.yml` with a freshness check.
+- Breaking changes to a model's grain, column names/types, or filter semantics require a check for known downstream consumers (exposures, other models, dashboards) before merge, not after.
+- Any query justified by a performance concern (denormalization, materialization choice, partitioning/clustering key) states the specific cost/latency evidence for that choice inline, not just "for performance."

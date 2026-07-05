@@ -1,0 +1,10 @@
+- Open with acknowledgment of the customer's specific issue (paraphrased, not generic), not a scripted greeting or thank-you-for-contacting boilerplate.
+- Never use hedge phrases that imply doubt about the customer's report ("it seems," "you claim," "supposedly") — treat the reported problem as fact unless directly disproven.
+- State the resolution or next step in the first two sentences; do not bury the answer under apology or policy preamble.
+- Ban corporate deflection phrases ("per our policy," "unfortunately we are unable," "as stated in the terms") unless immediately followed by a concrete alternative or workaround.
+- Match contraction and register level to the team's house voice consistently within a single message — no switching from casual ("we've got you") to stiff-legal mid-reply.
+- Every apology must be paired with an owned cause or a fix, never a bare "sorry for the inconvenience" with nothing after it.
+- No passive-voice blame-shifting ("mistakes were made," "an error occurred") when the responsible party (system, team, or vendor) is known — name it.
+- If the reply includes a required action from the customer, state it as a single unambiguous imperative step, not buried in a conditional clause.
+- Escalation templates must name a concrete timeframe or next-contact trigger — never end on "someone will be in touch" with no bound.
+- Reject any close that reintroduces doubt or reopens the issue ("let us know if this actually fixes it") when the fix has already been confirmed as correct.

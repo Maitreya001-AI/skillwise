@@ -1,0 +1,10 @@
+- Every table has a header row with descriptive, title-cased column names; no header cell is left blank or generic (e.g. "Column1").
+- Column count and cell order are identical across every row; missing values use a single consistent placeholder (e.g. "—" or "N/A"), never an empty cell.
+- Alignment markers in the delimiter row (`:---`, `:---:`, `---:`) match the actual content type per column (left for text, right/center for numeric or status values) and are consistent for that column across the whole table.
+- Pipe delimiters are padded with a single space on each side and columns are visually aligned in the source (not just rendered output), so the raw markdown is readable in a diff.
+- Literal pipe, backtick, or newline characters inside a cell are escaped (`\|`) or replaced with `<br>`/HTML entities; no cell breaks the table parser.
+- Tables are preceded by a one-line caption or introductory sentence stating what the table shows, and follow any numbering/labeling convention the doc already uses.
+- Units are stated once, either in the column header (e.g. "Latency (ms)") or a table-level note, never mixed or omitted inline per cell.
+- Rows are sorted by an explicit, stated order (alphabetical, priority, chronological, magnitude) rather than left in arbitrary insertion order, unless the doc says order is insignificant.
+- Wide tables (more than ~6 columns or content that forces horizontal scrolling) are restructured — split into multiple tables, transposed, or converted to a definition list — rather than left unreadable.
+- Long-form or multi-sentence content is not forced into a cell; it is summarized in the cell with a link/reference to fuller prose elsewhere in the doc.

@@ -1,0 +1,147 @@
+{
+ "task-01": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-cost decoy: priced by irreversibility (state surgery)"
+ },
+ "task-02": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "COSTUME: generic Python error-handling wisdom in org dress"
+ },
+ "task-03": {
+  "truth": "good",
+  "defect": null,
+  "note": "generic commit-style knowledge in team costume [RELABELED behaviorally 2026-07-06 per behavioral-labels.md]"
+ },
+ "task-04": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit (tone): prose etiquette fences + manual reread exit"
+ },
+ "task-05": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "REPAIR-CLASS: prose fences + honest manual exit, low stakes, no guarantee claim [RELABELED behaviorally 2026-07-06 per behavioral-labels.md]"
+ },
+ "task-06": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "FAKE-DEPENDENCY: runbook-first ritual, 'discipline is the sequence', stages independent"
+ },
+ "task-07": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "evaluation semantics/precedence hand-waved ('usual precedence order')"
+ },
+ "task-08": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "machine-parsed router config, silent skip, guarantee claim, no validator"
+ },
+ "task-09": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: external mandate (audit/compliance) order"
+ },
+ "task-10": {
+  "truth": "good",
+  "defect": null,
+  "note": "FP-EXPRESSION CLASS implicit: SQL review bar \u2014 looks regex-able, human review exit, no guarantee claim"
+ },
+ "task-11": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded doc-writing march; outlining ahead forbidden on fake grounds"
+ },
+ "task-12": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit (register): blameless fences + incident-lead edit pass"
+ },
+ "task-13": {
+  "truth": "good",
+  "defect": null,
+  "note": "org dashboard facts + artifact exit"
+ },
+ "task-14": {
+  "truth": "good",
+  "defect": null,
+  "note": "COSTUME: generic REST pagination wisdom in platform-team dress [RELABELED behaviorally 2026-07-06 per behavioral-labels.md]"
+ },
+ "task-15": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "silent-drop parser, multi-field rules prose-only, no builder/verifier, vague done"
+ },
+ "task-16": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "fire-and-forget ingest drops, scale, guarantee claim, prose-only schema"
+ },
+ "task-17": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "REPAIR-CLASS: prose naming law + honest manual diff exit; loud failure mode [RELABELED behaviorally 2026-07-06 per behavioral-labels.md]"
+ },
+ "task-18": {
+  "truth": "good",
+  "defect": null,
+  "note": "FP-EXPRESSION CLASS implicit: Terraform naming grammar \u2014 looks lint-able, review exit, no guarantee claim"
+ },
+ "task-19": {
+  "truth": "broken",
+  "defect": "overfill-cost",
+  "note": "impact matrix/three summaries/self-review transcript for every PR incl. one-liners"
+ },
+ "task-20": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit (email): read-as-recipient exit"
+ },
+ "task-21": {
+  "truth": "broken",
+  "defect": "no-exit",
+  "note": "battlecards: format+fences fine, Quality section aspirational, no artifact check"
+ },
+ "task-22": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "FAKE-DEPENDENCY: dashboard authoring march, 'visual contaminates query thinking'"
+ },
+ "task-23": {
+  "truth": "good",
+  "defect": null,
+  "note": "composite with declared checks + human seam (weight override, scenario call)"
+ },
+ "task-24": {
+  "truth": "good",
+  "defect": null,
+  "note": "generic JSON prettifying any engine does [RELABELED behaviorally 2026-07-06 per behavioral-labels.md]"
+ },
+ "task-25": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit (visual): honestly-manual eye check"
+ },
+ "task-26": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: mandated PRODUCT order (cell 5), drafting order explicitly free"
+ },
+ "task-27": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "bind/filter/pagination specifics hand-waved ('standard way','usual filters')"
+ },
+ "task-28": {
+  "truth": "good",
+  "defect": null,
+  "note": "org paging law + auditable exit"
+ },
+ "task-29": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded 6-step upgrade march; interleaving forbidden without real dependency"
+ }
+}

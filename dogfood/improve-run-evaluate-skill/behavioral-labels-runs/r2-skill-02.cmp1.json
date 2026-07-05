@@ -1,0 +1,9 @@
+```json
+[
+  {"rule": "Every scheduled model carries a header comment:", "status": "covered", "substantive": false, "why": "B's owner/consumer rule matches the core intent, including a removal-style consequence for missing info"},
+  {"rule": "Mart tables are named mart_<domain>__<entity>", "status": "survives", "substantive": true, "why": "B has no naming-convention rule for mart tables at all"},
+  {"rule": "No SELECT * in anything scheduled --", "status": "covered", "substantive": false, "why": "B states this near-verbatim twice (no select * feeding downstream models/dashboards)"},
+  {"rule": "Timestamps are stored UTC and converted", "status": "survives", "substantive": true, "why": "B only requires timezone explicitness everywhere; it never restricts conversion to the presentation layer or blocks TZ conversion in marts"},
+  {"rule": "Full scans of events_raw are budget-gated:", "status": "covered", "substantive": false, "why": "B's partition-filter and cost/bytes-scanned checks generalize this specific instance"}
+]
+```

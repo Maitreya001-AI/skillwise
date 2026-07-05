@@ -1,0 +1,10 @@
+- Subject line ≤50 chars (hard cap 72), imperative mood ("Add", "Fix", "Remove" — never "Added"/"Fixes"/"Adding"), no trailing period.
+- Subject states *why* or *what behavior changed*, not a narration of the diff ("fix" alone, "update file.ts", "wip", "misc changes" are rejected).
+- One logical change per commit; if the diff touches unrelated concerns, it must be split before merge.
+- Body (when present) separated from subject by one blank line, wrapped at ~72 chars, explains motivation and trade-offs — not a restatement of the code.
+- No reference to conversational context, task IDs, or reviewer names that won't be meaningful outside this repo/session (e.g. "as discussed", "per Claude's suggestion") unless it's a ticket ID the team's tracker actually resolves.
+- Footer trailers (Co-Authored-By, Fixes #123, Refs #456, BREAKING CHANGE:) go on their own lines, correctly formatted, only when applicable.
+- No amending or force-pushing published commits to "clean up" messages; history rewrites on shared branches require explicit approval.
+- Never commit with a message that contradicts or omits a breaking API/behavior change — BREAKING CHANGE footer is mandatory when applicable.
+- No emojis, decorative punctuation, or ALL-CAPS shouting in subject lines unless the team's existing log already establishes that convention.
+- Squash/fixup commits ("fix typo", "address review comments") must be squashed into their parent before the branch merges — final history should read as intentional, not as a work log.

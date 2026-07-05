@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Resource names: <env>-<team>-<purpose>, hyphenated, lowercase, prod-payments-ledger-db", "status": "covered", "substantive": true, "why": "B mandates a lowercase, hyphen-separated cloud-facing name grammar with an env segment (org-env-system-component), same substance despite different segment set"},
+  {"rule": "The env segment is one of dev,", "status": "survives", "substantive": true, "why": "B requires an env segment exist but never enumerates allowed values to dev/stage/prod only"},
+  {"rule": "Module directories are nouns for what they", "status": "covered", "substantive": true, "why": "B requires module/directory names state the thing provisioned (resource domain), not team/ticket, matching the noun-not-verb intent"},
+  {"rule": "Variables carry units in the name where", "status": "survives", "substantive": true, "why": "B's variable-naming rules cover subject-prefixing and reserved words but never require unit suffixes like _seconds/_gb"},
+  {"rule": "Booleans read as predicates: enable_backups, is_public", "status": "survives", "substantive": true, "why": "B has no rule anywhere about boolean variable naming or predicate form"},
+  {"rule": "Tags mirror the name segments (env, team,", "status": "covered", "substantive": true, "why": "B requires identity tags be generated from the same local.tags map used for naming, ensuring tags mirror name segments"}
+]
+```

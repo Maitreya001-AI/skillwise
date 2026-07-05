@@ -1,0 +1,10 @@
+- Capture at the OS/browser zoom level and canvas size the style guide specifies (e.g. 100% zoom, defined viewport); never upscale a smaller capture to fit.
+- Crop to the minimum relevant UI — no full desktop, taskbar, browser chrome, or unrelated tabs/bookmarks bars unless the chrome itself is the subject.
+- Redact or replace all real personal data, emails, tokens, internal URLs, and account names with approved placeholder/demo data before export.
+- Use the designated demo account/environment with a consistent, sanctioned theme (light/dark), locale, and sample dataset — no ad hoc or personal workspaces.
+- Export at the specified resolution and format (e.g. @2x PNG) with file size under the doc site's limit; no visible compression artifacts.
+- Highlight the relevant element with the standard callout style (consistent arrow/box color, weight, and corner radius) — no freehand or inconsistent annotations.
+- Match current product UI exactly; reject any screenshot showing a deprecated layout, copy, or feature flag state not yet in the shipped release.
+- Name and place the file per the docs repo convention (path, slug, versioning) so it resolves correctly from the referencing markdown.
+- Verify alt text/caption is present and accurately describes the depicted state for accessibility and search.
+- Confirm color contrast and text legibility survive the doc site's max-width scaling before merging.

@@ -1,0 +1,11 @@
+```json
+[
+  {"rule": "Header: shift window (UTC), outgoing/incoming names,", "status": "survives", "substantive": true, "why": "B never specifies a header format, named participants, or a quiet/normal/loud pager-load enum."},
+  {"rule": "Open threads — one per line: [severity]", "status": "covered", "substantive": false, "why": "B requires listed status, named next action, and links per item, matching the substance minus the exact line grammar."},
+  {"rule": "Silenced/suppressed alerts with expiry times —", "status": "covered", "substantive": false, "why": "B explicitly requires silenced/snoozed alerts to list expiry and re-arm condition, same failure mode called out."},
+  {"rule": "Changes landed during shift that are", "status": "survives", "substantive": true, "why": "B's revert/undo requirement is scoped to uncommitted manual mitigations, not committed/landed changes still in a soak window."},
+  {"rule": "Nothing-happened shifts still produce notes (header", "status": "survives", "substantive": true, "why": "B has no bullet addressing empty-shift handoffs or distinguishing silence from a missing handoff."},
+  {"rule": "Never editorialize about other teams in", "status": "survives", "substantive": true, "why": "B is entirely about factual completeness and has no rule about tone or editorializing."},
+  {"rule": "Never hand off a thread whose only", "status": "covered", "substantive": false, "why": "B requires current hypothesis, last action, and last observed timestamp instead of a bare 'investigating' status."}
+]
+```

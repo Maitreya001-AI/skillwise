@@ -1,0 +1,10 @@
+- Every model has an explicit primary/grain key declared and tested (`unique` + `not_null` in schema.yml or equivalent), and the grain is documented in a comment where it's non-obvious from the name.
+- No `SELECT *` in any model or CTE that feeds another model — columns are enumerated explicitly so schema drift is visible in the diff.
+- Every join specifies its expected cardinality (1:1, 1:many, many:many) in a comment, and one-to-many joins are followed by a row-count assertion or explicit fan-out acknowledgment, not silently trusted.
+- Incremental models define a deterministic, tested `unique_key` and an explicit late-arriving-data/lookback window; full-refresh cost and semantics are documented.
+- All date/time logic is timezone-explicit (no naked `timestamp` casts) and uses the warehouse's canonical calendar/date-spine table rather than ad hoc `generate_series` or day-math.
+- Filters that encode business logic (e.g., "active user," "valid order") are centralized in a single source (macro, staging model, or dimension) rather than re-implemented inline in multiple downstream models.
+- Every model has at least one test asserting referential integrity to its parent/source, plus a freshness or row-count sanity check for anything scheduled on a recurring cadence.
+- New or changed models include an estimated cost/bytes-scanned check before merge, with partition/cluster pruning verified (no full-table scans on partitioned sources).
+- Null-handling and default values for aggregations (`SUM`, `COUNT`, ratios) are explicit — division guards against zero, and `COUNT` vs `COUNT(DISTINCT ...)` intent is stated, not assumed.
+- Every scheduled query/model has a named owner and a documented downstream consumer (dashboard, model, or report); models with no known consumer are flagged for deprecation, not merged.

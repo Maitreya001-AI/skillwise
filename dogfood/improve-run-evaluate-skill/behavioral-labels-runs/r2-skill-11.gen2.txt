@@ -1,0 +1,10 @@
+- Every open incident/alert gets an explicit status (active / mitigated / monitoring / resolved-pending-verification) — no bare mention without current state.
+- Each item states the next concrete action and who owns it (incoming oncall, a named team, or "none — informational only") — no action-less items left dangling.
+- Timestamps and durations are absolute (date + time + timezone), never relative ("earlier today", "a few hours ago") — handoffs get read across timezones and hours later.
+- Every claim of "fixed" or "resolved" cites the verification evidence (dashboard link, query result, alert cleared) — no unverified resolution claims.
+- Silenced/muted/snoozed alerts are listed with expiry time and re-arm condition — no silent silences that outlive the shift.
+- Links to runbooks, dashboards, PRs, and tickets are actual URLs or IDs, not "see the usual doc" — no unresolvable references.
+- Anything requiring action before a specific deadline (expiring maintenance window, SLA clock, scheduled failover) is flagged with the deadline time, not buried in prose.
+- Ongoing degraded-but-not-paging conditions (elevated error rate, slow queries, capacity creep) are called out explicitly, even if no alert fired — silence implies "nothing to note," and the outgoing oncall must not let known-but-quiet risk pass by omission.
+- Changes made during the shift (deploys, config changes, manual interventions, restarts) are listed with what changed and why, not just that "something was touched."
+- No item is dropped for being "probably nothing" — low-confidence observations are labeled as such and handed off rather than silently discarded.

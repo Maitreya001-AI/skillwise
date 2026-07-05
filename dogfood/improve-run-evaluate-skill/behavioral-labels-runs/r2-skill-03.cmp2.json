@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Use pipe-delimited markdown tables with a", "status": "covered", "substantive": false, "why": "B's header/delimiter-row and pipe-padding rules presuppose the same pipe-delimited table format with header and separator rows"},
+  {"rule": "Align the separator row with colons:", "status": "covered", "substantive": false, "why": "B specifies the same delimiter syntax and the left-for-text/right-or-center-for-numbers convention"},
+  {"rule": "Keep one space padding inside each", "status": "covered", "substantive": false, "why": "B states pipes padded with single spaces using the identical example format"},
+  {"rule": "Column headers are sentence case, not", "status": "survives", "substantive": true, "why": "B twice mandates title-cased headers, directly contradicting A's sentence-case rule rather than covering it"},
+  {"rule": "A table longer than ~15 rows probably", "status": "survives", "substantive": false, "why": "B's restructuring rule is keyed on column count (~5-6 columns), never row count, and A's phrasing ('probably wants to') is a soft suggestion not an enforced threshold"},
+  {"rule": "Do not use HTML `<table>` in", "status": "survives", "substantive": true, "why": "B never addresses HTML table elements or a colspan exception, only markdown-native cell escaping"}
+]
+```

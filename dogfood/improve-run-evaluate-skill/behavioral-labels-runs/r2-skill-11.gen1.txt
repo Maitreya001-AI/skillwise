@@ -1,0 +1,10 @@
+- Every open incident/alert active during the shift must be listed with current status (open / mitigated / monitoring / resolved-pending-postmortem) — no incident silently dropped from the previous handoff without an explicit resolution note.
+- Each listed item states the last known state of the system, not just "still looking into it" — include current hypothesis, last action taken, and last observed metric/log timestamp.
+- Every item has a named next action and an owner (either the incoming oncall or a specific named person/team) — no item left with an implicit or unassigned next step.
+- Any suppressed, silenced, or snoozed alert must be listed explicitly with expiry time/condition — silences must never expire silently without appearing in the handoff.
+- Links to the actual artifacts (dashboard, runbook, incident ticket, relevant PR/commit, Slack thread) are included per item, not paraphrased summaries only — the incoming oncall must be able to click through to primary evidence.
+- Time references are stated as absolute timestamps with timezone, not relative terms ("earlier today", "a few hours ago") — handoffs are read across shift/timezone boundaries.
+- Any manual mitigation, workaround, feature flag flip, or config change made during the shift that has not been reverted or committed to source control must be flagged with what it changed and how to undo it.
+- Escalations already made (paged a human, contacted a vendor, opened a vendor ticket) are recorded with who was contacted, when, and current response status — don't leave the incoming oncall to re-escalate blind.
+- Anything explicitly deferred or deprioritized ("noise, ignore unless it recurs") must state the reason it was deprioritized, so the incoming oncall doesn't waste time re-litigating a decision already made.
+- The handoff distinguishes between what was verified firsthand versus what is inferred or reported secondhand ("customer says X" vs "I confirmed X in logs") — the incoming oncall must be able to weigh confidence accordingly.

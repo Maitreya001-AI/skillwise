@@ -1,0 +1,8 @@
+```json
+[
+  {"rule": "Title line: `<product> <version> — <one-phrase theme>`.", "status": "survives", "substantive": true, "why": "B mandates version+release-date format but never requires a one-phrase theme in the title."},
+  {"rule": "Sections in the finished notes, in this order:", "status": "survives", "substantive": true, "why": "B fixes heading order/naming but has no 3-item cap on Highlights nor a mandatory 'None' Deprecations section."},
+  {"rule": "Each item: user-observable behavior first, feature name second;", "status": "survives", "substantive": true, "why": "B covers behavior-first phrasing and no ticket IDs, but not feature-name-second ordering or a public-docs-only link restriction."},
+  {"rule": "Deprecations state the removal version and the migration", "status": "survives", "substantive": true, "why": "B requires migration steps only for Breaking changes; it has no equivalent removal-version rule for Deprecations."}
+]
+```

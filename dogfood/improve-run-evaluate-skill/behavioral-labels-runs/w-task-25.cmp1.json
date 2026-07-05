@@ -1,0 +1,10 @@
+```json
+[
+  {"rule": "Crop to the pane the paragraph is about", "status": "covered", "substantive": false, "why": "B requires cropping to the minimum region/dialog and excludes full-desktop and browser chrome/tabs, matching the pane-only constraint."},
+  {"rule": "Annotations use the standard red (#D0342C), 2px stroke,", "status": "covered", "substantive": false, "why": "B's 'team's standard style (color, stroke width)' plus explicit 'no freehand' and arrow/box-only wording covers the same shape and consistency constraints, minus the literal hex/px value."},
+  {"rule": "All data on screen comes from the demo", "status": "covered", "substantive": false, "why": "B repeatedly requires a dedicated demo account/dataset and redaction of real emails/tokens/org names, matching the no-real-data substance."},
+  {"rule": "Light theme, default zoom, English locale — whatever", "status": "survives", "substantive": false, "why": "B mandates a standardized, sanctioned demo environment/theme with no ad hoc or personal workspaces, the opposite of 'whatever your personal setup is,' which itself enforces nothing concrete."},
+  {"rule": "The cursor is invisible unless the step is", "status": "survives", "substantive": true, "why": "B never addresses cursor visibility or a click-step exception anywhere in its rules."},
+  {"rule": "Filenames are `<page-slug>-<ordinal>.png`; an image edited later keeps", "status": "covered", "substantive": false, "why": "B requires filenames to follow the doc's slug/versioning naming convention and resolve correctly from markdown, matching the naming-and-link-stability substance."}
+]
+```

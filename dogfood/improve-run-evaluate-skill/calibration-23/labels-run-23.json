@@ -1,0 +1,117 @@
+{
+ "task-01": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-cost decoy: priced by irreversibility (state surgery)"
+ },
+ "task-02": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "generic commit-style knowledge in team costume"
+ },
+ "task-03": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit: prose etiquette fences + manual reread exit; human-read artifact, loud cheap failure; pricing never recited in-text"
+ },
+ "task-04": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS: prose fences + honest manual exit, low stakes, no guarantee claim"
+ },
+ "task-05": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "evaluation semantics/precedence hand-waved ('usual precedence order')"
+ },
+ "task-06": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "machine-parsed router config, silent skip at load, cross-field invariants, guarantee claim ('pages always reach a human'), batch-authored; no validator/builder; exit is a reread"
+ },
+ "task-07": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: external mandate (audit/compliance) order"
+ },
+ "task-08": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded doc-writing march; outlining ahead forbidden on fake grounds"
+ },
+ "task-09": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit: blameless-register fences + incident-lead manual edit pass; document read aloud by humans; pricing never recited"
+ },
+ "task-10": {
+  "truth": "good",
+  "defect": null,
+  "note": "org dashboard facts + artifact exit"
+ },
+ "task-11": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "silent-drop parser, multi-field rules prose-only, no builder/verifier, vague done"
+ },
+ "task-12": {
+  "truth": "broken",
+  "defect": "wrong-form",
+  "note": "fire-and-forget ingest silently drops, hundreds of call sites (scale), guarantee claim ('never break'), prose-only schema; no builder/schema artifact"
+ },
+ "task-13": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS: prose naming law + honest manual diff exit; loud failure mode"
+ },
+ "task-14": {
+  "truth": "broken",
+  "defect": "overfill-cost",
+  "note": "impact matrix/three summaries/self-review transcript for every PR incl. one-liners"
+ },
+ "task-15": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit: email-writing rules + read-as-recipient exit; human-read, recoverable, loud feedback; pricing never recited"
+ },
+ "task-16": {
+  "truth": "broken",
+  "defect": "no-exit",
+  "note": "battlecards: format+fences fine, Quality section aspirational, no artifact check"
+ },
+ "task-17": {
+  "truth": "good",
+  "defect": null,
+  "note": "composite with declared checks + human seam (weight override, scenario call)"
+ },
+ "task-18": {
+  "truth": "broken",
+  "defect": "nogap",
+  "note": "generic JSON prettifying any engine does"
+ },
+ "task-19": {
+  "truth": "good",
+  "defect": null,
+  "note": "REPAIR-CLASS implicit: visual dimension honestly manual (eye check at 100% zoom); faking a verifier would be the defect; pricing never recited"
+ },
+ "task-20": {
+  "truth": "good",
+  "defect": null,
+  "note": "overfill-order decoy: mandated PRODUCT order (cell 5), drafting order explicitly free"
+ },
+ "task-21": {
+  "truth": "broken",
+  "defect": "underfill",
+  "note": "bind/filter/pagination specifics hand-waved ('standard way','usual filters')"
+ },
+ "task-22": {
+  "truth": "good",
+  "defect": null,
+  "note": "org paging law + auditable exit"
+ },
+ "task-23": {
+  "truth": "broken",
+  "defect": "overfill-order",
+  "note": "welded 6-step upgrade march; interleaving forbidden without real dependency"
+ }
+}

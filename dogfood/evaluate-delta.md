@@ -28,3 +28,9 @@ Whether a **compiled exit verifier** produces a behavioral difference over prose
 - **Round 2** (theory-boundary decoys, `seed-skills-r2/`): **`fail` — reproduced negative transfer** (`delta_exist −0.042`; the skill lifts broken-skill detection +0.17 but drops good-skill preservation 1.00 → 0.75; cleanest regression: both with-skill runs mislabeled an honestly-priced prose-rules skill as `wrong-form`). The gap is real (`no_skill` 0.75), so per the sub-floor routing this goes to `improve-skill` — first repair target: the form check must carry its own §4 pricing discipline instead of relying on a nearby paragraph.
 
 The side question came back too: the with-skill gain concentrates in exactly what a static read can see, and the loss concentrates where applying the method needs judgment — §7's claim, observed behaviorally.
+
+**Follow-up (2026-07-06).** Three improve rounds on the r2 verdict's repair target (working set
+hardened to 29 seeds until the defect expressed reproducibly) ended in three mechanical REVERTs
+and localized the negative transfer to the decoy class; the repair is escalated to a structural
+rethink (a behavioral deletion micro-probe inside Tier 1). Full trace:
+[`improve-run-evaluate-skill/`](./improve-run-evaluate-skill/), rounds 2–3.

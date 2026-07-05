@@ -1,0 +1,140 @@
+[
+ {
+  "skill": "task-01",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-02",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-03",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-04",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-05",
+  "verdict": "broken",
+  "primary_defect": "underfill",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-06",
+  "verdict": "broken",
+  "primary_defect": "no-exit",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-07",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-08",
+  "verdict": "broken",
+  "primary_defect": "overfill-order",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-09",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-10",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-11",
+  "verdict": "broken",
+  "primary_defect": "wrong-form",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-12",
+  "verdict": "broken",
+  "primary_defect": "no-exit",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-13",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-14",
+  "verdict": "broken",
+  "primary_defect": "overfill-cost",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-15",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-16",
+  "verdict": "broken",
+  "primary_defect": "no-exit",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-17",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-18",
+  "verdict": "broken",
+  "primary_defect": "nogap",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-19",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-20",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-21",
+  "verdict": "broken",
+  "primary_defect": "underfill",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-22",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "task-23",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ }
+]

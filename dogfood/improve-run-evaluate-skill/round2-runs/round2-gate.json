@@ -1,0 +1,106 @@
+{
+ "a_run_aggregates": [
+  0.8621,
+  0.8621,
+  0.8276
+ ],
+ "b_run_aggregates": [
+  0.8621,
+  0.8621,
+  0.8621
+ ],
+ "prev_accepted_pass_rate": 0.8621,
+ "with_edited_pass_rate": 0.8621,
+ "no_skill_pass_rate": 0.7931,
+ "delta_step": 0.0,
+ "delta_exist_edited": 0.069,
+ "delta_exist_prev": 0.069,
+ "noise_band": 0.0398,
+ "regressions_vs_previous": [],
+ "floor_breaches_edited": [
+  "task-03"
+ ],
+ "floor_breaches_entry": [
+  "task-03"
+ ],
+ "power": {
+  "n_tasks": 29,
+  "resolution": 0.0345,
+  "adequate": true
+ },
+ "decision": "REVERT",
+ "per_task": [
+  {
+   "task": "task-02",
+   "truth": "broken",
+   "defect": "nogap",
+   "no_skill": 0.0,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-03",
+   "truth": "broken",
+   "defect": "nogap",
+   "no_skill": 0.5,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-07",
+   "truth": "broken",
+   "defect": "underfill",
+   "no_skill": 0.5,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-08",
+   "truth": "broken",
+   "defect": "wrong-form",
+   "no_skill": 0.5,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-14",
+   "truth": "broken",
+   "defect": "nogap",
+   "no_skill": 0.0,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-15",
+   "truth": "broken",
+   "defect": "wrong-form",
+   "no_skill": 0.5,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-16",
+   "truth": "broken",
+   "defect": "wrong-form",
+   "no_skill": 0.5,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-27",
+   "truth": "broken",
+   "defect": "underfill",
+   "no_skill": 0.5,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-29",
+   "truth": "broken",
+   "defect": "overfill-order",
+   "no_skill": 0.0,
+   "prev": 0,
+   "edited": 0
+  }
+ ]
+}

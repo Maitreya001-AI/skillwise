@@ -20,3 +20,16 @@
   which is THEORY §4's form theorem observed on ourselves: content that must HOLD (be applied
   every run) cannot ship merely as declarative text. Round-3 hypothesis: same content, compiled
   into the verdict protocol (forced per-suspect probe in the output contract), not more prose.
+- **e3 "default-verdict-unless-quoted" (+2 lines, decoy probes compiled into the verdict protocol)** —
+  screened 11/12 on burned r2 (caught the fake-specificity decoy with the right token, zero FP)
+  but **REVERTED at the round-3 gate**: the mechanism transmits reliably (all three decoy tasks
+  02/03/29 caught in every edited run — the transmission problem d1 died of is solved) yet the
+  strengthened default over-fires on genuine goods whose content skirts generic practice:
+  reproduced conviction of task-10 (SQL review bar; nogap'd in 2 of 2 runs → median 0, floor
+  breach) plus 1-run convictions of task-12/18. Negative transfer relocated, not removed.
+  Combined lesson of rounds 2+3: prose under-applies (1/3 runs), forced defaults over-apply —
+  the org-specific-vs-generic discrimination is exactly the deletion test, which THEORY §7
+  classifies as L2-native; no wording of a static L1 prediction makes it reliably calibrated.
+  Do not retry prompt-level variants of this rule. Structural rethink routed to seek-skill:
+  give Tier 1 a *behavioral* deletion micro-probe (actually run a no-skill engine on one typical
+  task and compare) instead of asking a judge to simulate one.

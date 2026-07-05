@@ -97,7 +97,8 @@ skillwise/
 ├── docs/
 │   ├── THEORY.md           # self-contained derivation + references
 │   ├── theory.html         # illustrated step-by-step walkthrough
-│   └── two-tier-evaluation.md  # decision history (older section numbering; see its top note)
+│   ├── two-tier-evaluation.md  # decision history (older section numbering; see its top note)
+│   └── decision-from-library.md  # decision record: the decompiler is seek's from-library adapter, not a fifth letter
 ├── .github/workflows/lint-skills.yml
 ├── CONTRIBUTING.md
 ├── README.md

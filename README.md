@@ -17,7 +17,7 @@ A skill can influence an agent through exactly two channels — injected text an
 |---|---|---|
 | [`evaluate-skill`](./skills/evaluate-skill) | the six-test ruler + the gate (the kernel) | reviewing, grading, "is this skill good?", and as the final check before shipping |
 | [`write-skill`](./skills/write-skill) | the ruler run in reverse — author by hand | creating or designing a new skill from a known need |
-| [`seek-skill`](./skills/seek-skill) | authoring driven by a corpus — discovery | mining or auto-generating a skill from traces, a run, or a codebase |
+| [`seek-skill`](./skills/seek-skill) | authoring driven by a corpus — discovery (two source adapters: `from-traces`, `from-library`) | mining or auto-generating a skill from traces or a run; decompiling a library/SDK into a skill |
 | [`improve-skill`](./skills/improve-skill) | the ruler in a gated loop | a skill isn't triggering, is over-built, or fails cases; evolving from failure traces |
 
 `evaluate-skill` is the kernel: `write-skill` and `seek-skill` call it as an exit gate, and `improve-skill` calls it as the gate inside its loop. Together they span the skill lifecycle — experience → extraction (`seek`) → consumption and evolution (`improve`) — with hand-authoring (`write`) and judgment (`evaluate`) throughout. Each works alone; they're designed to work together. There is also one **explicit entry**: type `/skillwise <a skill path | a requirement | a corpus>` and it routes you to the right door on observable evidence (a compiled state probe), hands off once, and stops — it never orchestrates, and it stays out of automatic routing (the four skills' own triggers are unchanged).
@@ -84,7 +84,7 @@ skillwise/
 ├── skills/
 │   ├── evaluate-skill/     # SKILL.md + scripts/lint_skill.py + references/effect-gate.md (synced copy)
 │   ├── write-skill/        # SKILL.md
-│   ├── seek-skill/         # SKILL.md + references/effect-gate.md (synced copy)
+│   ├── seek-skill/         # SKILL.md + references/{from-library,effect-gate}.md
 │   └── improve-skill/      # SKILL.md + references/{rubric,ratchet-protocol,failure-driven,effect-gate}.md
 ├── shared/
 │   └── effect-gate.md      # the ONE measurement gate — single editing source for the synced copies

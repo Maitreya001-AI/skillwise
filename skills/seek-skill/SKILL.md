@@ -1,6 +1,6 @@
 ---
 name: seek-skill
-description: Discover and generate a new skill automatically from a corpus of experience — agent trajectories, traces, logs, a completed task run, a codebase, or a document set — instead of writing it by hand. Use this when the goal is to mine or auto-generate skills from existing material, to turn what an agent keeps doing into a reusable skill, or to extract a skill from session logs. Use write-skill instead when the skill is already specified and just needs to be written.
+description: Discover and generate a new skill automatically from a corpus — agent trajectories, traces, logs, a completed task run, a library or SDK, a codebase, or a document set — instead of writing it by hand. Use this when the goal is to mine or auto-generate skills from existing material, to turn what an agent keeps doing into a reusable skill, to extract a skill from session logs, or to decompile a library/wrapper into a skill (deciding which parts to unwrap and which to keep compiled). Use write-skill instead when the skill is already specified and just needs to be written.
 license: MIT
 ---
 
@@ -10,7 +10,18 @@ This is the skill-extraction stage of the lifecycle (experience → extraction �
 
 > **The trap to avoid.** The common failure is to compile the *trajectory* — the action sequence — directly into the skill, turning parameters into placeholders. That encodes a procedure the engine already orchestrates for free, and welds an order that fails the shuffle test ([AXIS](https://arxiv.org/abs/2409.17140) does exactly this and notes the result is "a combination of actions"). In the theory's terms: a trajectory is **one concrete strategy** — exactly the procedure THEORY §3 excludes from the gap space. Extraction distils the *pattern at a loop site* (which gap recurs, at which of the four sites), never the *path*. The action sequence is evidence, not the skill.
 
-## What this needs (the substrate)
+## Sources — the corpus selects the adapter; the tail never varies
+
+The "read where the gap is" front-end is a slot with two adapters. Everything downstream — site classification, `write-skill` materialization, the shared existence gate — is one tail, identical for both:
+
+| corpus | adapter | reads the gap by |
+|---|---|---|
+| **behavioral traces** (runs, logs, sessions) | `from-traces` — the loop below | contrastive induction over failure × neighboring-success pairs |
+| **a static library / SDK / wrapper** | `from-library` — [`references/from-library.md`](./references/from-library.md) | structural four-atom decomposition + a rigidification-cost triage (an L1 prediction that ranks, never certifies) |
+
+A new source is an adapter in this slot, never a new top-level skill: what individuates a skill in this toolkit is its certifying operation, and both adapters certify through the same existence gate. The static adapter exists because rigidification gaps are precisely the class traces cannot show — a wrapper suppresses its own failure signal until an interface break exposes it, so no contrast pair ever forms.
+
+## What from-traces needs (the substrate)
 
 In order of importance:
 - **Full trajectories, not just outcomes** — inputs, actions, tool calls, intermediate states, and especially the primitives the engine improvised at runtime, where the hidden gap lives. Final outputs alone hide the gap.
@@ -20,16 +31,18 @@ In order of importance:
 - **A held-out validation set** disjoint from the mining pool — what makes extraction optimization rather than distillation.
 - **A rejected-candidate buffer** — patterns that failed the gate, kept so the loop never re-proposes a dead end.
 
+(`from-library`'s substrate is different in kind — the library itself plus its change history — and is listed in its own reference file.)
+
 Grounding matters: a skill distilled without real task context collapses into vague generic procedure, so mine from real executions with their corrections and input/output formats ([Agent Skills best practices](https://agentskills.io/skill-creation/best-practices)).
 
 ## The loop (a measurement protocol — iteration left to the engine)
 
 > The order below is licensed cell by cell (THEORY §3 — the six legitimate homes of order; the cell is the license, no sentence-by-sentence plea needed). Steps **1–4 stand in dependency order (cell 1)**: you cannot classify a pattern you haven't mined, materialize a gap you haven't classified, or gate an artifact you haven't materialized. The **gate's own change→measure→keep order is epistemic order (cell 4)** — you cannot select on a delta you have not measured — and its non-skippability is §4's compilation requirement on Control. Steps **5–6 are post-gate with one ordering constraint**, also cell 1: dedup/preserve before registering, so a to-be-merged identity isn't registered prematurely; step 5's *coverage-expansion* re-enters the gate as a fresh existence check, not a re-run of step 4's verdict.
 
-1. **Mine recurring patterns by batch induction over the whole pool, not serially** ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)). A pattern recurs across multiple successful trajectories and, where labels allow, is present in successes and absent or wrong in failures ([SkillGen](https://arxiv.org/abs/2605.10999)'s contrastive induction).
+1. **Read the gap with the source's adapter.** For traces: mine recurring patterns by batch induction over the whole pool, not serially ([Trace2Skill](https://www.emergentmind.com/topics/trace2skill)) — a pattern recurs across multiple successful trajectories and, where labels allow, is present in successes and absent or wrong in failures ([SkillGen](https://arxiv.org/abs/2605.10999)'s contrastive induction). For a library: run `references/from-library.md`'s decomposition + triage instead — including its mandatory negative branch (a library can come out "do not decompose", and that verdict is a product, not a failure).
 2. **Classify the gap by loop site (§2, §9)** — the step that separates a reusable skill from a replayed macro. For each pattern, ask which site it kept surfacing at: a fact *repeatedly absent* → **Knowledge** (Σ, the generation site); an operation *repeatedly mis-improvised* → **Capability** (Π, the action site — the tool calls become `build({named fields})`, never positional replay); a recurring *"what good looks like"* → **Judgment** (φ, the verification site); a *non-default loop* → **Control** (γ, the scheduling site).
 3. **Materialize type-disciplined** (hand to `write-skill`'s invariants). Emit a structured folder: SKILL.md + `scripts/` (only for capability primitives) + `references/`. Describe the world and what's correct, not the path taken.
-4. **Gate on the held-out set (default deny)** — the **shared measurement gate** in `references/effect-gate.md`, on its **existence** branch. A brand-new skill has no previous version, so `delta_step` is undefined; seeking always asks *should this exist?* (`delta_exist` beyond its noise band, vs no-skill — the same branch `evaluate-skill` uses, *not* `improve-skill`'s improvement branch). Inject the candidate, run the held-out set with-skill vs no-skill (the deletion test, made measurable — [MUSE-Autoskill](https://arxiv.org/abs/2605.27366)); the gate owns the keep/discard decision, its power check, and its non-waivable fatals — **do not restate the rule here, reference it**. Keep iff it passes; else discard to a rejected buffer.
+4. **Gate on the held-out set (default deny)** — the **shared measurement gate** in `references/effect-gate.md`, on its **existence** branch. A brand-new skill has no previous version, so `delta_step` is undefined; seeking always asks *should this exist?* (`delta_exist` beyond its noise band, vs no-skill — the same branch `evaluate-skill` uses, *not* `improve-skill`'s improvement branch). Inject the candidate, run the held-out set with-skill vs the reference condition (the deletion test, made measurable — [MUSE-Autoskill](https://arxiv.org/abs/2605.27366)); the gate owns the keep/discard decision, its power check, and its non-waivable fatals — **do not restate the rule here, reference it**. The reference condition is bare no-skill for `from-traces`; for `from-library` it is the engine *with the raw library* and the held-out tasks must press the rigidity surface (both instantiations in the adapter file). Keep iff it passes; else discard to a rejected buffer.
 5. **Dedup and preserve.** Merge against the library with conflict detection; never overwrite a capability the library already had. Expand coverage beyond the seed corpus only through the same gate ([SkillX](https://arxiv.org/abs/2604.04804)).
 6. **Hand off.** The existence verdict already came from the step-4 gate — don't re-run it; surface the gate's converged report (the `evaluate-skill`-shaped gate object, see `references/effect-gate.md`) for humans and register the kept skill for ongoing `improve-skill` evolution.
 

@@ -17,7 +17,7 @@ allowed-tools: Bash(python3:*) Bash(ls:*) Read Grep
 |---|---|---|
 | `exists_with_verdict` | **improve-skill** | 已有裁决，下一步是修（裁决为 nogap 时 improve 的入口自会退役它，不归本入口管） |
 | `exists_no_verdict` | **evaluate-skill** | 存在但无裁决——先要裁决 |
-| `no_path` / `path_not_found`，且输入含语料形态（轨迹、日志、对话记录、成批样例文件） | **seek-skill** | 目标须从语料中发现 |
+| `no_path` / `path_not_found`，且输入含语料形态（轨迹、日志、对话记录、成批样例文件，或一个库/SDK/代码库） | **seek-skill** | 目标须从语料中发现（静态库走其 `from-library` 源适配器） |
 | `no_path` / `path_not_found`，且输入是规格形态（描述想要什么的文字） | **write-skill** | 目标已给定 |
 | 请求文本的动词信号（"为什么不触发"→裁决；"改/修"→改进；"做一个"→写） | 佐证 | 与文件证据冲突时，**文件证据优先**（可观察 > 转述） |
 

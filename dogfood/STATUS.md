@@ -16,7 +16,7 @@ By their own tier classification all four meta-skills are **production/library**
 ## Measurement debts (standing, explicit)
 
 - **Cost instrumentation**: the sub-agent harness has not exposed per-run token counts in any run
-  to date (r1/r2 existence, improve rounds 1–3) → `cost_ratio` and the §8-5 inertia-cost fatal
+  to date (r1/r2 existence, improve rounds 1–4) → `cost_ratio` and the §8-5 inertia-cost fatal
   remain **unevaluated** at L2. Every gate verdict so far is blind on one of its four fatal axes;
   qualitative note only (the with-skill arm reads ~9k extra words per run).
 - **Set size**: empirically closed. r2's 12-seed set produced `noise_band_exist 0.289` > max

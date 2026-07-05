@@ -1,0 +1,74 @@
+[
+ {
+  "skill": "skill-01",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-02",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-03",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-04",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-05",
+  "verdict": "broken",
+  "primary_defect": "underfill",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-06",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-07",
+  "verdict": "broken",
+  "primary_defect": "overfill-order",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-08",
+  "verdict": "broken",
+  "primary_defect": "overfill-cost",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-09",
+  "verdict": "broken",
+  "primary_defect": "underfill",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-10",
+  "verdict": "broken",
+  "primary_defect": "wrong-form",
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-11",
+  "verdict": "good",
+  "primary_defect": null,
+  "reason": "(stored from teammate transcript)"
+ },
+ {
+  "skill": "skill-12",
+  "verdict": "broken",
+  "primary_defect": "no-exit",
+  "reason": "(stored from teammate transcript)"
+ }
+]

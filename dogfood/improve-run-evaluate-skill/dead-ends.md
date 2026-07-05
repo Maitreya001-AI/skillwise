@@ -34,3 +34,12 @@
   Do not retry prompt-level variants of this rule. Structural rethink routed to seek-skill:
   give Tier 1 a *behavioral* deletion micro-probe (actually run a no-skill engine on one typical
   task and compare) instead of asking a judge to simulate one.
+- **f1c "pre-registration micro-probe + strip-test sorting" (+2 lines)** — screened 11/12 zero-FP
+  (f1 disqualified for a contrast-pair leak quoting a working-set seed; f2 9/12; f3 revived the
+  wrong-form FP) but **REVERTED at the round-4 gate**: delta_step +0.0345 ≤ band 0.0398 and a
+  reproduced regression + floor breach on task-12 (blameless register convicted nogap 2/3 runs).
+  Third distinct failure mode: attention displacement (run 1 missed all three wrong-form brokens
+  the reference never misses) with extreme run variance (0.759–0.966). Prompt-layer mechanisms
+  for this boundary are now exhausted across four rounds/four failure modes; do not propose a
+  fifth wording. Next form is compiled (scripts/ probe running an actual no-skill engine) AND
+  nogap-class labels must first be established behaviorally — see round-4.md.

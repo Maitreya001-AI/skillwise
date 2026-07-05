@@ -1,0 +1,26 @@
+{
+ "b_run_aggregates": [
+  0.8621,
+  0.7241,
+  0.7931
+ ],
+ "with_edited": 0.7586,
+ "prev_accepted": 0.8276,
+ "delta_step": -0.069,
+ "noise_band": 0.0398,
+ "gains": [
+  "task-24"
+ ],
+ "regressions": [
+  "task-08",
+  "task-15",
+  "task-16"
+ ],
+ "floor_breaches_edited": [
+  "task-08",
+  "task-15",
+  "task-16"
+ ],
+ "floor_breaches_entry": [],
+ "decision": "REVERT"
+}

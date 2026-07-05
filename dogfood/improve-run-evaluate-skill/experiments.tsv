@@ -3,3 +3,4 @@ round	weakest_dimension	delta_step	delta_exist	cost_delta	floor_ok	regression_co
 2	decoy-leniency (costume nogap / fake-dependency acquittal)	0.0000	+0.0690	n/a	FALSE	0	false	d1 evidence-source rule (+2 prose lines)	REVERT	4e44584
 3	decoy-leniency (same defect, compiled-er form)	+0.0345	+0.1034	n/a	FALSE	2	false	e3 default-verdict-unless-quoted (+2 lines)	REVERT (reproduced regression + floor breach task-10)	f3d9169
 4	decoy-leniency (progressive form: pre-registration micro-probe)	+0.0345	+0.1034	n/a	FALSE	1	false	f1c pre-registration + strip-test sorting (+2 lines)	REVERT (reproduced regression + floor breach task-12; run variance 0.759-0.966)	ee373fc
+5	plateau-break: compiled deletion probe (scripts/ + wiring)	-0.0690	+0.0345	n/a	FALSE	3	false	deletion_probe.py primitive, behavioral key	REVERT (regressions+floor 08/15/16: attention displacement on the wrong-form axis)	3b130e0(branch)

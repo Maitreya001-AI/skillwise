@@ -43,3 +43,15 @@
   for this boundary are now exhausted across four rounds/four failure modes; do not propose a
   fifth wording. Next form is compiled (scripts/ probe running an actual no-skill engine) AND
   nogap-class labels must first be established behaviorally — see round-4.md.
+- **plateau-break "compiled deletion probe as a Tier-1 step" (branch 3b130e0)** — the probe
+  mechanism itself performed (task-24 flipped on probe survivors; style goods protected with
+  quoted evidence; the most diligent run convicted 02/05 with zero-survivor evidence) but the
+  round REVERTED with delta_step −0.069 and reproduced floor breaches on the wrong-form axis
+  (08/15/16): judges who spend their run executing probes under-attend the form check —
+  attention displacement is not fixed by moving the probe from prose to a script the judge
+  drives. Also measured: 1-sample runtime bars are narrower than the 2-sample labeling union,
+  letting weak survivors rescue behaviorally-nogap seeds in 2 of 3 runs. Plateau-break is
+  spent. If a probe ever re-enters the skill, it must not compete with the read (e.g., a
+  separate probe pass or orchestrator-run probes feeding the judge), and its sample count must
+  match the labeling procedure. The script survives as measurement tooling
+  (dogfood/tools/deletion_probe.py); the loop terminates already_optimal — see round-5.md.

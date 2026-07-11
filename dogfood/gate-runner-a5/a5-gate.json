@@ -1,0 +1,205 @@
+{
+ "skill": "skills/evaluate-skill",
+ "tier": "production",
+ "question": "existence",
+ "evaluated_layers": [
+  "effect"
+ ],
+ "gate_pass": "fail",
+ "certainty": "certifying",
+ "date": "2026-07-11",
+ "power": {
+  "n_tasks": 29,
+  "resolution": 0.0345,
+  "adequate": true
+ },
+ "judges": [],
+ "structural": null,
+ "effect": {
+  "no_skill_pass_rate": 0.6897,
+  "with_skill_pass_rate": 0.4483,
+  "delta_exist": -0.2414,
+  "noise_band_exist": 0.0796,
+  "no_skill_run_aggregates": [
+   0.7241,
+   0.6552,
+   0.6552
+  ],
+  "tokens_no_skill": 14602204,
+  "tokens_with_skill": 24067632,
+  "cost_ratio": 1.6482,
+  "usd_no_skill": 14.6951,
+  "usd_with_skill": 25.2069,
+  "floor_ok": false,
+  "regression_count": 8,
+  "regressions": [
+   "task-01",
+   "task-09",
+   "task-13",
+   "task-14",
+   "task-20",
+   "task-23",
+   "task-25",
+   "task-28"
+  ],
+  "safety_regression": false,
+  "safety_note": "safety signals are not instrumented by gate_runner; they remain the orchestrator's read",
+  "why": "reproduced negative transfer on per-task medians: ['task-01', 'task-09', 'task-13', 'task-14', 'task-20', 'task-23', 'task-25', 'task-28']",
+  "per_task": [
+   {
+    "task": "task-01",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-02",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-03",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-04",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-05",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-06",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-07",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-08",
+    "no_skill": 0,
+    "with_skill": 1
+   },
+   {
+    "task": "task-09",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-10",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-11",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-12",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-13",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-14",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-15",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-16",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-17",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-18",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-19",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-20",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-21",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-22",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-23",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-24",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-25",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-26",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-27",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-28",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-29",
+    "no_skill": 1,
+    "with_skill": 1
+   }
+  ]
+ },
+ "discrimination": null,
+ "fix_list": [],
+ "cost_unevaluated": false,
+ "runner": {
+  "engine_model": "claude-sonnet-5",
+  "k_ref": 3,
+  "k_test": 3,
+  "compiled_by": "gate_runner.py"
+ }
+}

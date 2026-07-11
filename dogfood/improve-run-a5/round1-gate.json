@@ -1,0 +1,171 @@
+{
+ "prev_run_aggregates": [
+  0.4091,
+  0.4091,
+  0.4091
+ ],
+ "prev_accepted_pass_rate": 0.4091,
+ "with_edited_pass_rate": 0.7727,
+ "no_skill_pass_rate": 0.6364,
+ "delta_step": 0.3636,
+ "delta_exist_edited": 0.1364,
+ "noise_band": 0.0,
+ "regressions_vs_previous": [],
+ "floor_breaches_edited": [
+  "task-01",
+  "task-14"
+ ],
+ "floor_breaches_entry": [
+  "task-01",
+  "task-09",
+  "task-14",
+  "task-20",
+  "task-23",
+  "task-25"
+ ],
+ "safety_regression": false,
+ "power": {
+  "n_tasks": 22,
+  "resolution": 0.0455,
+  "adequate": true
+ },
+ "decision": "REVERT",
+ "why": "fatal: regressions vs previous [], floor breaches ['task-01', 'task-14']",
+ "reference_runs_noncanonical": false,
+ "per_task": [
+  {
+   "task": "task-01",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-03",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-05",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-06",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-08",
+   "no_skill": 0,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-09",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-10",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-11",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-12",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-14",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-15",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-16",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-17",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-18",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-19",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-20",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-22",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-23",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-24",
+   "no_skill": 0,
+   "prev": 0,
+   "edited": 0
+  },
+  {
+   "task": "task-25",
+   "no_skill": 1,
+   "prev": 0,
+   "edited": 1
+  },
+  {
+   "task": "task-27",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  },
+  {
+   "task": "task-29",
+   "no_skill": 1,
+   "prev": 1,
+   "edited": 1
+  }
+ ],
+ "cost_delta_tokens": -4841117,
+ "cost_unevaluated": false
+}

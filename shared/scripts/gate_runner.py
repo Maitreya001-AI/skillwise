@@ -26,6 +26,8 @@ tasks.yaml schema (drafts from evaluate-skill Tier 1 use the same shape):
       model: claude-haiku-4-5         # engine model, shared by both arms
       timeout_s: 600
       permission_mode: bypassPermissions   # optional; runs happen in throwaway sandboxes
+      workers: 1                      # optional 1..16: concurrent (task, run) samples;
+                                      #   samples are independent, arithmetic unchanged
     judges:                           # >= 2 when any judge assertion exists
       - model: claude-sonnet-5
       - model: claude-haiku-4-5
@@ -61,6 +63,7 @@ run as separate headless calls with all tools disabled, never told arm identity.
 """
 
 import argparse
+import concurrent.futures
 import hashlib
 import json
 import os
@@ -93,6 +96,10 @@ def warn(msg):
 def die(msg, code=3):
     print(f"gate_runner: error: {msg}", file=sys.stderr)
     sys.exit(code)
+
+
+class HarnessError(Exception):
+    """A broken harness (auth, CLI, repeated engine failure) — never a task score."""
 
 
 # ---------------------------------------------------------------- config
@@ -132,6 +139,9 @@ def validate_config(cfg, cfg_dir):
     runner = cfg.get("runner") or {}
     if not runner.get("model"):
         errs.append("missing: runner.model")
+    workers = runner.get("workers", 1)
+    if not isinstance(workers, int) or not 1 <= workers <= 16:
+        errs.append("runner.workers must be an integer in 1..16")
     judges = cfg.get("judges") or []
     if any(not isinstance(j, dict) or not j.get("model") for j in judges):
         errs.append("each judge needs a model")
@@ -288,7 +298,7 @@ def run_engine(prompt, workspace, env, model, timeout_s, permission_mode, extra_
         proc = subprocess.run(cmd, cwd=workspace, env=env, timeout=timeout_s,
                               capture_output=True, text=True)
     except FileNotFoundError:
-        die("claude CLI not found on PATH")
+        raise HarnessError("claude CLI not found on PATH")
     except subprocess.TimeoutExpired:
         return {"is_error": True, "result": f"harness timeout after {timeout_s}s"}
     try:
@@ -405,53 +415,97 @@ def snapshot_artifacts(task, workspace, run_dir):
 
 # ---------------------------------------------------------------- conditions
 
+def _reuse_record(run_dir, prompt):
+    """A completed run's record when this exact run already succeeded — resume:
+    re-invoking with the same --out never re-buys paid work."""
+    p = Path(run_dir) / "run.json"
+    if not p.is_file():
+        return None
+    try:
+        rec = json.loads(p.read_text())
+    except (json.JSONDecodeError, OSError):
+        return None
+    if rec.get("prompt_sha256") != hashlib.sha256(prompt.encode()).hexdigest():
+        return None
+    if rec.get("is_error") or rec.get("score") not in (0, 1):
+        return None
+    return rec
+
+
+def _run_one(name, task, i, skill_dir, with_skill, cfg, cfg_dir, out_dir, auth_seed):
+    """One (task, run-index) sample under one condition. Returns the run record."""
+    runner_cfg = cfg.get("runner") or {}
+    run_dir = Path(out_dir) / "runs" / name / f"{task['id']}-r{i}"
+    reused = _reuse_record(run_dir, task["prompt"])
+    if reused is not None:
+        return reused
+    fixture = resolve_dir(task["workspace"], cfg_dir) if task.get("workspace") else None
+    for attempt in (1, 2):
+        workspace, env = build_sandbox(run_dir, skill_dir, with_skill, fixture, auth_seed)
+        res = run_engine(task["prompt"], workspace, env,
+                         runner_cfg["model"], runner_cfg.get("timeout_s", 600),
+                         runner_cfg.get("permission_mode", "bypassPermissions"))
+        if not res.get("is_error"):
+            break
+        warn(f"{name}/{task['id']} run {i} attempt {attempt}: engine error: "
+             f"{str(res.get('result'))[:200]}")
+    (run_dir / "engine-output.json").write_text(json.dumps(res, indent=1))
+    if res.get("is_error"):
+        # A broken harness must never be scored as a failed task: no verdict.
+        raise HarnessError(
+            f"engine run failed twice ({name}/{task['id']} run {i}) — aborting "
+            "without a verdict; fix the harness (auth? model id? timeout?) and "
+            "re-run with the same --out to reuse completed runs")
+    score, assertion_results = eval_assertions(
+        task, workspace, res.get("result"), cfg.get("judges") or [],
+        run_dir, env, runner_cfg, cfg_dir)
+    snapshot_artifacts(task, workspace, run_dir)
+    rec = {"task": task["id"], "condition": name, "run_index": i,
+           "prompt_sha256": hashlib.sha256(task["prompt"].encode()).hexdigest(),
+           "model": runner_cfg["model"], "score": score,
+           "assertions": assertion_results, "tokens": usage_tokens(res),
+           "usd": res.get("total_cost_usd"), "num_turns": res.get("num_turns"),
+           "duration_ms": res.get("duration_ms"), "is_error": False,
+           "workspace": str(workspace), "transcript": "engine-output.json"}
+    (run_dir / "run.json").write_text(json.dumps(rec, indent=1))
+    return rec
+
+
 def run_condition(name, skill_dir, with_skill, tasks, k, cfg, cfg_dir, out_dir):
     """Run every task k times under one condition; persist raw run records.
 
-    Returns {"runs": [per-run task->score], "tokens": int|None, "usd": float|None}.
+    (task, run-index) samples are independent, so runner.workers > 1 runs them
+    concurrently — parallelism changes wall-clock, never the arithmetic. Returns
+    {"runs": [per-run task->score], "tokens": int|None, "usd": float|None};
     tokens is None iff any run failed to expose usage (never silently zero)."""
-    runner_cfg = cfg.get("runner") or {}
-    judges = cfg.get("judges") or []
     auth_seed = prepare_auth_seed()
+    workers = (cfg.get("runner") or {}).get("workers", 1)
+    jobs = [(task, i) for i in range(1, k + 1) for task in tasks]
+    records = {}
+    ex = concurrent.futures.ThreadPoolExecutor(max_workers=workers)
+    futs = {ex.submit(_run_one, name, task, i, skill_dir, with_skill,
+                      cfg, cfg_dir, out_dir, auth_seed): (task["id"], i)
+            for task, i in jobs}
+    try:
+        for n, fut in enumerate(concurrent.futures.as_completed(futs), 1):
+            records[futs[fut]] = fut.result()
+            print(f"gate_runner: {name} {n}/{len(jobs)} done", file=sys.stderr)
+    except HarnessError as e:
+        ex.shutdown(wait=False, cancel_futures=True)
+        die(str(e))
+    ex.shutdown()
+
     runs, tokens_total, usd_total, usage_missing = [], 0, 0.0, False
     for i in range(1, k + 1):
         scores = {}
         for task in tasks:
-            run_dir = Path(out_dir) / "runs" / name / f"{task['id']}-r{i}"
-            fixture = resolve_dir(task["workspace"], cfg_dir) if task.get("workspace") else None
-            for attempt in (1, 2):
-                workspace, env = build_sandbox(run_dir, skill_dir, with_skill, fixture, auth_seed)
-                res = run_engine(task["prompt"], workspace, env,
-                                 runner_cfg["model"], runner_cfg.get("timeout_s", 600),
-                                 runner_cfg.get("permission_mode", "bypassPermissions"))
-                if not res.get("is_error"):
-                    break
-                warn(f"{name}/{task['id']} run {i} attempt {attempt}: engine error: "
-                     f"{str(res.get('result'))[:200]}")
-            (run_dir / "engine-output.json").write_text(json.dumps(res, indent=1))
-            if res.get("is_error"):
-                # A broken harness must never be scored as a failed task: no verdict.
-                die(f"engine run failed twice ({name}/{task['id']} run {i}) — "
-                    "aborting without a verdict; fix the harness (auth? model id? "
-                    "timeout?) and re-run")
-            toks = usage_tokens(res)
-            if toks is None:
+            rec = records[(task["id"], i)]
+            scores[task["id"]] = rec["score"]
+            if rec.get("tokens") is None:
                 usage_missing = True
             else:
-                tokens_total += toks
-                usd_total += res.get("total_cost_usd") or 0.0
-            score, assertion_results = eval_assertions(
-                task, workspace, res.get("result"), judges, run_dir, env, runner_cfg, cfg_dir)
-            scores[task["id"]] = score
-            snapshot_artifacts(task, workspace, run_dir)
-            (run_dir / "run.json").write_text(json.dumps({
-                "task": task["id"], "condition": name, "run_index": i,
-                "prompt_sha256": hashlib.sha256(task["prompt"].encode()).hexdigest(),
-                "model": runner_cfg["model"], "score": score,
-                "assertions": assertion_results, "tokens": toks,
-                "usd": res.get("total_cost_usd"), "num_turns": res.get("num_turns"),
-                "duration_ms": res.get("duration_ms"), "is_error": bool(res.get("is_error")),
-                "workspace": str(workspace), "transcript": "engine-output.json"}, indent=1))
+                tokens_total += rec["tokens"]
+                usd_total += rec.get("usd") or 0.0
         runs.append(scores)
     if usage_missing:
         warn(f"condition '{name}': the CLI exposed no usage on at least one run — "

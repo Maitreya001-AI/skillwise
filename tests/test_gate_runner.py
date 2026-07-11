@@ -157,6 +157,35 @@ class TestValidate:
         assert "exactly 3 reference" in ws and "shared bias" in ws
 
 
+class TestResume:
+    """Re-invoking with the same --out reuses completed runs — paid work is
+    never re-bought, and stale/foreign records are never trusted."""
+
+    REC = {"task": "t1", "condition": "no_skill", "run_index": 1,
+           "prompt_sha256": gate_runner.hashlib.sha256(b"do thing").hexdigest(),
+           "score": 1, "tokens": 500, "usd": 0.1, "is_error": False}
+
+    def test_reuses_matching_completed_run(self, tmp_path):
+        (tmp_path / "run.json").write_text(json.dumps(self.REC))
+        rec = gate_runner._reuse_record(tmp_path, "do thing")
+        assert rec is not None and rec["score"] == 1 and rec["tokens"] == 500
+
+    def test_never_reuses_changed_prompt_or_errors(self, tmp_path):
+        (tmp_path / "run.json").write_text(json.dumps(self.REC))
+        assert gate_runner._reuse_record(tmp_path, "different prompt") is None
+        (tmp_path / "run.json").write_text(json.dumps({**self.REC, "is_error": True}))
+        assert gate_runner._reuse_record(tmp_path, "do thing") is None
+        (tmp_path / "run.json").write_text("not json")
+        assert gate_runner._reuse_record(tmp_path, "do thing") is None
+
+    def test_workers_validated(self, tmp_path, skill):
+        cfg = valid_cfg(skill)
+        cfg["runner"]["workers"] = 0
+        assert any("workers" in e for e in gate_runner.validate_config(cfg, tmp_path))
+        cfg["runner"]["workers"] = 6
+        assert not any("workers" in e for e in gate_runner.validate_config(cfg, tmp_path))
+
+
 class TestCostNeverSilent:
     """§8-5 — a missing cost block is marked loudly, never skipped (the standing
     debt this runner exists to close)."""

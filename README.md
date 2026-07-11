@@ -28,7 +28,7 @@ A skill can influence an agent through exactly two channels — injected text an
 
 ## Install
 
-Three paths, one repo layout — pick whichever fits your agent. **Every skill folder is self-contained**: the shared measurement gate is materialized into each consumer's `references/effect-gate.md` by `scripts/sync-shared.py` (CI enforces sync with the `shared/effect-gate.md` source), so any single skill survives being copied alone.
+Three paths, one repo layout — pick whichever fits your agent. **Every skill folder is self-contained**: `scripts/sync-shared.py` materializes the shared measurement gate into each consumer's `references/effect-gate.md` *and* its compiled executor (`gate_runner.py` + `gate_math.py`) into each consumer's `scripts/` (CI enforces sync with the `shared/` sources), so any single skill survives being copied alone — including the ability to run its own certification.
 
 ### 1. `npx skills` — the cross-agent way (works with 40+ agents)
 

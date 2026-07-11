@@ -6,6 +6,8 @@
 
 One implementation, one editing source. This file's home in the skillwise repo is `shared/effect-gate.md`; `scripts/sync-shared.py` materializes it (plus a do-not-edit banner) into each consuming skill's `references/` folder — `evaluate-skill`, `improve-skill`, `seek-skill` — so every skill folder is self-contained under every install path. Edit only the `shared/` source; CI re-runs the sync and fails on drift.
 
+The protocol's mechanics are compiled the same way: `shared/scripts/gate_runner.py` (both arms in isolated sandboxes, product assertions, per-run cost capture) and `shared/scripts/gate_math.py` (this file's §8 arithmetic) are materialized into each consumer's `scripts/`. One command — `python scripts/gate_runner.py run tasks.yaml` (schema in its docstring) — executes this protocol end to end, so keep/revert never depends on the gated engine hand-assembling its own measurement (see Self-reference). Draft task sets (`tasks.draft.yaml`) are refused by name until reviewed and renamed.
+
 ## Why this exists
 
 A static, read-only verdict cannot certify that a skill helps. Certification lives only at L2 (`docs/THEORY.md` §7): run real tasks with the skill and without it, and compare the *products*. Structural well-formedness does not predict gain — naively self-generated skills degrade performance by 1.3 points on average even when they read fine ([SoK / SkillsBench](https://arxiv.org/abs/2602.20867); [SkillGen](https://arxiv.org/abs/2605.10999) models skills exactly as interventions). The static entry lowers the *frequency* of defects; this gate is the *certification*.

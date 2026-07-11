@@ -431,7 +431,7 @@
           <tr><td>improve</td><td>尺置于门后循环（§8 改进 delta + §9 棘轮）</td><td>Control + Judgment + Capability</td></tr>
         </tbody>
       </table>
-      <p class="muted">各自服从其编码的理论：全部以约束而非步进书写；improve / seek 只声明 done_when + 角色隔离 + 门，任务迭代留给引擎，<b>门协议编译为不可跳过</b>——顺序合法性由 §3 第 4 格给出，不可跳过性由 §4 对 Control 的编译要求给出。</p>
+      <p class="muted">各自服从其编码的理论：全部以约束而非步进书写；improve / seek 只声明 done_when + 角色隔离 + 门，任务迭代留给引擎，<b>门协议编译为不可跳过</b>——顺序合法性由 §3 第 4 格给出，不可跳过性由 §4 对 Control 的编译要求给出。这条编译要求对门自身也已兑现：跑臂、断言、算术三段由 <code>gate_runner.py</code> + <code>gate_math.py</code> 编译为一条命令，取舍不再依赖被门管的引擎手工装配自己的测量，成本轴（§8-5）随每次运行必采。</p>
     </div>
   </section>
 

@@ -103,6 +103,15 @@ Before scoring, run the gate's **power check** (`resolution = 1/n_tasks`, `adequ
 
 Held-out source per the gate: caller supplies tasks; or draft 3 happy-path + 1 edge to `baseline.md` and confirm before scoring (indicative only — extend to ≥6 to certify); or (scaffold) one smoke case.
 
+### Compiled runner + the task draft (production/library, no caller-supplied set)
+
+Tier 2's mechanics are compiled: `scripts/gate_runner.py` (synced from `shared/scripts/`) runs both arms in isolated sandboxes, executes the assertions, collects per-run cost — closing the axis every hand-assembled run left blind — and applies the gate arithmetic (`scripts/gate_math.py`). Never hand-assemble arms or self-judge when the runner can execute; the schema is in its docstring. When the tier is production/library and the caller supplied no task set, close Tier 1 by:
+
+1. Drafting `<skill-dir>/tasks.draft.yaml` from the skill's `description` / when-to-use cues: 3 happy-path + 1 edge task in the runner's schema; compile every assertion that compiles (`file_exists`/`regex`/`script`), leave `judge` rubrics as placeholders only for genuinely semantic residue. Head comment, verbatim: `# draft = indicative only; extend to >= 6 tasks to certify; review and rename to tasks.yaml`.
+2. Appending one price line to `wise-eval.md`, computed with the gate's "Minimum credible configuration" arithmetic: `certification ≈ n_tasks × (k_ref + k_test) executions + <judged artifacts> × <judges> judge calls — review tasks.draft.yaml, then: python scripts/gate_runner.py run tasks.yaml`.
+
+The runner refuses `tasks.draft.yaml` by name (exit 2) — draft-and-confirm is a mechanism, not a reminder. `python scripts/gate_runner.py validate tasks.draft.yaml` checks the schema before handing the draft to the user.
+
 ---
 
 ## Converge to one gate + a fix list

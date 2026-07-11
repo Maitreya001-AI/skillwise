@@ -1,37 +1,39 @@
-# wise-eval — evaluate-skill · existence gate · **pass (certifying)** · 2026-07-06
+# wise-eval — evaluate-skill · existence gate · **fail (certifying)** · 2026-07-11
 
-**Verdict.** `evaluate-skill` beats the no-skill baseline beyond the noise band on a 29-seed
-held-out set with zero reproduced per-task regressions:
+**Verdict.** On the deployment harness — the compiled `gate_runner`, skill auto-routed from
+`.claude/skills/` and applied to one seed per isolated sandbox, the way the skill is actually
+consumed — `evaluate-skill` loses to the no-skill baseline with reproduced negative transfer:
 
 | | value |
 |---|---|
-| no-skill pass rate (medians, ×3 runs) | 0.724 |
-| with-skill pass rate (medians, ×3 runs) | 0.828 |
-| `delta_exist` | **+0.103** |
+| no-skill pass rate (medians, ×3 runs) | 0.690 |
+| with-skill pass rate (medians, ×3 runs) | 0.448 |
+| `delta_exist` | **−0.241** |
 | `noise_band_exist` (2×SD of 3 no-skill aggregates) | 0.080 |
-| reproduced regressions / floor breaches | **0** |
+| reproduced regressions | **8** — all good seeds (01/09/13/14/20/23/25/28) |
+| cost (first measured block) | 24.07M vs 14.60M tokens, **`cost_ratio` 1.648** |
 | power | n=29, resolution 0.034, adequate → **certifying** |
 
-**Scope (read before quoting).** Existence branch; the dogfood r3/r4 29-seed working set under
-the **pre-registered behavioral label key** (labels established by actually running unaided
-engines — `dogfood/improve-run-evaluate-skill/behavioral-labels.md`); consumer engine =
-claude-sonnet judges in isolated, name-blind contexts. Cost is not instrumented (standing debt)
-— the inertia-cost fatal is structurally inapplicable here because the delta clears the band.
-The 2026-07-03 r2 run's `fail` (12-seed set, by-construction labels) remains on record; this run
-is the current best-grounded reading, not an erasure of that one.
+**Scope (read before quoting).** Existence branch; the dogfood r3/r4 29-seed set under the
+pre-registered behavioral label key; engine claude-sonnet-5; assertions fully compiled (verdict
+JSON checked against the label key by script — no judge in the loop). The 2026-07-06
+`pass (certifying)` **stands scoped to its harness** (skill force-loaded into batch-context
+sub-agent judges); the owner decided 2026-07-11 that the deployment harness pins this verdict —
+it matches the gate protocol's own "fresh, isolated contexts" rule, matches real consumption,
+and is the first reading with all four fatal axes measured. Both records stand.
 
-**Where the value comes from** (per-task medians): the entire delta is the wrong-form class —
-unaided judges reliably miss all three silent-drop-pipeline seeds and the skill flips every one
-of them (08/15/16: 0 → 1). That is precisely the text-checkable failure class THEORY §7 predicts
-a static method *can* transmit — the r2 run observed the same asymmetry from the losing side.
-Both arms are matched (at 0) on the decoy-boundary conventions (02/05/17/24) and the
-narrative-justified order (29); the skill never falls below the baseline on any task.
+**The failure, precisely** (per-task medians in `wise-eval.json`): every regression is a good
+seed convicted `wrong-form` (occasionally `underfill`) for carrying mechanically-checkable
+invariants in prose — the judges skip the skill's own §4 pricing step (*prose without a
+guarantee claim is an unpriced trade-off, not a defect*). Meanwhile the 2026-07-06 lift class
+evaporated: unaided sonnet-5 already catches silent-drop seeds 15/16 — the engine absorbed
+that gap (deletion-test drift). The inertia-cost axis is also red: 1.648 > 1.5 (non-fatal here
+only because negative transfer resolves first).
 
-**Advisory fix list** (no blocking findings): (1) decoy-boundary conventions (behaviorally-nogap
-seeds 02/05/17) sit at 0 for both arms — headroom that five prompt-layer repair mechanisms could
-not claim (all mechanically REVERTed; see `dead-ends.md`); the next viable form is an
-orchestrator-run deletion probe that does not compete with the judge's read. (2) wrong-form ↔
-no-exit token confusion on silent-drop seeds. (3) plausible-narrative order acquittals.
+**Routing** (gate's sub-floor rule): the gap is real (`no_skill` 0.690, far from ceiling —
+decoy classes remain unsolved by both arms), so this is **negative transfer → improve-skill**,
+not retirement. Repair target A5-1: bind the §4 pricing step into the verdict protocol or
+compile it as a probe — prompt-layer wordings are exhausted (`dogfood/improve-run-evaluate-skill/dead-ends.md`).
 
-Full machine object: `wise-eval.json`. Run trail: `dogfood/improve-run-evaluate-skill/`
-(rounds 1–5, behavioral labeling, all run JSONs).
+Run record: `dogfood/gate-runner-a5/` (gate object, both arms' scores). Raw per-run trail:
+`.wise-runs/evaluate-skill/20260711T172704/` (local, gitignored).

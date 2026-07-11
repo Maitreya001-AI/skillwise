@@ -1,122 +1,228 @@
 {
  "skill": "skills/evaluate-skill",
  "tier": "production",
+ "question": "existence",
  "evaluated_layers": [
-  "structural",
   "effect"
  ],
- "gate_pass": "pass",
+ "gate_pass": "fail",
  "certainty": "certifying",
- "scope": "existence branch; 29-seed held-out set (dogfood r3/r4 working slice) under the pre-registered behavioral label key; consumer engine: claude-sonnet judges in isolated contexts; 2026-07-06",
+ "date": "2026-07-11",
  "power": {
   "n_tasks": 29,
   "resolution": 0.0345,
   "adequate": true
  },
- "judges": [
-  {
-   "model": "claude-sonnet",
-   "isolated": true,
-   "runs": "ns x3, with-skill x3, fresh contexts, name-neutral variants"
-  }
- ],
- "structural": {
-  "findings": [],
-  "failure_taxonomy": {},
-  "waived_count": 0,
-  "note": "L0 linter clean; adversarially reviewed"
- },
+ "judges": [],
+ "structural": null,
  "effect": {
-  "no_skill_pass_rate": 0.7241,
-  "with_skill_pass_rate": 0.8276,
-  "delta_exist": 0.1034,
+  "no_skill_pass_rate": 0.6897,
+  "with_skill_pass_rate": 0.4483,
+  "delta_exist": -0.2414,
   "noise_band_exist": 0.0796,
-  "tokens_no_skill": null,
-  "tokens_with_skill": null,
-  "cost_ratio": null,
-  "cost_note": "not instrumented (standing debt, dogfood/STATUS.md); the inertia-cost fatal is structurally inapplicable when delta_exist clears the band",
-  "floor_ok": true,
-  "regression_count": 0,
+  "no_skill_run_aggregates": [
+   0.7241,
+   0.6552,
+   0.6552
+  ],
+  "tokens_no_skill": 14602204,
+  "tokens_with_skill": 24067632,
+  "cost_ratio": 1.6482,
+  "usd_no_skill": 14.6951,
+  "usd_with_skill": 25.2069,
+  "floor_ok": false,
+  "regression_count": 8,
+  "regressions": [
+   "task-01",
+   "task-09",
+   "task-13",
+   "task-14",
+   "task-20",
+   "task-23",
+   "task-25",
+   "task-28"
+  ],
   "safety_regression": false,
+  "safety_note": "safety signals are not instrumented by gate_runner; they remain the orchestrator's read",
+  "why": "reproduced negative transfer on per-task medians: ['task-01', 'task-09', 'task-13', 'task-14', 'task-20', 'task-23', 'task-25', 'task-28']",
   "per_task": [
    {
+    "task": "task-01",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
     "task": "task-02",
-    "truth": "broken",
-    "defect": "nogap",
     "no_skill": 0,
     "with_skill": 0
+   },
+   {
+    "task": "task-03",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-04",
+    "no_skill": 1,
+    "with_skill": 1
    },
    {
     "task": "task-05",
-    "truth": "broken",
-    "defect": "nogap",
     "no_skill": 0,
     "with_skill": 0
    },
    {
+    "task": "task-06",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-07",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
     "task": "task-08",
-    "truth": "broken",
-    "defect": "wrong-form",
     "no_skill": 0,
     "with_skill": 1
    },
    {
-    "task": "task-15",
-    "truth": "broken",
-    "defect": "wrong-form",
+    "task": "task-09",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-10",
     "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-11",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-12",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-13",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-14",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-15",
+    "no_skill": 1,
     "with_skill": 1
    },
    {
     "task": "task-16",
-    "truth": "broken",
-    "defect": "wrong-form",
-    "no_skill": 0,
+    "no_skill": 1,
     "with_skill": 1
    },
    {
     "task": "task-17",
-    "truth": "broken",
-    "defect": "nogap",
     "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-18",
+    "no_skill": 0,
+    "with_skill": 0
+   },
+   {
+    "task": "task-19",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-20",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-21",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-22",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-23",
+    "no_skill": 1,
     "with_skill": 0
    },
    {
     "task": "task-24",
-    "truth": "good",
-    "defect": null,
     "no_skill": 0,
     "with_skill": 0
    },
    {
-    "task": "task-29",
-    "truth": "broken",
-    "defect": "overfill-order",
-    "no_skill": 0,
+    "task": "task-25",
+    "no_skill": 1,
     "with_skill": 0
+   },
+   {
+    "task": "task-26",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-27",
+    "no_skill": 1,
+    "with_skill": 1
+   },
+   {
+    "task": "task-28",
+    "no_skill": 1,
+    "with_skill": 0
+   },
+   {
+    "task": "task-29",
+    "no_skill": 1,
+    "with_skill": 1
    }
-  ]
+  ],
+  "cost_note": "first measured cost block; cost_ratio 1.648 > 1.5 \u2014 the inertia-cost fatal would fire were the delta in-band (negative transfer resolves first)"
  },
  "discrimination": null,
  "fix_list": [
   {
-   "finding_id": "ADV1",
+   "finding_id": "A5-1",
    "priority": 1,
-   "hint": "decoy-boundary headroom: on tasks 02/05/17 (behaviorally-nogap conventions) the skill matches no-skill at 0 \u2014 no negative transfer, no lift; five prompt-layer repair mechanisms all reverted (see dead-ends.md); next viable form is an orchestrator-run deletion probe that does not compete with the judge's read"
+   "hint": "all 8 reproduced regressions are good seeds convicted wrong-form/underfill: judges applying the form check in per-seed contexts skip the \u00a74 pricing step (prose rules without a guarantee claim are an unpriced trade-off, not a defect). Prompt-layer wordings of adjacent rules are exhausted (dead-ends.md); repair must bind the pricing step into the verdict protocol or compile it as a probe"
   },
   {
-   "finding_id": "ADV2",
+   "finding_id": "A5-2",
    "priority": 2,
-   "hint": "wrong-form vs no-exit token confusion persists across all conditions on silent-drop seeds (08/15/16 class) \u2014 a taxonomy-boundary clarification candidate for a future round on a fresh set"
+   "hint": "the 2026-07-06 lift class evaporated: unaided sonnet-5 already catches wrong-form seeds 15/16 (deletion-test drift \u2014 the engine absorbed the gap); remaining headroom is decoy-boundary (02/03/05/17/24) and silent-drop 08 only"
   },
   {
-   "finding_id": "ADV3",
+   "finding_id": "A5-3",
    "priority": 3,
-   "hint": "order-mandate acquittals with plausible dependency narratives (task-29) resist every tried mechanism \u2014 candidate for behavioral shuffle probing"
+   "hint": "cost_ratio 1.648: skill+references read per run; trim after the negative transfer lands"
   }
  ],
+ "cost_unevaluated": false,
+ "runner": {
+  "engine_model": "claude-sonnet-5",
+  "k_ref": 3,
+  "k_test": 3,
+  "compiled_by": "gate_runner.py"
+ },
+ "scope": "existence branch; 29-seed held-out set (dogfood r3/r4) under the pre-registered behavioral label key; DEPLOYMENT harness (compiled gate_runner: skill auto-routed from .claude/skills/, one seed per isolated sandbox); engine claude-sonnet-5; assertions compiled (script vs label key, no judge calls); 2026-07-11",
  "history": {
-  "r2_existence_run": "fail (2026-07-03) on the 12-seed r2 set under by-construction labels; superseded as the current best-grounded reading by this run \u2014 both records stand in dogfood/",
-  "improve_rounds": "5 rounds incl. plateau-break, all REVERT, terminal already_optimal on this set (dogfood/improve-run-evaluate-skill/)"
+  "r2_existence_run": "fail (2026-07-03), 12-seed set, by-construction labels, batch-context harness",
+  "certification_2026_07_06": "pass (certifying) on the force-loaded batch-context sub-agent harness \u2014 stands scoped to that harness; superseded as the current best-grounded reading by this deployment-harness run (owner decision 2026-07-11: the deployment harness pins the verdict)",
+  "improve_rounds": "5 rounds on the decoy defect (batch harness), all REVERT; this run opens a new defect class"
  }
 }

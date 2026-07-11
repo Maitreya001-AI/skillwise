@@ -1,5 +1,9 @@
 # skillwise
 
+[![effect gate](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FMaitreya001-AI%2Fskillwise%2Fmain%2Fskills%2Fevaluate-skill%2Fwise-eval.json&query=%24.gate_pass&label=effect%20gate&color=blue)](./skills/evaluate-skill/wise-eval.json) [![certainty](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FMaitreya001-AI%2Fskillwise%2Fmain%2Fskills%2Fevaluate-skill%2Fwise-eval.json&query=%24.certainty&label=certainty&color=blue)](./skills/evaluate-skill/wise-eval.json)
+
+The badges read the last **committed** `wise-eval.json` — certification itself runs locally, in your own Claude Code session (`python skills/evaluate-skill/scripts/gate_runner.py run <skill>/tasks.yaml --require-certifying`), using your own login; CI stays lint-only and never spends a token.
+
 **Skills for working on skills.** A small, coordinated toolkit that can **discover, write, evaluate, and improve** agent skills — the `SKILL.md` standard — all derived from one axis: *how much to leave to the engine.*
 
 The four skills spell **WISE** — **W**rite, **I**mprove, **S**eek, **E**valuate. (They run in the order evaluate → write/seek → improve across a skill's life; the acronym is just a happy accident of their names.)

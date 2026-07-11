@@ -36,7 +36,9 @@ jobs:
       - name: Gate arithmetic equivalence + runner invariants (pytest, zero API cost)
         # A1 of the gate-runner spec: gate_math must reproduce the dogfood ledger's
         # historical numbers field by field. Pure local computation — the effect
-        # gate itself (real engine runs) still never runs on push; see gate.yml.
+        # gate itself (real engine runs) NEVER runs in CI, by standing cost decision
+        # (dogfood/STATUS.md): certification is run locally, in the author's own
+        # Claude Code session, and the committed wise-eval.json is the record.
         run: |
           pip install pytest pyyaml
           python -m pytest tests -q

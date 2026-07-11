@@ -27,12 +27,19 @@ jobs:
         run: |
           python scripts/sync-shared.py
           # --porcelain also catches a deleted-and-regenerated (untracked) copy, which git diff would miss
-          drift=$(git status --porcelain -- 'skills/*/references/effect-gate.md')
+          drift=$(git status --porcelain -- 'skills/*/references/effect-gate.md' 'skills/*/scripts/gate_runner.py' 'skills/*/scripts/gate_math.py')
           if [ -n "$drift" ]; then
             echo "$drift"
-            echo '::error::references/effect-gate.md copies drifted from shared/effect-gate.md — edit the source and run scripts/sync-shared.py'
+            echo '::error::materialized copies drifted from shared/ — edit the source and run scripts/sync-shared.py'
             exit 1
           fi
+      - name: Gate arithmetic equivalence + runner invariants (pytest, zero API cost)
+        # A1 of the gate-runner spec: gate_math must reproduce the dogfood ledger's
+        # historical numbers field by field. Pure local computation — the effect
+        # gate itself (real engine runs) still never runs on push; see gate.yml.
+        run: |
+          pip install pytest pyyaml
+          python -m pytest tests -q
       - name: Lint every skill (blocking findings fail the build)
         run: |
           LINT=skills/evaluate-skill/scripts/lint_skill.py

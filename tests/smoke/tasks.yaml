@@ -1,0 +1,43 @@
+# Acceptance A2 — end-to-end smoke for gate_runner (costs real API calls; run by
+# hand, never in CI):
+#
+#   python shared/scripts/gate_runner.py run tests/smoke/tasks.yaml
+#
+# The toy skill mandates a header/footer stamp no unaided engine would invent, so
+# the with-skill arm should clear the band on these purely compiled assertions.
+skill: tests/smoke/toy-skill
+tier: production
+question: existence
+k_ref: 3
+k_test: 2
+runner:
+  model: claude-haiku-4-5-20251001
+  timeout_s: 300
+judges: []          # no judge assertions -> no judges needed
+tasks:
+  - id: smoke-01
+    prompt: "Write a short status report about this week's database migration to a new file out/report.md. Create the out directory if needed."
+    assert: &stamp
+      - type: file_exists
+        path: out/report.md
+      - type: regex
+        path: out/report.md
+        pattern: "\\AWISE-STAMP: v2"
+      - type: regex
+        path: out/report.md
+        pattern: "-- end of report --\\s*\\Z"
+  - id: smoke-02
+    prompt: "Write a brief summary report of a code-review week (3 PRs reviewed, 1 blocked) to out/report.md. Create the out directory if needed."
+    assert: *stamp
+  - id: smoke-03
+    prompt: "Write a short incident report about a 20-minute API outage to out/report.md. Create the out directory if needed."
+    assert: *stamp
+  - id: smoke-04
+    prompt: "Write a quarterly team status report (hiring, roadmap, risks — invent plausible content) to out/report.md. Create the out directory if needed."
+    assert: *stamp
+  - id: smoke-05
+    prompt: "Write a report summarizing load-test results (p50/p95 latency, invent numbers) to out/report.md. Create the out directory if needed."
+    assert: *stamp
+  - id: smoke-06
+    prompt: "Write a one-paragraph project status report about migrating CI from Jenkins to GitHub Actions to out/report.md. Create the out directory if needed."
+    assert: *stamp

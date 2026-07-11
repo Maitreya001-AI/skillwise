@@ -9,3 +9,10 @@ __pycache__/
 .improve-run/
 .validate-run/
 .demo-run/
+
+# gate_runner raw run records (measurement raw data, referenced from wise-eval.md)
+.wise-runs/
+
+# smoke-test verdict artifacts (tests/smoke is a fixture, not a certified skill)
+tests/smoke/toy-skill/wise-eval.json
+tests/smoke/toy-skill/wise-eval.md

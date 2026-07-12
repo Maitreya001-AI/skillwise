@@ -14,6 +14,13 @@ measurement (THEORY §4 / effect-gate "Self-reference").
 Exit codes: 0 pass/KEEP (with --require-certifying also certainty=certifying);
 1 fail/REVERT; 2 static_only / unfit_test_set / draft refused; 3 harness error.
 
+Sample economics: median-only conditions (the arm under test, the floor) stop a
+task's re-runs early once its k-run median is majority-determined — identical
+verdict, fewer paid samples (saves up to ~40% at k=5). Reference conditions
+always run in full (the noise band needs complete run aggregates). cost_ratio
+is computed on per-sample token means, so k_ref/k_test mismatch and early stop
+never bias the §8-5 axis.
+
 tasks.yaml schema (drafts from evaluate-skill Tier 1 use the same shape):
 
     skill: skills/evaluate-skill      # dir containing SKILL.md (resolved vs CWD,
@@ -471,58 +478,144 @@ def _run_one(name, task, i, skill_dir, with_skill, cfg, cfg_dir, out_dir, auth_s
     return rec
 
 
-def run_condition(name, skill_dir, with_skill, tasks, k, cfg, cfg_dir, out_dir):
+def _majority_median(scores, k):
+    """Median of k binary re-runs, or None while still undetermined. With 0/1
+    scores the median is fixed as soon as one value holds a strict majority of
+    the FULL k — the remaining runs cannot change it, so skipping them is
+    measurement-equivalent (identical median, fewer paid samples)."""
+    ones = sum(scores)
+    zeros = len(scores) - ones
+    if ones * 2 > k:
+        return 1
+    if zeros * 2 > k:
+        return 0
+    return None
+
+
+def run_condition(name, skill_dir, with_skill, tasks, k, cfg, cfg_dir, out_dir,
+                  early_stop=False):
     """Run every task k times under one condition; persist raw run records.
 
     (task, run-index) samples are independent, so runner.workers > 1 runs them
-    concurrently — parallelism changes wall-clock, never the arithmetic. Returns
-    {"runs": [per-run task->score], "tokens": int|None, "usd": float|None};
-    tokens is None iff any run failed to expose usage (never silently zero)."""
+    concurrently — parallelism changes wall-clock, never the arithmetic.
+
+    early_stop=True (median-only conditions: the arm under test, the floor)
+    skips a task's remaining re-runs once its k-run median is majority-determined;
+    skipped slots are imputed with the determined median and marked. NEVER set it
+    on a reference condition — the noise band needs k complete run aggregates.
+
+    Returns {"runs": [per-run task->score], "samples": int (executed),
+    "tokens": int|None, "usd": float|None}; tokens is None iff any executed run
+    failed to expose usage (never silently zero)."""
     auth_seed = prepare_auth_seed()
     workers = (cfg.get("runner") or {}).get("workers", 1)
-    jobs = [(task, i) for i in range(1, k + 1) for task in tasks]
-    records = {}
+    task_by_id = {t["id"]: t for t in tasks}
+    recs = {tid: {} for tid in task_by_id}     # task -> {run_index: record}
+    submitted = {}
+    determined = {}
     ex = concurrent.futures.ThreadPoolExecutor(max_workers=workers)
-    futs = {ex.submit(_run_one, name, task, i, skill_dir, with_skill,
-                      cfg, cfg_dir, out_dir, auth_seed): (task["id"], i)
-            for task, i in jobs}
+    pending = {}
+
+    def submit(tid, i):
+        fut = ex.submit(_run_one, name, task_by_id[tid], i, skill_dir, with_skill,
+                        cfg, cfg_dir, out_dir, auth_seed)
+        pending[fut] = (tid, i)
+
+    initial = min(k, k // 2 + 1) if early_stop else k
+    for tid in task_by_id:
+        submitted[tid] = initial
+        for i in range(1, initial + 1):
+            submit(tid, i)
+    done_count = 0
     try:
-        for n, fut in enumerate(concurrent.futures.as_completed(futs), 1):
-            records[futs[fut]] = fut.result()
-            print(f"gate_runner: {name} {n}/{len(jobs)} done", file=sys.stderr)
+        while pending:
+            done, _ = concurrent.futures.wait(
+                list(pending), return_when=concurrent.futures.FIRST_COMPLETED)
+            for fut in done:
+                tid, i = pending.pop(fut)
+                recs[tid][i] = fut.result()
+                done_count += 1
+                print(f"gate_runner: {name} {done_count} samples done "
+                      f"(target <= {len(task_by_id) * k})", file=sys.stderr)
+                if early_stop and tid not in determined:
+                    med = _majority_median([r["score"] for r in recs[tid].values()], k)
+                    if med is not None:
+                        determined[tid] = med
+                    elif len(recs[tid]) == submitted[tid] and submitted[tid] < k:
+                        # batch fully back and still undetermined -> buy one more
+                        submitted[tid] += 1
+                        submit(tid, submitted[tid])
     except HarnessError as e:
         ex.shutdown(wait=False, cancel_futures=True)
         die(str(e))
     ex.shutdown()
 
-    runs, tokens_total, usd_total, usage_missing = [], 0, 0.0, False
-    for i in range(1, k + 1):
-        scores = {}
-        for task in tasks:
-            rec = records[(task["id"], i)]
-            scores[task["id"]] = rec["score"]
+    executed = sum(len(v) for v in recs.values())
+    tokens_total, usd_total, usage_missing = 0, 0.0, False
+    for by_run in recs.values():
+        for rec in by_run.values():
             if rec.get("tokens") is None:
                 usage_missing = True
             else:
                 tokens_total += rec["tokens"]
                 usd_total += rec.get("usd") or 0.0
-        runs.append(scores)
     if usage_missing:
         warn(f"condition '{name}': the CLI exposed no usage on at least one run — "
              "cost will be marked UNEVALUATED, never silently skipped (§8-5)")
+    if early_stop and executed < len(task_by_id) * k:
+        print(f"gate_runner: {name}: early stop saved "
+              f"{len(task_by_id) * k - executed} of {len(task_by_id) * k} samples "
+              "(medians already determined)", file=sys.stderr)
+
+    runs, imputed_by_run = [], []
+    for i in range(1, k + 1):
+        scores, imputed = {}, []
+        for tid in task_by_id:
+            rec = recs[tid].get(i)
+            if rec is not None:
+                scores[tid] = rec["score"]
+            else:
+                scores[tid] = determined[tid]  # skipped ⇒ median was determined
+                imputed.append(tid)
+        runs.append(scores)
+        imputed_by_run.append(imputed)
+
     record = {"condition": name, "with_skill": with_skill,
-              "runs": [{"run_index": i + 1, "scores": r} for i, r in enumerate(runs)],
+              "runs": [{"run_index": i + 1, "scores": r, "imputed": imp}
+                       for i, (r, imp) in enumerate(zip(runs, imputed_by_run))],
+              "samples_executed": executed,
               "tokens": None if usage_missing else tokens_total,
               "usd": None if usage_missing else round(usd_total, 4)}
     (Path(out_dir) / f"scores-{name}.json").write_text(json.dumps(record, indent=1))
-    return {"runs": runs, "tokens": record["tokens"], "usd": record["usd"]}
+    return {"runs": runs, "samples": executed, "tokens": record["tokens"],
+            "usd": record["usd"]}
 
 
-def load_stored_scores(path):
-    """Reuse a stored scores-<condition>.json (baseline computed once, §8-6)."""
+def load_stored_scores(path, for_band=False):
+    """Reuse a stored scores-<condition>.json (baseline computed once, §8-6).
+
+    for_band=True: the caller will size a noise band from these runs, which
+    requires complete per-run aggregates — refuse files with early-stop imputed
+    slots (their skipped samples were never executed)."""
     data = json.loads(Path(path).read_text())
+    if for_band and any(r.get("imputed") for r in data["runs"]):
+        die("stored scores contain early-stop imputed slots — a noise band needs "
+            "complete runs; re-run the reference condition fully (early_stop off)")
+    samples = sum(len(r["scores"]) - len(r.get("imputed", [])) for r in data["runs"])
     return {"runs": [r["scores"] for r in data["runs"]],
+            "samples": data.get("samples_executed", samples),
             "tokens": data.get("tokens"), "usd": data.get("usd")}
+
+
+def per_sample_cost_ratio(ref, test):
+    """§8-5 cost ratio on per-sample means — totals-of-totals would bias the
+    ratio whenever the two conditions executed different sample counts
+    (k_ref != k_test, or early stop)."""
+    if ref["tokens"] is None or test["tokens"] is None:
+        return None
+    if not ref["tokens"] or not ref["samples"] or not test["samples"]:
+        return None
+    return (test["tokens"] / test["samples"]) / (ref["tokens"] / ref["samples"])
 
 
 # ---------------------------------------------------------------- reports
@@ -553,8 +646,8 @@ def write_existence_landing(skill_dir, gate_obj, out_dir):
 
 def assemble_existence_gate(cfg, skill_path_as_given, ex, ref, test):
     cost_unevaluated = ref["tokens"] is None or test["tokens"] is None
-    cost_ratio = (None if cost_unevaluated or not ref["tokens"]
-                  else round(test["tokens"] / ref["tokens"], 4))
+    raw_ratio = per_sample_cost_ratio(ref, test)
+    cost_ratio = None if raw_ratio is None else round(raw_ratio, 4)
     gate_obj = {
         "skill": skill_path_as_given,
         "tier": cfg["tier"],
@@ -574,7 +667,9 @@ def assemble_existence_gate(cfg, skill_path_as_given, ex, ref, test):
             "no_skill_run_aggregates": ex["no_skill_run_aggregates"],
             "tokens_no_skill": ref["tokens"],
             "tokens_with_skill": test["tokens"],
-            "cost_ratio": cost_ratio,
+            "samples_no_skill": ref.get("samples"),
+            "samples_with_skill": test.get("samples"),
+            "cost_ratio": cost_ratio,  # per-sample means (robust to k mismatch / early stop)
             "usd_no_skill": ref["usd"],
             "usd_with_skill": test["usd"],
             "floor_ok": ex["regression_count"] == 0,
@@ -621,11 +716,13 @@ def cmd_run(args):
     task_ids = [t["id"] for t in tasks]
 
     if cfg["question"] == "existence":
+        # reference arm full (the band needs k complete run aggregates);
+        # test arm median-only -> early stop is measurement-equivalent
         ref = run_condition("no_skill", skill_dir, False, tasks, k_ref, cfg, cfg_dir, out_dir)
-        test = run_condition("with_skill", skill_dir, True, tasks, k_test, cfg, cfg_dir, out_dir)
+        test = run_condition("with_skill", skill_dir, True, tasks, k_test, cfg, cfg_dir, out_dir,
+                             early_stop=True)
         cost_unevaluated = ref["tokens"] is None or test["tokens"] is None
-        cost_ratio = (None if cost_unevaluated or not ref["tokens"]
-                      else test["tokens"] / ref["tokens"])
+        cost_ratio = per_sample_cost_ratio(ref, test)
         if cost_unevaluated:
             warn("cost block is UNEVALUATED: gate object carries cost_ratio null + "
                  "cost_unevaluated true (§8-5 debt made loud, not silent)")
@@ -655,12 +752,13 @@ def cmd_run(args):
         if args.confirm_slice:
             die("--confirm-slice needs prev_accepted to be a skill directory: stored "
                 "scores cover the working slice, which the confirm tasks are not", 2)
-        ref = load_stored_scores(prev)
+        ref = load_stored_scores(prev, for_band=True)
         if len(ref["runs"]) < 3:
             die("stored prev_accepted scores must contain >= 3 runs (band needs them)")
     else:
         ref = run_condition("prev_accepted", prev, True, slice_tasks, k_ref, cfg, cfg_dir, out_dir)
-    test = run_condition("with_edited", skill_dir, True, slice_tasks, k_test, cfg, cfg_dir, out_dir)
+    test = run_condition("with_edited", skill_dir, True, slice_tasks, k_test, cfg, cfg_dir, out_dir,
+                         early_stop=True)
     ids = [t["id"] for t in slice_tasks]
 
     if args.confirm_slice:
@@ -677,15 +775,20 @@ def cmd_run(args):
     if cfg.get("no_skill_baseline"):
         floor = load_stored_scores(resolve_dir(cfg["no_skill_baseline"], cfg_dir))
     else:
-        floor = run_condition("no_skill", skill_dir, False, slice_tasks, 2, cfg, cfg_dir, out_dir)
+        floor = run_condition("no_skill", skill_dir, False, slice_tasks, 2, cfg, cfg_dir, out_dir,
+                              early_stop=True)
     imp = gate_math.improvement_gate(ref["runs"], test["runs"], floor["runs"], ids,
                                      removes_blocking_structural=args.structural_repair)
     cost_unevaluated = ref["tokens"] is None or test["tokens"] is None
-    imp["cost_delta_tokens"] = (None if cost_unevaluated
-                                else test["tokens"] - ref["tokens"])  # advisory, never a per-round fatal
-    imp["cost_unevaluated"] = cost_unevaluated
     if cost_unevaluated:
+        imp["cost_per_sample"] = None  # advisory axis, still never silent
         warn("cost block is UNEVALUATED for this round (advisory axis, still never silent)")
+    else:
+        prev_mean = ref["tokens"] / ref["samples"]
+        edit_mean = test["tokens"] / test["samples"]
+        imp["cost_per_sample"] = {"prev": round(prev_mean, 1), "edited": round(edit_mean, 1),
+                                  "delta": round(edit_mean - prev_mean, 1)}  # advisory, never a per-round fatal
+    imp["cost_unevaluated"] = cost_unevaluated
     (out_dir / "round-gate.json").write_text(json.dumps(imp, indent=1))
     print(json.dumps(imp, separators=(",", ":")))
     sys.exit(0 if imp["decision"].startswith("KEEP") else 1)

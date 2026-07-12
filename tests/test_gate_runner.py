@@ -186,6 +186,82 @@ class TestResume:
         assert not any("workers" in e for e in gate_runner.validate_config(cfg, tmp_path))
 
 
+class TestEarlyStop:
+    """Median-determined early stop: identical verdicts, fewer paid samples;
+    reference conditions and the band are never touched by it."""
+
+    def test_majority_median(self):
+        f = gate_runner._majority_median
+        assert f([1, 1, 1], 5) == 1          # 3 of 5 → determined
+        assert f([1, 1], 5) is None           # 2 of 5 → not yet
+        assert f([0, 0], 3) == 0              # 2 of 3 → determined
+        assert f([1, 0], 3) is None
+        assert f([1, 0, 1], 4) is None         # 2 of 4 is not a strict majority
+        assert f([1, 1, 1], 4) == 1
+
+    @staticmethod
+    def _fake(score_fn):
+        def fake_run_one(name, task, i, *a, **kw):
+            return {"task": task["id"], "condition": name, "run_index": i,
+                    "score": score_fn(task["id"], i), "tokens": 100, "usd": 0.01,
+                    "is_error": False}
+        return fake_run_one
+
+    def test_unanimous_task_stops_at_majority(self, tmp_path, skill, monkeypatch):
+        calls = []
+        fake = self._fake(lambda tid, i: 1)
+        monkeypatch.setattr(gate_runner, "_run_one",
+                            lambda *a, **kw: (calls.append(a[2]), fake(*a, **kw))[1])
+        cfg = valid_cfg(skill)
+        tasks = cfg["tasks"][:2]
+        res = gate_runner.run_condition("with_skill", skill, True, tasks, 5,
+                                        cfg, tmp_path, tmp_path, early_stop=True)
+        assert len(calls) == 6                       # 3 per task, not 5
+        assert res["samples"] == 6 and res["tokens"] == 600
+        assert len(res["runs"]) == 5                 # rectangular for gate_math
+        import gate_math
+        meds = gate_math.per_task_medians(res["runs"], [t["id"] for t in tasks])
+        assert all(v == 1 for v in meds.values())
+        stored = json.loads((tmp_path / "scores-with_skill.json").read_text())
+        assert stored["samples_executed"] == 6
+        assert stored["runs"][3]["imputed"] == [t["id"] for t in tasks]
+
+    def test_split_scores_run_full_k(self, tmp_path, skill, monkeypatch):
+        calls = []
+        fake = self._fake(lambda tid, i: i % 2)      # 1,0,1,0,1 → determined only at r5
+        monkeypatch.setattr(gate_runner, "_run_one",
+                            lambda *a, **kw: (calls.append(a[2]), fake(*a, **kw))[1])
+        cfg = valid_cfg(skill)
+        res = gate_runner.run_condition("with_skill", skill, True, cfg["tasks"][:1], 5,
+                                        cfg, tmp_path, tmp_path, early_stop=True)
+        assert len(calls) == 5 and res["samples"] == 5
+
+    def test_reference_condition_never_early_stops(self, tmp_path, skill, monkeypatch):
+        calls = []
+        fake = self._fake(lambda tid, i: 1)
+        monkeypatch.setattr(gate_runner, "_run_one",
+                            lambda *a, **kw: (calls.append(a[2]), fake(*a, **kw))[1])
+        cfg = valid_cfg(skill)
+        res = gate_runner.run_condition("no_skill", skill, False, cfg["tasks"][:2], 3,
+                                        cfg, tmp_path, tmp_path)   # early_stop off
+        assert len(calls) == 6 and res["samples"] == 6
+        stored = json.loads((tmp_path / "scores-no_skill.json").read_text())
+        assert all(r["imputed"] == [] for r in stored["runs"])
+
+    def test_imputed_stored_scores_rejected_for_band(self, tmp_path):
+        data = {"condition": "with_skill", "with_skill": True, "samples_executed": 3,
+                "tokens": 300, "usd": 0.03,
+                "runs": [{"run_index": 1, "scores": {"t": 1}, "imputed": []},
+                         {"run_index": 2, "scores": {"t": 1}, "imputed": []},
+                         {"run_index": 3, "scores": {"t": 1}, "imputed": ["t"]}]}
+        p = tmp_path / "scores.json"
+        p.write_text(json.dumps(data))
+        with pytest.raises(SystemExit):
+            gate_runner.load_stored_scores(p, for_band=True)
+        ok = gate_runner.load_stored_scores(p)       # medians-only use stays legal
+        assert ok["samples"] == 3 and len(ok["runs"]) == 3
+
+
 class TestCostNeverSilent:
     """§8-5 — a missing cost block is marked loudly, never skipped (the standing
     debt this runner exists to close)."""
@@ -209,20 +285,38 @@ class TestCostNeverSilent:
             labels, cost_ratio=None)
         gate_obj = gate_runner.assemble_existence_gate(
             cfg, cfg["skill"], ex,
-            {"tokens": None, "usd": None}, {"tokens": 1000, "usd": 0.1})
+            {"tokens": None, "usd": None, "samples": 18},
+            {"tokens": 1000, "usd": 0.1, "samples": 12})
         assert gate_obj["cost_unevaluated"] is True
         assert gate_obj["effect"]["cost_ratio"] is None
+
+    def test_cost_ratio_is_per_sample_normalized(self, skill):
+        """k_ref != k_test (or early stop) must not bias the §8-5 axis: equal
+        per-sample means give ratio 1.0 even when totals differ 3:2."""
+        cfg = valid_cfg(skill)
+        labels = [f"task-{i:02d}" for i in range(1, 7)]
+        import gate_math
+        ref = {"tokens": 1800, "usd": 0.18, "samples": 18}    # 3 runs × 6 tasks
+        test = {"tokens": 1200, "usd": 0.12, "samples": 12}   # 2 runs × 6 tasks
+        assert gate_runner.per_sample_cost_ratio(ref, test) == 1.0
+        ex = gate_math.existence_gate(
+            [{t: 0 for t in labels}] * 3, [{t: 1 for t in labels}] * 2,
+            labels, cost_ratio=gate_runner.per_sample_cost_ratio(ref, test))
+        gate_obj = gate_runner.assemble_existence_gate(cfg, cfg["skill"], ex, ref, test)
+        assert gate_obj["effect"]["cost_ratio"] == 1.0
+        assert gate_obj["effect"]["samples_no_skill"] == 18
+        assert gate_obj["effect"]["samples_with_skill"] == 12
 
     def test_gate_object_cost_ratio_on_the_happy_path(self, skill):
         cfg = valid_cfg(skill)
         labels = [f"task-{i:02d}" for i in range(1, 7)]
         import gate_math
+        ref = {"tokens": 1000, "usd": 0.1, "samples": 10}
+        test = {"tokens": 1500, "usd": 0.2, "samples": 10}
         ex = gate_math.existence_gate(
             [{t: 0 for t in labels}] * 3, [{t: 1 for t in labels}] * 2,
-            labels, cost_ratio=1500 / 1000)
-        gate_obj = gate_runner.assemble_existence_gate(
-            cfg, cfg["skill"], ex,
-            {"tokens": 1000, "usd": 0.1}, {"tokens": 1500, "usd": 0.2})
+            labels, cost_ratio=gate_runner.per_sample_cost_ratio(ref, test))
+        gate_obj = gate_runner.assemble_existence_gate(cfg, cfg["skill"], ex, ref, test)
         assert gate_obj["cost_unevaluated"] is False
         assert gate_obj["effect"]["cost_ratio"] == 1.5
         assert gate_obj["effect"]["tokens_no_skill"] == 1000

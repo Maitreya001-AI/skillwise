@@ -83,14 +83,22 @@ class TestExistenceEquivalence:
         assert self.got["gate_pass"] == "pass"
         assert self.got["certainty"] == "certifying"
 
-    def test_matches_shipped_wise_eval(self):
+    def test_shipped_wise_eval_reproducible_from_committed_scores(self):
+        """The pinned verdict (A5, deployment harness) must recompute exactly from
+        the committed raw condition scores in dogfood/gate-runner-a5/."""
+        def load_scores(name):
+            d = json.loads((ROOT / "dogfood" / "gate-runner-a5" / name).read_text())
+            return [r["scores"] for r in d["runs"]]
+        ref, test = load_scores("scores-no_skill.json"), load_scores("scores-with_skill.json")
+        tasks = sorted(ref[0])
+        got = gate_math.existence_gate(ref, test, tasks, cost_ratio=24067632 / 14602204)
         e = self.wise["effect"]
         for field in ("no_skill_pass_rate", "with_skill_pass_rate",
                       "delta_exist", "noise_band_exist", "regression_count"):
-            assert self.got[field] == e[field], field
-        assert self.got["power"] == self.wise["power"]
-        assert self.got["gate_pass"] == self.wise["gate_pass"]
-        assert self.got["certainty"] == self.wise["certainty"]
+            assert got[field] == e[field], field
+        assert got["power"] == self.wise["power"]
+        assert got["gate_pass"] == self.wise["gate_pass"] == "fail"
+        assert got["certainty"] == self.wise["certainty"]
 
 
 class TestImprovementEquivalence:

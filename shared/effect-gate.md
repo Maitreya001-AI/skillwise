@@ -216,6 +216,8 @@ The converged **gate** object (the single thing a caller / CI reads):
 
 `certainty` qualifies a `pass`: **`certifying`** iff `power.adequate`, else **`indicative`** — report the latter as `pass (indicative)`, and never let an indicative pass stand in for certification.
 
+**Every verdict is scoped to its harness and engine (THEORY §11-1/§11-2).** How the skill is loaded (auto-routed from a skills directory vs force-injected), how task contexts are cut (one isolated context per task vs a shared batch), and which engine ran are part of the measuring instrument — changing any of them can flip the verdict (measured in this repo, 2026-07: same skill, same seeds, same arithmetic; +0.103 pass on a force-loaded batch harness, −0.241 fail on the deployment harness). Record them in the gate object (`scope` free-text plus the runner/judges fields) and prefer the **deployment-shaped harness** — auto-routed, per-task isolation, the way consumers actually invoke the skill (`gate_runner.py`'s default). An engine upgrade can absorb the gap a certification rested on: re-earn L2 verdicts as engines move; a dated pass is a snapshot, not a property.
+
 `gate_pass` resolves **relative to tier**, with `evaluated_layers` disclosing what actually ran so `pass` is never overread:
 
 - **`fail`** — any non-waived blocking structural finding; OR (the effect layer ran and) one of the applicable gate's fatals fired: `safety_regression`, reproduced negative transfer / floor breach (fatal **even on a ceilinged set**), the inertia-cost fatal, `delta_exist ≤ noise_band_exist` on a fit set, or for improvement `delta_step ≤ noise_band` without the lateral-keep exception; OR a scaffold smoke case that broke.
